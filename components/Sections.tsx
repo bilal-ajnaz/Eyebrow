@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Icon from "./Icon";
 import Reveal from "./Reveal";
 import DownloadButton from "./DownloadButton";
@@ -137,22 +138,34 @@ export function Privacy() {
             <span className="panel__icon">
               <Icon name="lock" size={22} />
             </span>
-            <h2 className="section-title">Nothing leaves your Mac.</h2>
+            <h2 className="section-title">No account. No tracking.</h2>
             <p className="section-lede">
-              There is no account, no sign-in and no server. Transcription runs
-              on Apple&apos;s on-device speech recognition. Your clipboard,
-              shelf, screenshots, calendar and held notifications are read and
-              stored locally, and every permission is asked for only when you
-              switch on the feature that needs it.
+              There is no sign-in and no server of ours to send anything to.
+              Your clipboard, shelf, screenshots, calendar and held
+              notifications stay on your Mac, transcription runs on
+              Apple&apos;s on-device recogniser, and every permission is asked
+              for only when you switch on the feature that needs it.
+            </p>
+            <p className="section-lede">
+              Three optional features do reach the internet, because they
+              can&apos;t work otherwise — Weather, Lyrics and sports scores.
+              Rather than gloss over that, the privacy policy lists every
+              request the app can make, what it sends, and how to switch it
+              off.
             </p>
             <ul className="chips">
               <li>No account</li>
               <li>No telemetry</li>
               <li>No ads</li>
               <li>On-device transcription</li>
-              <li>Local storage only</li>
               <li>Revoke any permission, any time</li>
             </ul>
+            <p className="panel__link">
+              <Link href="/privacy">
+                Read the privacy policy
+                <Icon name="arrow" size={15} />
+              </Link>
+            </p>
           </div>
         </Reveal>
       </div>

@@ -41,7 +41,7 @@ export default function Hero() {
         <ul className="hero__facts">
           <li>
             <Icon name="lock" size={15} />
-            Nothing leaves your Mac
+            No account, no tracking
           </li>
           <li>
             <Icon name="display" size={15} />

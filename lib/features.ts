@@ -104,7 +104,7 @@ export const features: Feature[] = [
     group: "Day",
     icon: "cloud",
     title: "Weather",
-    body: "Current conditions and temperature in the notch, in Celsius or Fahrenheit.",
+    body: "Current conditions and temperature in the notch, in Celsius or Fahrenheit. Uses your approximate location to fetch a forecast from Open-Meteo.",
   },
   {
     group: "Audio",
@@ -175,7 +175,7 @@ export const faqs = [
   },
   {
     q: "Does my data leave my Mac?",
-    a: "No. Transcription uses Apple's on-device speech recognition. Your clipboard, shelf, screenshots, calendar and notifications are read and stored locally. There is no account to create and no server to sign in to.",
+    a: "Almost none of it. There is no account, no telemetry and no server of ours to send anything to. Your clipboard, shelf, screenshots, calendar and notifications stay local, and transcription runs on Apple's on-device recogniser. Three optional features do reach out, because they can't work otherwise: Weather sends your approximate coordinates to Open-Meteo, Lyrics sends the track title and artist to LRCLIB, and sports scores come from ESPN. Each is off unless you turn it on, and the privacy policy lists every request in full.",
   },
   {
     q: "Do I need a Mac with a notch?",

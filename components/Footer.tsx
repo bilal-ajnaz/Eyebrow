@@ -28,6 +28,7 @@ export default function Footer() {
             <h2>Help</h2>
             <ul>
               <li><Link href="/support">Support</Link></li>
+              <li><Link href="/privacy">Privacy policy</Link></li>
               <li><Link href="/#faq">FAQ</Link></li>
               <li><Link href="/support#bug">Report a bug</Link></li>
               <li><Link href="/support#feature">Request a feature</Link></li>
