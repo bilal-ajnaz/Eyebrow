@@ -2,7 +2,9 @@ import Link from "next/link";
 import Icon from "./Icon";
 import Reveal from "./Reveal";
 import DownloadButton from "./DownloadButton";
-import { features, widgets, tabs, faqs } from "@/lib/features";
+import FeatureGrid from "./FeatureGrid";
+import Magnetic from "./Magnetic";
+import { widgets, tabs, faqs } from "@/lib/features";
 import { site } from "@/lib/site";
 
 export function Features() {
@@ -20,20 +22,7 @@ export function Features() {
           </p>
         </Reveal>
 
-        <div className="grid grid--3">
-          {features.map((f, i) => (
-            <Reveal key={f.title} as="article" delay={(i % 3) * 60}>
-              <div className="card">
-                <span className="card__icon">
-                  <Icon name={f.icon} />
-                </span>
-                <span className="card__group">{f.group}</span>
-                <h3 className="card__title">{f.title}</h3>
-                <p className="card__body">{f.body}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <FeatureGrid />
       </div>
     </section>
   );
@@ -83,7 +72,11 @@ export function Tabs() {
           </Reveal>
 
           <Reveal delay={80}>
-            <ul className="tablist">
+            <ul
+              className="tablist"
+              tabIndex={0}
+              aria-label="Tabs you can put in the notch"
+            >
               {tabs.map((t) => (
                 <li key={t.name}>
                   <span className="tablist__name">{t.name}</span>
@@ -190,11 +183,15 @@ export function Pricing() {
               notch. If it saves you a few seconds a day, that&apos;s the point.
             </p>
             <div className="price__actions">
-              <DownloadButton />
-              <a className="btn btn--ghost" href="/support">
-                <Icon name="mail" size={16} />
-                Talk to a human
-              </a>
+              <Magnetic>
+                <DownloadButton />
+              </Magnetic>
+              <Magnetic>
+                <a className="btn btn--ghost" href="/support">
+                  <Icon name="mail" size={16} />
+                  Talk to a human
+                </a>
+              </Magnetic>
             </div>
             <p className="btn-note">
               {site.minMacOS} or later. Updates are free too.

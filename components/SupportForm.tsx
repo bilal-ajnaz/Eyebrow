@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { site } from "@/lib/site";
 import Icon from "./Icon";
 
@@ -68,6 +68,27 @@ export default function SupportForm() {
   }
 
   const sending = status.kind === "sending";
+
+  // The submit button's label changes width when it changes text. Measure
+  // the old and new widths and let the button spring between them, rather
+  // than jumping (the transition lives on .btn in globals.css).
+  const submitRef = useRef<HTMLButtonElement>(null);
+  const lastWidth = useRef<number | null>(null);
+  useLayoutEffect(() => {
+    const el = submitRef.current;
+    if (!el) return;
+    const from = lastWidth.current;
+    el.style.inlineSize = "";
+    const to = el.getBoundingClientRect().width;
+    if (from !== null && Math.abs(from - to) > 0.5) {
+      el.style.transition = "none";
+      el.style.inlineSize = `${from}px`;
+      void el.offsetWidth; // flush, so the next write animates
+      el.style.transition = "";
+      el.style.inlineSize = `${to}px`;
+    }
+    lastWidth.current = to;
+  }, [sending]);
 
   return (
     <form className="form" onSubmit={onSubmit} noValidate>
@@ -144,9 +165,21 @@ export default function SupportForm() {
       </div>
 
       <div className="form__foot">
-        <button className="btn btn--primary" type="submit" disabled={sending}>
-          {sending ? "Sending…" : "Send message"}
-          {!sending && <Icon name="arrow" size={16} />}
+        <button
+          ref={submitRef}
+          className="btn btn--primary"
+          type="submit"
+          disabled={sending}
+          onTransitionEnd={(e) => {
+            if (e.propertyName === "inline-size" || e.propertyName === "width") {
+              e.currentTarget.style.inlineSize = "";
+            }
+          }}
+        >
+          <span className="btn__label" key={sending ? "sending" : "idle"}>
+            {sending ? "Sending…" : "Send message"}
+            {!sending && <Icon name="arrow" size={16} />}
+          </span>
         </button>
 
         <p className="form__note">

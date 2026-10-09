@@ -45,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Marks JS as available before first paint, so scroll-reveal
             styles never hide content from a browser that can't run them. */}

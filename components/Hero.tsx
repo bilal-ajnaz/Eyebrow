@@ -1,6 +1,7 @@
 import DownloadButton from "./DownloadButton";
 import { site, appStoreReady } from "@/lib/site";
 import Icon from "./Icon";
+import Magnetic from "./Magnetic";
 
 export default function Hero() {
   return (
@@ -25,11 +26,15 @@ export default function Hero() {
         </p>
 
         <div className="hero__actions">
-          <DownloadButton />
-          <a className="btn btn--ghost" href="#how">
-            See what it does
-            <Icon name="arrow" size={16} />
-          </a>
+          <Magnetic>
+            <DownloadButton />
+          </Magnetic>
+          <Magnetic>
+            <a className="btn btn--ghost" href="#how">
+              See what it does
+              <Icon name="arrow" size={16} />
+            </a>
+          </Magnetic>
         </div>
 
         <p className="btn-note">
