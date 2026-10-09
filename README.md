@@ -19,20 +19,48 @@ The site lives in the `website/` subdirectory of the app repo, so:
 2. Set **Root Directory** to `website`.
 3. Framework preset: **Next.js** (auto-detected). No build overrides needed.
 
-## The two things to set
+## The three things to set
+
+### 0. Pro price
+
+The pricing section shows Free beside Eyebrow Pro, the one-time in-app
+purchase. The Pro card's figure comes from `site.pro.price` in
+`lib/site.ts`. It is empty by default, in which case the card reads
+"One-time". Once the IAP is priced in App Store Connect, set
+`NEXT_PUBLIC_PRO_PRICE` in Vercel → Settings → Environment Variables (for
+example `$4.99`) and redeploy, or put the string in `lib/site.ts`.
+
+The free clipboard cap (30) and Pro cap (500) are also constants there,
+and the feature copy, plan lists and FAQ in `lib/features.ts` quote them.
+If the app's limits change, change both places.
 
 ### 1. App Store link
 
-Everything on the site points at one constant. Until it's set, every
-download button renders as "coming shortly" and is non-clickable.
-
-Set it either in Vercel → Settings → Environment Variables:
+Everything on the site points at one constant, `appStoreUrl` in
+`lib/site.ts`, which is set to the live listing:
 
 ```
-NEXT_PUBLIC_APP_STORE_URL=https://apps.apple.com/app/id0000000000
+https://apps.apple.com/us/app/eyebrow-dynamic-notch/id6808540516
 ```
 
-…or edit `appStoreUrl` in `lib/site.ts`. Redeploy after either.
+To point the site somewhere else without a code change, set
+`NEXT_PUBLIC_APP_STORE_URL` in Vercel → Settings → Environment Variables
+and redeploy. If the constant were ever emptied, every download button
+would fall back to a non-clickable "coming shortly" state.
+
+### App icon
+
+The favicon, Apple touch icon and the brand mark in the nav and footer are
+all rendered from the Icon Composer bundle at `../Eyebrow.icon` (Apple only
+ships the bare glyph in the App Store artwork; the gradient and glass are
+drawn on-device). To regenerate after changing the `.icon` file:
+
+```
+python3 scripts/render-icon.py ../Eyebrow.icon .
+```
+
+It needs Pillow (`pip3 install pillow`) and writes `app/icon.png`,
+`app/apple-icon.png`, `public/icon-256.png` and `public/icon-1024.png`.
 
 ### 2. Support email delivery
 
@@ -62,6 +90,8 @@ per 10 minutes, best-effort within a warm instance).
 ```
 app/
   layout.tsx          shell, metadata, nav + footer
+  icon.png            favicon (Next picks it up automatically)
+  apple-icon.png      iOS home-screen icon, full-bleed
   page.tsx            home, plus SoftwareApplication + FAQPage JSON-LD
   globals.css         the entire design system — tokens, then components
   support/page.tsx    support page
@@ -73,6 +103,9 @@ components/
   Nav / Footer / Hero / Reveal / Icon / DownloadButton
 lib/
   site.ts             name, URL, email, App Store link
+public/
+  icon-1024.png       the app icon, rendered from Eyebrow.icon
+  icon-256.png        the same, used as the brand mark in nav + footer
   features.ts         the feature catalogue — edit copy here
 ```
 

@@ -32,7 +32,7 @@ export const features: Feature[] = [
     group: "System",
     icon: "sliders",
     title: "HUD replacement",
-    body: "Volume, display brightness and keyboard backlight stop covering your work. Hierarchical or gradient styling, optional glow, accent tinting, inline or full.",
+    body: "Volume, display brightness and keyboard backlight stop covering your work. Hierarchical or gradient styling, optional glow, accent tinting, inline or full. Pro adds custom colours, themes and positioning.",
   },
   {
     group: "System",
@@ -56,7 +56,7 @@ export const features: Feature[] = [
     group: "Files",
     icon: "clipboard",
     title: "Clipboard history",
-    body: "Text, links, images, screenshots, colours and files, filtered by type and searchable. Keep 7, 30 or 365 days. ⇧⌘C from anywhere.",
+    body: "Text, links, images, screenshots, colours and files, filtered by type and searchable. ⇧⌘C from anywhere. Free keeps your last 30 items; Pro keeps 500 and lets you pin the ones you reuse.",
   },
   {
     group: "Files",
@@ -168,14 +168,57 @@ export const tabs = [
   { name: "Widgets", body: "Your own layout, S / M / L" },
 ];
 
+export type Plan = {
+  id: "free" | "pro";
+  name: string;
+  summary: string;
+  items: string[];
+};
+
+/**
+ * Free vs Pro. Pro never takes anything away from Free — it raises two
+ * ceilings (clipboard history, HUD styling) and adds three things that did
+ * not exist before (iCloud sync, extra Live Widgets, icon packs).
+ */
+export const plans: Plan[] = [
+  {
+    id: "free",
+    name: "Free",
+    summary: "Every feature on this page, with no trial and no time limit.",
+    items: [
+      "All twenty features, all sixteen widgets, every tab",
+      "Clipboard history — your last 30 items",
+      "HUD replacement in the default style",
+      "No account, no ads, no watermark",
+      "Updates included",
+    ],
+  },
+  {
+    id: "pro",
+    name: "Eyebrow Pro",
+    summary: "One purchase, on the App Store. Not a subscription.",
+    items: [
+      "Clipboard history up to 500 items, with pinning",
+      "Custom HUD colours, themes and positioning",
+      "iCloud sync for your Shelf and clipboard across Macs",
+      "Extra Live Widget types",
+      "Additional app-icon packs",
+    ],
+  },
+];
+
 export const faqs = [
   {
     q: "Is Eyebrow really free?",
-    a: "Yes. Every feature on this page, no subscription, no trial, no upgrade tier, no ads. If you like it, tell someone about it.",
+    a: "Yes. Every feature on this page ships in the free app, with no trial, no time limit and no ads. Pro is a single one-time purchase that raises two ceilings — clipboard history and HUD styling — and adds iCloud sync, extra Live Widgets and icon packs. Nothing you get for free is ever moved behind it.",
+  },
+  {
+    q: "Is Pro a subscription?",
+    a: "No. It is one in-app purchase, bought once through the App Store, and it stays yours. There is no renewal, and updates to Pro features are free. If you reinstall or move to a new Mac, Restore Purchases in Settings › Pro brings it back.",
   },
   {
     q: "Does my data leave my Mac?",
-    a: "Almost none of it. There is no account, no telemetry and no server of ours to send anything to. Your clipboard, shelf, screenshots, calendar and notifications stay local, and transcription runs on Apple's on-device recogniser. Three optional features do reach out, because they can't work otherwise: Weather sends your approximate coordinates to Open-Meteo, Lyrics sends the track title and artist to LRCLIB, and sports scores come from ESPN. Each is off unless you turn it on, and the privacy policy lists every request in full.",
+    a: "Almost none of it. There is no account, no telemetry and no server of ours to send anything to. Your clipboard, shelf, screenshots, calendar and notifications stay local, and transcription runs on Apple's on-device recogniser. Three optional features do reach out, because they can't work otherwise: Weather sends your approximate coordinates to Open-Meteo, Lyrics sends the track title and artist to LRCLIB, and sports scores come from ESPN. With Pro, iCloud sync — off until you turn it on — keeps your Shelf and clipboard in your own private iCloud, which we cannot read. The privacy policy lists every request in full.",
   },
   {
     q: "Do I need a Mac with a notch?",

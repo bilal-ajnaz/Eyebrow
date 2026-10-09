@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import DownloadButton from "./DownloadButton";
 
 const links = [
@@ -26,7 +27,14 @@ export default function Nav() {
     <header className="nav" data-condensed={condensed}>
       <nav className="nav__island" aria-label="Primary">
         <Link href="/" className="nav__brand">
-          <span className="nav__mark" aria-hidden="true" />
+          <Image
+            src="/icon-256.png"
+            alt=""
+            width={22}
+            height={22}
+            className="nav__mark"
+            priority
+          />
           Eyebrow
         </Link>
 

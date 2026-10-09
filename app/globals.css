@@ -811,14 +811,10 @@ button { font: inherit; color: inherit; }
 }
 
 .nav__mark {
-  inline-size: 26px;
-  block-size: 12px;
-  background: var(--color-hardware);
-  border: 1px solid var(--color-border-strong);
-  border-block-start: 0;
-  border-end-start-radius: var(--radius-sm);
-  border-end-end-radius: var(--radius-sm);
-  margin-block-end: 4px;
+  /* The app icon, rendered from Eyebrow.icon (see README → App icon). */
+  inline-size: 22px;
+  block-size: 22px;
+  flex: none;
 }
 
 .nav__links {
@@ -1269,6 +1265,109 @@ kbd {
   justify-content: center;
 }
 
+/* Two plans side by side: Free, and the one-time Pro purchase. The Pro
+   card borrows the old single-price panel's glow so it reads as the
+   highlight without a badge or a "most popular" nudge. */
+.plans {
+  margin-block-start: clamp(32px, 5vw, 48px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  max-inline-size: 880px;
+}
+
+@media (max-width: 720px) {
+  .plans { grid-template-columns: 1fr; }
+}
+
+.plan {
+  block-size: 100%;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: clamp(24px, 4vw, 36px);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--elevation-2);
+  transition:
+    transform var(--dur-transition) var(--spring),
+    border-color var(--dur-transition) var(--ease);
+}
+
+.plan:hover { transform: translateY(-2px); border-color: var(--color-border-strong); }
+
+.plan--pro {
+  border-color: var(--color-border-strong);
+  background:
+    radial-gradient(80% 120% at 50% -10%, var(--color-accent-quiet), transparent 60%),
+    var(--color-surface);
+  box-shadow: var(--elevation-3);
+}
+
+.plan__name {
+  font-size: var(--text-12);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.plan--pro .plan__name { color: var(--color-accent); }
+
+.plan__figure {
+  font-size: clamp(var(--text-32), 5vw, var(--text-40));
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin: 2px 0 6px;
+}
+
+.plan__summary {
+  font-size: var(--text-14);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.plan__list {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 18px 0 0;
+  border-block-start: 1px solid var(--color-border);
+  display: grid;
+  gap: 10px;
+}
+
+.plan__list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: var(--text-14);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.plan__list svg {
+  flex: none;
+  margin-block-start: 3px;
+  color: var(--color-positive);
+}
+
+.plan--pro .plan__list svg { color: var(--color-accent); }
+
+.plan__note {
+  margin: 18px 0 0;
+  font-size: var(--text-12);
+  line-height: 1.5;
+  color: var(--color-text-tertiary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plan { transition: border-color var(--dur-transition) var(--ease); }
+  .plan:hover { transform: none; }
+}
+
 /* --- faq --------------------------------------------------------- */
 
 .faq {
@@ -1379,7 +1478,7 @@ kbd {
 }
 
 .footer__brand { display: flex; gap: 12px; align-items: flex-start; }
-.footer__brand .nav__mark { margin-block-start: 5px; }
+.footer__brand .nav__mark { inline-size: 28px; block-size: 28px; margin-block-start: 2px; }
 .footer__name { font-weight: 600; font-size: var(--text-16); }
 .footer__tag { font-size: var(--text-14); color: var(--color-text-tertiary); margin-block-start: 4px; }
 

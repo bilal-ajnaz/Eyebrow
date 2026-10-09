@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { site } from "@/lib/site";
 import Icon from "./Icon";
 
@@ -7,7 +8,13 @@ export default function Footer() {
     <footer className="footer">
       <div className="shell footer__inner">
         <div className="footer__brand">
-          <span className="nav__mark" aria-hidden="true" />
+          <Image
+            src="/icon-256.png"
+            alt=""
+            width={28}
+            height={28}
+            className="nav__mark"
+          />
           <div>
             <p className="footer__name">{site.name}</p>
             <p className="footer__tag">{site.tagline}</p>
@@ -21,7 +28,7 @@ export default function Footer() {
               <li><Link href="/#how">How it works</Link></li>
               <li><Link href="/#features">Features</Link></li>
               <li><Link href="/#widgets">Widgets</Link></li>
-              <li><Link href="/#pricing">Price</Link></li>
+              <li><Link href="/#pricing">Pricing</Link></li>
             </ul>
           </div>
           <div>
@@ -50,7 +57,7 @@ export default function Footer() {
 
       <div className="shell footer__base">
         <p>
-          © {new Date().getFullYear()} {site.name}. Free, and staying that way.
+          © {new Date().getFullYear()} {site.name}. Free to use. Pro is a one-time purchase.
         </p>
         <p>{site.minMacOS} or later</p>
       </div>

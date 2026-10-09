@@ -4,7 +4,7 @@ import Reveal from "./Reveal";
 import DownloadButton from "./DownloadButton";
 import FeatureGrid from "./FeatureGrid";
 import Magnetic from "./Magnetic";
-import { widgets, tabs, faqs } from "@/lib/features";
+import { widgets, tabs, faqs, plans } from "@/lib/features";
 import { site } from "@/lib/site";
 
 export function Features() {
@@ -17,8 +17,9 @@ export function Features() {
             Twenty things you were opening an app for.
           </h2>
           <p className="section-lede">
-            Turn on what you want, ignore the rest. Nothing here is a paid tier
-            and nothing here phones home.
+            Turn on what you want, ignore the rest. Everything here is in the
+            free app, and nothing here phones home. Pro only raises two
+            ceilings and adds a few extras.
           </p>
         </Reveal>
 
@@ -167,35 +168,60 @@ export function Privacy() {
 }
 
 export function Pricing() {
+  const proPrice = site.pro.price.length > 0 ? site.pro.price : "One-time";
+
   return (
     <section className="section" id="pricing">
       <div className="shell">
         <Reveal>
-          <div className="price">
-            <span className="eyebrow-label">Price</span>
-            <p className="price__figure num">Free</p>
-            <h2 className="price__title">
-              All of it. Not a trial, not a tier, not a teaser.
-            </h2>
-            <p className="section-lede price__lede">
-              Every feature on this page ships in the free app. No subscription,
-              no in-app purchase, no watermark, no ads, no upsell inside the
-              notch. If it saves you a few seconds a day, that&apos;s the point.
-            </p>
-            <div className="price__actions">
-              <Magnetic>
-                <DownloadButton />
-              </Magnetic>
-              <Magnetic>
-                <a className="btn btn--ghost" href="/support">
-                  <Icon name="mail" size={16} />
-                  Talk to a human
-                </a>
-              </Magnetic>
-            </div>
-            <p className="btn-note">
-              {site.minMacOS} or later. Updates are free too.
-            </p>
+          <span className="eyebrow-label">Pricing</span>
+          <h2 className="section-title">Free to use. Pro, if you want more.</h2>
+          <p className="section-lede">
+            The free app is the whole app — not a trial, not a teaser. Pro is
+            one purchase, made once inside the app, that raises a couple of
+            limits and adds things that did not exist before. No subscription,
+            no upsell inside the notch.
+          </p>
+        </Reveal>
+
+        <div className="plans">
+          {plans.map((plan, i) => (
+            <Reveal key={plan.id} as="article" delay={i * 80}>
+              <div className={`plan plan--${plan.id}`}>
+                <span className="plan__name">{plan.name}</span>
+                <p className="plan__figure num">
+                  {plan.id === "free" ? "Free" : proPrice}
+                </p>
+                <p className="plan__summary">{plan.summary}</p>
+                <ul className="plan__list">
+                  {plan.items.map((item) => (
+                    <li key={item}>
+                      <Icon name="check" size={16} />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="plan__note">
+                  {plan.id === "free"
+                    ? `${site.minMacOS} or later. Updates are free too.`
+                    : "Bought in the app, under Settings › Pro. Restore Purchases brings it to any Mac signed in to your Apple Account."}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal delay={160}>
+          <div className="price__actions">
+            <Magnetic>
+              <DownloadButton />
+            </Magnetic>
+            <Magnetic>
+              <a className="btn btn--ghost" href="/support">
+                <Icon name="mail" size={16} />
+                Talk to a human
+              </a>
+            </Magnetic>
           </div>
         </Reveal>
       </div>

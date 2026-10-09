@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "What Eyebrow stores on your Mac, the three optional features that contact a third party, and what we never collect. No account, no analytics, no ads.",
 };
 
-const EFFECTIVE = "7 September 2026";
+const EFFECTIVE = "9 October 2026";
 
 /** Every outbound request the app can make, and what triggers it. */
 const outbound = [
@@ -55,6 +55,18 @@ const outbound = [
     when: "On update checks",
     off: "Settings › General › automatic update checks",
   },
+  {
+    service: "Apple App Store (StoreKit)",
+    sent: "Nothing about you from Eyebrow — macOS asks Apple whether this Apple Account owns Eyebrow Pro. Payment, if any, happens entirely with Apple",
+    when: "At launch, and when you buy or restore Pro",
+    off: "Cannot be switched off; it carries no personal data from the app",
+  },
+  {
+    service: "Apple iCloud (CloudKit)",
+    sent: "Your clipboard history and Shelf items, to the private iCloud database of your own Apple Account — not to us",
+    when: "While iCloud sync is switched on (Pro, off by default)",
+    off: "Settings › Pro › iCloud sync, or sign out of iCloud",
+  },
 ];
 
 const local = [
@@ -66,6 +78,7 @@ const local = [
   ["Transcription", "Speech is transcribed by Apple's on-device recogniser. Audio never leaves your Mac and is not written to disk."],
   ["Browser tabs and messages", "Read from the apps you allow, shown in the notch, never stored or transmitted."],
   ["Settings", "Your preferences, stored in the app's own settings on your Mac."],
+  ["Pro", "Whether you own Eyebrow Pro. The app checks this with the App Store through Apple's StoreKit; Eyebrow never sees your name, card or Apple Account details, and keeps no record of the purchase beyond the entitlement Apple returns."],
 ];
 
 const permissions = [
@@ -116,6 +129,12 @@ export default function PrivacyPage() {
                 Live Widgets. Each is listed in full below, and each can be
                 switched off.
               </p>
+              <p>
+                Eyebrow Pro changes none of that. The purchase is handled by
+                Apple, and the optional <strong>iCloud sync</strong> it adds
+                stores your Shelf and clipboard in your own iCloud account,
+                where we cannot read them. It is off until you turn it on.
+              </p>
             </div>
           </div>
 
@@ -130,7 +149,10 @@ export default function PrivacyPage() {
           <p>
             All of the following is read and stored locally, in the app&apos;s
             own storage on your machine. None of it is uploaded, and none of it
-            is readable by us.
+            is readable by us. The one exception is opt-in: with Pro, you can
+            switch on iCloud sync, and your clipboard history and Shelf items
+            are then also kept in your own private iCloud database, encrypted
+            by Apple and readable only by your devices.
           </p>
           <dl className="deflist">
             {local.map(([term, body]) => (
@@ -206,7 +228,11 @@ export default function PrivacyPage() {
           <p>
             Because everything is local, deleting Eyebrow deletes your data
             with it. There is no copy of it anywhere else, and no request you
-            need to send us to have it erased.
+            need to send us to have it erased. If you switched on iCloud sync,
+            the synced copy lives in your iCloud account, not with us: turn
+            sync off in Settings › Pro to stop syncing, and remove the stored
+            data from System Settings › iCloud › Manage Storage, or from the
+            same Pro pane.
           </p>
 
           <h2>Children</h2>

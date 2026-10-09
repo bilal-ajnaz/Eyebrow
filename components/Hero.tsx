@@ -9,7 +9,7 @@ export default function Hero() {
       <div className="shell hero__inner">
         <span className="hero__badge">
           <Icon name="sparkle" size={13} />
-          Free. Every feature. No subscription.
+          Free. Pro is one purchase, not a subscription.
         </span>
 
         <h1 id="hero-title" className="hero__title">
