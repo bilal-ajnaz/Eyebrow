@@ -25,10 +25,10 @@ The site lives in the `website/` subdirectory of the app repo, so:
 
 The pricing section shows Free beside Eyebrow Pro, the one-time in-app
 purchase. The Pro card's figure comes from `site.pro.price` in
-`lib/site.ts`. It is empty by default, in which case the card reads
-"One-time". Once the IAP is priced in App Store Connect, set
-`NEXT_PUBLIC_PRO_PRICE` in Vercel → Settings → Environment Variables (for
-example `$4.99`) and redeploy, or put the string in `lib/site.ts`.
+`lib/site.ts`, currently `$4.99`, which should match the IAP price in App
+Store Connect. To change it without a code change, set
+`NEXT_PUBLIC_PRO_PRICE` in Vercel → Settings → Environment Variables and
+redeploy. If the string is ever emptied, the card reads "One-time".
 
 The free clipboard cap (30) and Pro cap (500) are also constants there,
 and the feature copy, plan lists and FAQ in `lib/features.ts` quote them.

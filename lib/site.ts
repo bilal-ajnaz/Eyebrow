@@ -8,13 +8,13 @@ export const site = {
   minMacOS: "macOS 15 Sequoia",
   /**
    * Eyebrow Pro — a single non-consumable in-app purchase, bought inside the
-   * app. `price` is the display string from App Store Connect (e.g. "$4.99").
-   * Leave it empty and the site says "One-time" instead of a figure;
+   * app. `price` is the display string from App Store Connect.
+   * Empty it and the site says "One-time" instead of a figure;
    * NEXT_PUBLIC_PRO_PRICE (Vercel) sets it without a code change.
    */
   pro: {
     name: "Eyebrow Pro",
-    price: process.env.NEXT_PUBLIC_PRO_PRICE ?? "",
+    price: process.env.NEXT_PUBLIC_PRO_PRICE ?? "$4.99",
     /** Clipboard items the free tier keeps; Pro keeps the full history. */
     freeClipboardItems: 30,
     proClipboardItems: 500,
