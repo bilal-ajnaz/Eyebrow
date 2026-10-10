@@ -30,8 +30,8 @@ export default function Nav() {
           <Image
             src="/icon-256.png"
             alt=""
-            width={22}
-            height={22}
+            width={26}
+            height={26}
             className="nav__mark"
             priority
           />

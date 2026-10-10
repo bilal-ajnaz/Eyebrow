@@ -1,5 +1,4 @@
 import { site, appStoreReady } from "@/lib/site";
-import Icon from "./Icon";
 
 type Props = { variant?: "primary" | "ghost"; label?: string };
 
@@ -16,7 +15,6 @@ export default function DownloadButton({
         aria-disabled="true"
         title="The App Store listing goes live shortly."
       >
-        <Icon name="bolt" size={16} />
         {label} — coming shortly
       </span>
     );
@@ -29,7 +27,6 @@ export default function DownloadButton({
       target="_blank"
       rel="noreferrer noopener"
     >
-      <Icon name="bolt" size={16} />
       {label}
     </a>
   );

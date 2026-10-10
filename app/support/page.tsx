@@ -33,7 +33,11 @@ export default function SupportPage() {
       <section className="page-head">
         <div className="shell">
           <span className="eyebrow-label">Support</span>
-          <h1 className="page-head__title">Something not working?</h1>
+          <h1 className="page-head__title">
+            Something
+            <br />
+            <span className="section-title__muted">not working?</span>
+          </h1>
           <p className="section-lede">
             Eyebrow is free, but support isn&apos;t automated. Send a message
             and a person reads it — bug reports genuinely do turn into fixes.

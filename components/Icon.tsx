@@ -33,6 +33,10 @@ const paths: Record<string, React.ReactNode> = {
   gear: <><circle cx="12" cy="12" r="3" /><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4" /></>,
   keyboard: <><rect x="2" y="6" width="20" height="12" rx="2.5" /><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8" /></>,
   display: <><rect x="2.5" y="4" width="19" height="13" rx="2.5" /><path d="M9 21h6M12 17v4" /></>,
+  // Transport — same grid, filled like the system media glyphs.
+  pause: <><rect x="6.5" y="5" width="3.6" height="14" rx="1.2" fill="currentColor" /><rect x="13.9" y="5" width="3.6" height="14" rx="1.2" fill="currentColor" /></>,
+  next: <><path d="M4.5 7v10a.8.8 0 0 0 1.25.66L12 13.2V17a.8.8 0 0 0 1.25.66l7.1-5a.8.8 0 0 0 0-1.32l-7.1-5A.8.8 0 0 0 12 7v3.8L5.75 6.34A.8.8 0 0 0 4.5 7Z" fill="currentColor" /></>,
+  previous: <><path d="M19.5 7v10a.8.8 0 0 1-1.25.66L12 13.2V17a.8.8 0 0 1-1.25.66l-7.1-5a.8.8 0 0 1 0-1.32l7.1-5A.8.8 0 0 1 12 7v3.8l6.25-4.46A.8.8 0 0 1 19.5 7Z" fill="currentColor" /></>,
 };
 
 export default function Icon({ name, size = 19 }: Props) {

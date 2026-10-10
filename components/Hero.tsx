@@ -6,17 +6,19 @@ import Magnetic from "./Magnetic";
 export default function Hero() {
   return (
     <section className="hero" aria-labelledby="hero-title">
+      <div className="hero__glow" aria-hidden="true" />
+
       <div className="shell hero__inner">
         <span className="hero__badge">
-          <Icon name="sparkle" size={13} />
+          <Icon name="sparkle" size={14} />
           Free. Pro is one purchase, not a subscription.
         </span>
 
         <h1 id="hero-title" className="hero__title">
-          Your notch,
-          <br />
-          finally doing something.
+          <span className="hero__wordmark">{site.name}</span>
         </h1>
+
+        <p className="hero__tagline">{site.tagline}</p>
 
         <p className="hero__lede">
           Eyebrow turns the dead black bar at the top of your Mac into a live
@@ -29,12 +31,9 @@ export default function Hero() {
           <Magnetic>
             <DownloadButton />
           </Magnetic>
-          <Magnetic>
-            <a className="btn btn--ghost" href="#how">
-              See what it does
-              <Icon name="arrow" size={16} />
-            </a>
-          </Magnetic>
+          <a className="textlink" href="#how">
+            See what it does ›
+          </a>
         </div>
 
         <p className="btn-note">
@@ -58,8 +57,6 @@ export default function Hero() {
           </li>
         </ul>
       </div>
-
-      <div className="hero__glow" aria-hidden="true" />
     </section>
   );
 }

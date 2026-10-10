@@ -46,7 +46,7 @@ export default function FeatureGrid() {
           <Reveal key={f.title} as="article" delay={(i % 3) * 60}>
             <div className="card">
               <span className="card__icon">
-                <Icon name={f.icon} />
+                <Icon name={f.icon} size={26} />
               </span>
               <span className="card__group">{f.group}</span>
               <h3 className="card__title">{f.title}</h3>

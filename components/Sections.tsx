@@ -11,10 +11,14 @@ export function Features() {
   return (
     <section className="section" id="features">
       <div className="shell">
-        <Reveal>
+        <Reveal className="section-head">
           <span className="eyebrow-label">Everything it does</span>
           <h2 className="section-title">
-            Twenty things you were opening an app for.
+            Twenty things
+            <br />
+            <span className="section-title__muted">
+              you were opening an app for.
+            </span>
           </h2>
           <p className="section-lede">
             Turn on what you want, ignore the rest. Everything here is in the
@@ -31,12 +35,16 @@ export function Features() {
 
 export function Tabs() {
   return (
-    <section className="section section--alt" id="tabs">
+    <section className="section" id="tabs">
       <div className="shell">
         <div className="split">
-          <Reveal>
+          <Reveal className="section-head section-head--start">
             <span className="eyebrow-label">Tabs</span>
-            <h2 className="section-title">Open it, and it&apos;s yours.</h2>
+            <h2 className="section-title">
+              Open it,
+              <br />
+              <span className="section-title__muted">and it&apos;s yours.</span>
+            </h2>
             <p className="section-lede">
               Hover — or use a two-finger swipe, or a keyboard shortcut — and the
               notch opens. Choose which tabs live there, reorder them, rename
@@ -96,9 +104,13 @@ export function Widgets() {
   return (
     <section className="section" id="widgets">
       <div className="shell">
-        <Reveal>
+        <Reveal className="section-head">
           <span className="eyebrow-label">Widgets</span>
-          <h2 className="section-title">Sixteen widgets, three sizes.</h2>
+          <h2 className="section-title">
+            Sixteen widgets,
+            <br />
+            <span className="section-title__muted">three sizes.</span>
+          </h2>
           <p className="section-lede">
             Build the layout you actually use, or start from a preset — Minimal,
             Productivity, Media or Complete — and change it later.
@@ -110,7 +122,7 @@ export function Widgets() {
             <Reveal key={w.name} as="article" delay={(i % 4) * 50}>
               <div className="tile">
                 <span className="tile__icon">
-                  <Icon name={w.icon} size={17} />
+                  <Icon name={w.icon} size={18} />
                 </span>
                 <span className="tile__name">{w.name}</span>
                 <span className="tile__body">{w.body}</span>
@@ -125,14 +137,18 @@ export function Widgets() {
 
 export function Privacy() {
   return (
-    <section className="section section--alt" id="privacy">
+    <section className="section" id="privacy">
       <div className="shell">
         <Reveal>
           <div className="panel">
             <span className="panel__icon">
               <Icon name="lock" size={22} />
             </span>
-            <h2 className="section-title">No account. No tracking.</h2>
+            <h2 className="section-title">
+              No account.
+              <br />
+              <span className="section-title__muted">No tracking.</span>
+            </h2>
             <p className="section-lede">
               There is no sign-in and no server of ours to send anything to.
               Your clipboard, shelf, screenshots, calendar and held
@@ -155,9 +171,8 @@ export function Privacy() {
               <li>Revoke any permission, any time</li>
             </ul>
             <p className="panel__link">
-              <Link href="/privacy">
-                Read the privacy policy
-                <Icon name="arrow" size={15} />
+              <Link className="textlink" href="/privacy">
+                Read the privacy policy ›
               </Link>
             </p>
           </div>
@@ -173,9 +188,13 @@ export function Pricing() {
   return (
     <section className="section" id="pricing">
       <div className="shell">
-        <Reveal>
+        <Reveal className="section-head">
           <span className="eyebrow-label">Pricing</span>
-          <h2 className="section-title">Free to use. Pro, if you want more.</h2>
+          <h2 className="section-title">
+            Free to use.
+            <br />
+            <span className="section-title__muted">Pro, if you want more.</span>
+          </h2>
           <p className="section-lede">
             The free app is the whole app — not a trial, not a teaser. Pro is
             one purchase, made once inside the app, that raises a couple of
@@ -217,8 +236,8 @@ export function Pricing() {
               <DownloadButton />
             </Magnetic>
             <Magnetic>
-              <a className="btn btn--ghost" href="/support">
-                <Icon name="mail" size={16} />
+              <a className="btn" href="/support">
+                <Icon name="mail" size={17} />
                 Talk to a human
               </a>
             </Magnetic>
@@ -231,11 +250,15 @@ export function Pricing() {
 
 export function Faq() {
   return (
-    <section className="section section--alt" id="faq">
+    <section className="section" id="faq">
       <div className="shell">
-        <Reveal>
+        <Reveal className="section-head">
           <span className="eyebrow-label">Questions</span>
-          <h2 className="section-title">The things people ask.</h2>
+          <h2 className="section-title">
+            The things
+            <br />
+            <span className="section-title__muted">people ask.</span>
+          </h2>
         </Reveal>
 
         <div className="faq">
