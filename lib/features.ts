@@ -32,7 +32,7 @@ export const features: Feature[] = [
     group: "System",
     icon: "sliders",
     title: "HUD replacement",
-    body: "Volume, display brightness and keyboard backlight stop covering your work. Hierarchical or gradient styling, optional glow, accent tinting, inline or full. Pro adds custom colours, themes and positioning.",
+    body: "Volume, display brightness and keyboard backlight stop covering your work. Hierarchical or gradient styling, optional glow, accent tinting, inline or full. Pro adds custom colours and themes.",
   },
   {
     group: "System",
@@ -56,7 +56,7 @@ export const features: Feature[] = [
     group: "Files",
     icon: "clipboard",
     title: "Clipboard history",
-    body: "Text, links, images, screenshots, colours and files, filtered by type and searchable. ⇧⌘C from anywhere. Free keeps your last 30 items; Pro keeps 500 and lets you pin the ones you reuse.",
+    body: "Text, links, images, screenshots, colours and files, filtered by type and searchable. ⇧⌘C from anywhere, and pin the ones you reuse. Free keeps your last 500 items; Pro keeps 5,000.",
   },
   {
     group: "Files",
@@ -177,8 +177,9 @@ export type Plan = {
 
 /**
  * Free vs Pro. Pro never takes anything away from Free — it raises two
- * ceilings (clipboard history, HUD styling) and adds three things that did
- * not exist before (iCloud sync, extra Live Widgets, icon packs).
+ * ceilings (clipboard history, widget pages) and adds three things that did
+ * not exist before (custom HUD colours and themes, iCloud sync, icon packs
+ * with a custom Widgets tab icon).
  */
 export const plans: Plan[] = [
   {
@@ -187,7 +188,8 @@ export const plans: Plan[] = [
     summary: "Every feature on this page, with no trial and no time limit.",
     items: [
       "All twenty features, all sixteen widgets, every tab",
-      "Clipboard history — your last 30 items",
+      "Clipboard history — your last 500 items",
+      "One page of widgets",
       "HUD replacement in the default style",
       "No account, no ads, no watermark",
       "Updates included",
@@ -198,11 +200,11 @@ export const plans: Plan[] = [
     name: "Eyebrow Pro",
     summary: "One purchase, on the App Store. Not a subscription.",
     items: [
-      "Clipboard history up to 500 items, with pinning",
-      "Custom HUD colours, themes and positioning",
+      "Clipboard history up to 5,000 items",
+      "Four widget pages instead of one",
+      "Custom HUD colours and themes",
       "iCloud sync for your Shelf and clipboard across Macs",
-      "Extra Live Widget types",
-      "Additional app-icon packs",
+      "App icon packs and a custom Widgets tab icon",
     ],
   },
 ];
@@ -210,7 +212,7 @@ export const plans: Plan[] = [
 export const faqs = [
   {
     q: "Is Eyebrow really free?",
-    a: "Yes. Every feature on this page ships in the free app, with no trial, no time limit and no ads. Pro is a single one-time purchase that raises two ceilings — clipboard history and HUD styling — and adds iCloud sync, extra Live Widgets and icon packs. Nothing you get for free is ever moved behind it.",
+    a: "Yes. Every feature on this page ships in the free app, with no trial, no time limit and no ads. Pro is a single one-time purchase that raises two ceilings — clipboard history and widget pages — and adds custom HUD colours and themes, iCloud sync, and app icon packs with a custom Widgets tab icon. Nothing you get for free is ever moved behind it.",
   },
   {
     q: "Is Pro a subscription?",

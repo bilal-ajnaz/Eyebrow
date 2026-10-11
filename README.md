@@ -30,7 +30,7 @@ Store Connect. To change it without a code change, set
 `NEXT_PUBLIC_PRO_PRICE` in Vercel → Settings → Environment Variables and
 redeploy. If the string is ever emptied, the card reads "One-time".
 
-The free clipboard cap (30) and Pro cap (500) are also constants there,
+The free clipboard cap (500) and Pro cap (5,000) are also constants there,
 and the feature copy, plan lists and FAQ in `lib/features.ts` quote them.
 If the app's limits change, change both places.
 

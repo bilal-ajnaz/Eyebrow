@@ -15,9 +15,9 @@ export const site = {
   pro: {
     name: "Eyebrow Pro",
     price: process.env.NEXT_PUBLIC_PRO_PRICE ?? "$4.99",
-    /** Clipboard items the free tier keeps; Pro keeps the full history. */
-    freeClipboardItems: 30,
-    proClipboardItems: 500,
+    /** Clipboard items each tier keeps. Pinned items don't count. */
+    freeClipboardItems: 500,
+    proClipboardItems: 5000,
   },
   /**
    * The live App Store listing. NEXT_PUBLIC_APP_STORE_URL (Vercel) overrides
