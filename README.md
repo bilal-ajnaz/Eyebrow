@@ -98,6 +98,7 @@ app/
   api/support/route.ts
 components/
   NotchStage.tsx      the scroll-driven notch (the centrepiece)
+  NotchWidgets.tsx    the open notch and its widget tiles, as the app draws them
   Sections.tsx        features, tabs, widgets, privacy, price, FAQ
   SupportForm.tsx     client form + mailto fallback
   Nav / Footer / Hero / Reveal / Icon / DownloadButton
@@ -115,6 +116,11 @@ public/
 - **Scroll story** — the `acts` array at the top of
   `components/NotchStage.tsx`. Each act sets its own notch width/height
   and its caption; add or remove one and the ticks and numbering follow.
+- **The open notch** — `OpenNotch` in `components/NotchWidgets.tsx` is the
+  last act: the app's header row and one page of its widget grid. The tiles
+  are ported from `WidgetRenderer.swift` at the app's point sizes (an 80pt
+  cell, 8pt gutter, 640 × 230 open), and the stylesheet scales the whole bar
+  to fit the display, so change sizes there only if the app changes them.
 - **Colours, type, spacing, motion** — the token block at the top of
   `app/globals.css`. Components only ever reference semantic tokens.
 

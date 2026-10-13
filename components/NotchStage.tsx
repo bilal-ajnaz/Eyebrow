@@ -1,16 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Icon from "./Icon";
+import { Glyph, OpenNotch, Ring, type NotchTab } from "./NotchWidgets";
 
 type Act = {
   id: string;
   label: string;
   title: string;
   body: string;
-  /** notch footprint for this act, in px */
-  w: number;
-  h: number;
+  /** set when this act opens the notch; the footprint itself is the stylesheet's */
+  tab?: NotchTab;
 };
 
 const acts: Act[] = [
@@ -19,205 +18,138 @@ const acts: Act[] = [
     label: "Idle",
     title: "Most of the time, it does nothing",
     body: "Eyebrow stays the size of your notch and stays quiet. No badge, no bounce, no widget begging to be looked at.",
-    w: 200,
-    h: 34,
   },
   {
     id: "music",
     label: "Now Playing",
     title: "Then a track starts",
     body: "Artwork, title and a colour-matched spectrogram slide out. Scrub, skip, shuffle — Apple Music, Spotify, YouTube Music or anything using system Now Playing.",
-    w: 384,
-    h: 64,
   },
   {
     id: "hud",
     label: "HUD",
     title: "Volume stops covering your work",
-    body: "Eyebrow replaces the macOS volume, brightness and keyboard-backlight HUDs with one that lives where your eyes already are.",
-    w: 300,
-    h: 56,
+    body: "Eyebrow shows volume changes in a HUD that lives where your eyes already are.",
   },
   {
     id: "battery",
     label: "Battery",
     title: "You plug in",
     body: "Charge state, percentage and power-source changes appear for a second, then leave. Bluetooth device batteries too.",
-    w: 284,
-    h: 56,
   },
   {
     id: "download",
     label: "Downloads",
     title: "A download starts",
     body: "Safari, Chrome, Firefox, Arc and Brave report live progress into the notch, with the source app's icon and no Downloads window.",
-    w: 336,
-    h: 56,
   },
   {
     id: "call",
     label: "Calls",
     title: "A meeting begins",
     body: "Zoom, Google Meet and Microsoft Teams are detected automatically. Mute, camera and leave, always in the same place.",
-    w: 344,
-    h: 56,
   },
   {
     id: "shelf",
     label: "Shelf",
     title: "You drag a file up",
     body: "The Shelf catches it and holds it. Drag it back out into any app, any window, any Space. Quick Share is one tap away.",
-    w: 372,
-    h: 84,
+    tab: "shelf",
   },
   {
     id: "widgets",
     label: "Widgets",
     title: "And when you want everything",
-    body: "Hover, and the notch opens into your own layout — sixteen widgets in three sizes, plus tabs for the shelf, clipboard, screenshots, audio and weather.",
-    w: 600,
-    h: 196,
+    body: "Hover, and the notch opens into your own layout — fifteen widgets in three sizes, plus tabs for the shelf, clipboard, screenshots, audio and weather.",
+    tab: "widgets",
   },
 ];
 
-function ActContent({ id }: { id: string }) {
-  switch (id) {
+/* The closed notch never grows downward: a live activity widens it, and
+   puts what it has to say either side of the hardware. `la__gap` is the
+   hardware itself, so nothing is ever drawn under the camera. */
+function ActContent({ act }: { act: Act }) {
+  if (act.tab) return <OpenNotch tab={act.tab} />;
+
+  switch (act.id) {
     case "music":
       return (
-        <div className="nx nx--music">
-          <div className="nx__art" aria-hidden="true" />
-          <div className="nx__meta">
-            <span className="nx__title">Bad Decisions</span>
-            <span className="nx__sub">Two Door Cinema Club</span>
-          </div>
-          <div className="nx__bars" aria-hidden="true">
+        <div className="la la--music">
+          <span className="la__sq la__art" aria-hidden="true" />
+          <span className="la__mid">
+            <span className="la__wing la__tinted">Bad Decisions</span>
+            <span className="la__gap" />
+            <span className="la__wing la__wing--end la__tinted">
+              <span className="la__clip">Two Door Cinema Club</span>
+            </span>
+          </span>
+          <span className="la__sq la__bars" aria-hidden="true">
             {[0, 1, 2, 3].map((i) => (
               <i key={i} style={{ animationDelay: `${i * 120}ms` }} />
             ))}
-          </div>
+          </span>
         </div>
       );
     case "hud":
       return (
-        <div className="nx nx--hud">
-          <Icon name="speaker" size={17} />
-          <div className="nx__track" aria-hidden="true">
-            <div className="nx__fill" style={{ inlineSize: "62%" }} />
-          </div>
-          <span className="nx__num num">62</span>
+        <div className="la la--hud">
+          <span className="la__wing">
+            <Glyph n="speaker" s={17} />
+            <span className="la__name">Volume</span>
+          </span>
+          <span className="la__gap" />
+          <span className="la__wing la__wing--end">
+            <span className="la__track" aria-hidden="true">
+              <i style={{ inlineSize: "75%" }} />
+            </span>
+            <span className="la__pct num">75%</span>
+          </span>
         </div>
       );
     case "battery":
       return (
-        <div className="nx nx--battery">
-          <span className="nx__bolt">
-            <Icon name="bolt" size={16} />
+        <div className="la la--battery">
+          <span className="la__mid">
+            <span className="la__wing">Charging · 84%</span>
+            <span className="la__gap" />
+            <span className="la__wing la__wing--end">
+              <span className="la__cell" aria-hidden="true">
+                <i style={{ inlineSize: "84%" }} />
+                <Glyph n="bolt" s={11} />
+              </span>
+            </span>
           </span>
-          <span className="nx__title">Charging</span>
-          <div className="nx__track" aria-hidden="true">
-            <div className="nx__fill" style={{ inlineSize: "84%" }} />
-          </div>
-          <span className="nx__num num">84%</span>
         </div>
       );
     case "download":
       return (
-        <div className="nx nx--download">
-          <Icon name="download" size={16} />
-          <div className="nx__meta">
-            <span className="nx__title">Xcode_16.4.xip</span>
-            <div className="nx__track" aria-hidden="true">
-              <div className="nx__fill" style={{ inlineSize: "68%" }} />
-            </div>
-          </div>
-          <span className="nx__num num">68%</span>
+        <div className="la la--download">
+          <span className="la__sq la__app" aria-hidden="true">
+            <Glyph n="compass" s={15} />
+          </span>
+          <span className="la__mid">
+            <span className="la__gap la__file">Xcode_16.4.xip</span>
+          </span>
+          <span className="la__sq">
+            <Ring side={22} lw={2} p={0.68} tint="accent" />
+          </span>
         </div>
       );
     case "call":
       return (
-        <div className="nx nx--call">
-          <i className="nx__dot" aria-hidden="true" />
-          <span className="nx__title">Zoom</span>
-          <span className="nx__sub num">12:04</span>
-          <div className="nx__controls">
-            <span className="nx__ctl nx__ctl--danger" title="Muted">
-              <Icon name="mic" size={14} />
+        <div className="la la--call">
+          <span className="la__sq la__live" aria-hidden="true">
+            <i />
+          </span>
+          <span className="la__mid">
+            <span className="la__gap la__file">
+              <Glyph n="phone" s={10} c="wg-g--positive" />
+              Zoom
             </span>
-            <span className="nx__ctl" title="Camera">
-              <Icon name="camera" size={14} />
-            </span>
-            <span className="nx__ctl nx__ctl--leave" title="Leave">
-              <Icon name="phone" size={14} />
-            </span>
-          </div>
-        </div>
-      );
-    case "shelf":
-      return (
-        <div className="nx nx--shelf">
-          <div className="nx__head">
-            <Icon name="tray" size={15} />
-            <span className="nx__title">Shelf</span>
-            <span className="nx__sub">2 items · drag out</span>
-          </div>
-          <div className="nx__chips">
-            <span className="nx__chip">Brief.pdf</span>
-            <span className="nx__chip">Hero@2x.png</span>
-            <span className="nx__chip nx__chip--drop">Drop</span>
-          </div>
-        </div>
-      );
-    case "widgets":
-      return (
-        <div className="nx nx--surface">
-          <div className="nx__tile nx__lead">
-            <div className="nx__art nx__art--lg" aria-hidden="true" />
-            <div className="nx__leadmeta">
-              <div className="nx__meta">
-                <span className="nx__title">Bad Decisions</span>
-                <span className="nx__sub">Two Door Cinema Club</span>
-              </div>
-              <div className="nx__scrub" aria-hidden="true">
-                <span className="num">1:12</span>
-                <div className="nx__track">
-                  <div className="nx__fill" />
-                </div>
-                <span className="num">3:21</span>
-              </div>
-              <div className="nx__transport" aria-hidden="true">
-                <span className="nx__tbtn">
-                  <Icon name="previous" size={16} />
-                </span>
-                <span className="nx__tbtn nx__tbtn--main">
-                  <Icon name="pause" size={18} />
-                </span>
-                <span className="nx__tbtn">
-                  <Icon name="next" size={16} />
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="nx__side">
-            <div className="nx__tile">
-              <Icon name="cloud" size={16} />
-              <span className="nx__big num">18°</span>
-              <span className="nx__sub">Cloudy</span>
-            </div>
-            <div className="nx__tile">
-              <span className="nx__bolt">
-                <Icon name="battery" size={16} />
-              </span>
-              <span className="nx__big num">84%</span>
-              <span className="nx__sub">Charging</span>
-            </div>
-            <div className="nx__tile nx__tile--wide">
-              <Icon name="calendar" size={16} />
-              <div className="nx__meta">
-                <span className="nx__title">Standup</span>
-                <span className="nx__sub num">10:00 – 10:15 · Zoom</span>
-              </div>
-            </div>
-          </div>
+          </span>
+          <span className="la__sq la__muted" title="Muted">
+            <Glyph n="micSlash" s={13} />
+          </span>
         </div>
       );
     default:
@@ -252,29 +184,29 @@ export default function NotchStage() {
   }, []);
 
   const current = acts[active];
-  // the corner follows the height, as it does in the app
-  const radius = Math.round(Math.max(14, Math.min(34, current.h * 0.42)));
+  const open = Boolean(current.tab);
 
   return (
     <section className="stage" id="how" aria-label="What Eyebrow does, as you scroll">
       <div className="stage__pin">
         <div className="stage__frame">
           <div className="stage__screen">
-            <div className="stage__menubar" aria-hidden="true" />
-            <div
-              className="notch"
-              data-act={current.id}
-              style={
-                {
-                  "--notch-w": `${current.w}px`,
-                  "--notch-h": `${current.h}px`,
-                  "--notch-r": `${radius}px`,
-                } as React.CSSProperties
-              }
-            >
-              <div className="notch__glow" aria-hidden="true" />
-              <div className="notch__inner" key={current.id}>
-                <ActContent id={current.id} />
+            <div className="stage__menubar" aria-hidden="true">
+              <span className="stage__menus">
+                <b>Finder</b>
+                <span>File</span>
+              </span>
+              <span className="stage__status">
+                <i className="stage__cell" />
+                <span className="num">Sun 11 Oct 8:36</span>
+              </span>
+            </div>
+            <div className="notch-shell" data-open={open}>
+              <div className="notch" data-act={current.id} data-open={open}>
+                <div className="notch__glow" aria-hidden="true" />
+                <div className="notch__inner" key={current.id}>
+                  <ActContent act={current} />
+                </div>
               </div>
             </div>
           </div>

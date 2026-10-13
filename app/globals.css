@@ -146,6 +146,20 @@
   --section-pad: clamp(96px, 13vw, 180px);
 }
 
+/* Phones: the same scale, set a step down so a line still holds a
+   thought, and a slimmer gutter where every point of width counts. */
+@media (max-width: 560px) {
+  :root {
+    --text-hero: clamp(3.5rem, 19vw, 4.5rem);
+    --text-section: clamp(2.25rem, 10vw, 2.75rem);
+    --section-pad: 84px;
+  }
+}
+
+@media (max-width: 380px) {
+  :root { --gutter: 16px; }
+}
+
 *,
 *::before,
 *::after {
@@ -507,6 +521,9 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
    ============================================================ */
 
 .stage {
+  --stage-h: 330px;
+  /* the display's width: the window, less its gutters */
+  --stage-w: calc(100vw - 2 * var(--gutter));
   position: relative;
   margin-block-start: 90px;
   padding-block-end: clamp(40px, 8vw, 96px);
@@ -529,7 +546,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 .stage__frame {
   position: relative;
   inline-size: min(1080px, 100%);
-  block-size: 330px;
+  block-size: var(--stage-h);
   flex: none;
   padding: 12px 12px 0;
   border-start-start-radius: 30px;
@@ -747,86 +764,545 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   color: var(--color-text-tertiary);
 }
 
-/* The opened notch: one surface that rearranges around what's happening.
-   The lead tile is the current activity; the widget column stays put. */
-.nx--surface {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  align-items: stretch;
-  gap: 10px;
-  padding-block-start: 4px;
+/* --- the open notch ----------------------------------------------
+   Drawn at the app's own point sizes. --u is one app point: every
+   length below is a multiple of it, so the whole bar scales to the
+   display it sits in instead of reflowing. 640 × 230 is the open notch;
+   narrow screens get a four-column page (--nb-w, --nb-cols). */
+
+.stage__screen {
+  --nb-w: 640;
+  --nb-cols: 6;
+  /* one app point at the size this display can afford */
+  --nb-u: min(
+    1px,
+    (var(--stage-w) - 48px) / var(--nb-w),
+    (var(--stage-h) - 114px) / 230
+  );
+  --u: var(--nb-u);
 }
 
-.nx__tile {
-  min-inline-size: 0;
-  padding: 14px;
-  border-radius: 18px;
-  background: var(--notch-fill-2);
-  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.08);
+/* The shell carries the two flared corners where the notch meets the
+   bezel; the notch itself clips its content and can't draw outside. */
+.notch-shell {
+  --ear: 0px;
+  position: relative;
+  flex: none;
+  max-inline-size: calc(100% - 24px);
 }
 
-.nx__lead {
-  display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  gap: 16px;
-  align-items: center;
+.notch-shell > .notch { max-inline-size: 100%; }
+
+.notch-shell::before,
+.notch-shell::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inline-size: var(--ear);
+  block-size: var(--ear);
+  background: var(--color-hardware);
+  transition:
+    inline-size var(--dur-morph) var(--spring),
+    block-size var(--dur-morph) var(--spring);
 }
 
-.nx__art--lg {
-  inline-size: 88px;
-  block-size: 88px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px oklch(0 0 0 / 0.45);
+.notch-shell::before {
+  inset-inline-end: 100%;
+  -webkit-mask-image: radial-gradient(circle at 0 100%, transparent calc(var(--ear) - 0.5px), black var(--ear));
+  mask-image: radial-gradient(circle at 0 100%, transparent calc(var(--ear) - 0.5px), black var(--ear));
 }
 
-.nx__leadmeta { min-inline-size: 0; display: grid; gap: 10px; }
-.nx__leadmeta .nx__title { font-size: var(--text-15); }
+.notch-shell::after {
+  inset-inline-start: 100%;
+  -webkit-mask-image: radial-gradient(circle at 100% 100%, transparent calc(var(--ear) - 0.5px), black var(--ear));
+  mask-image: radial-gradient(circle at 100% 100%, transparent calc(var(--ear) - 0.5px), black var(--ear));
+}
 
-.nx__scrub {
+.notch-shell[data-act="widgets"] { --ear: calc(19 * var(--u)); }
+
+/* open, the body is the hardware's own black; only the glow tints it */
+.notch[data-act="widgets"] {
+  inline-size: calc((var(--nb-w) - 38) * var(--u));
+  block-size: calc(230 * var(--u));
+  min-block-size: 0;
+  border-end-start-radius: calc(34 * var(--u));
+  border-end-end-radius: calc(34 * var(--u));
+  background: var(--color-hardware);
+}
+
+.notch[data-act="widgets"] .notch__inner { block-size: 100%; padding: 0; }
+
+.nb {
+  block-size: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 calc(12 * var(--u)) calc(12 * var(--u));
+}
+
+/* Where the ratio can be computed, lay the bar out at one point per
+   pixel and scale the picture, so text wraps exactly as it does in the
+   app at any size. Elsewhere the lengths themselves shrink, above. */
+@supports (transform: scale(tan(atan2(1px, 1px)))) {
+  .nb {
+    --u: 1px;
+    inline-size: calc((var(--nb-w) - 38) * 1px);
+    block-size: 230px;
+    transform: scale(tan(atan2(var(--nb-u), 1px)));
+    transform-origin: 0 0;
+  }
+}
+
+/* the header row: tabs on the reading edge, tools on the far one */
+.nb__head {
+  flex: none;
+  block-size: calc(32 * var(--u));
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: var(--text-12);
+  justify-content: space-between;
+}
+
+.nb__tabs { display: flex; gap: calc(2 * var(--u)); padding: calc(3 * var(--u)); }
+
+.nb__tab {
+  inline-size: calc(36 * var(--u));
+  block-size: calc(26 * var(--u));
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
   color: var(--color-text-tertiary);
 }
 
-.nx__scrub .nx__track { block-size: 5px; }
-.nx__scrub .nx__fill { inline-size: 36%; background: oklch(0.86 0.11 20); }
+.nb__tab[data-on="true"] {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+  box-shadow: inset 0 0 0 1px var(--notch-fill-2);
+}
 
-.nx__transport { display: flex; align-items: center; gap: 6px; }
+.nb__tools {
+  display: flex;
+  gap: calc(6 * var(--u));
+  padding-inline-end: calc(2 * var(--u));
+  color: var(--color-text-secondary);
+}
 
-.nx__tbtn {
-  inline-size: 34px;
-  block-size: 34px;
+.nb__tool {
+  inline-size: calc(28 * var(--u));
+  block-size: calc(28 * var(--u));
+  display: grid;
+  place-items: center;
+}
+
+/* the widget grid: square cells, two rows deep */
+.nb__grid {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(var(--nb-cols), calc(80 * var(--u)));
+  grid-auto-rows: calc(80 * var(--u));
+  gap: calc(8 * var(--u));
+  justify-content: center;
+  padding-block-start: calc(4 * var(--u));
+}
+
+.nb__dots {
+  flex: none;
+  block-size: calc(10 * var(--u));
+  margin-block-start: calc(4 * var(--u));
+  display: flex;
+  justify-content: center;
+  gap: calc(2 * var(--u));
+}
+
+.nb__dots i {
+  inline-size: calc(12 * var(--u));
+  display: grid;
+  place-items: center;
+}
+
+.nb__dots i::before {
+  content: "";
+  inline-size: calc(4 * var(--u));
+  block-size: calc(4 * var(--u));
+  border-radius: var(--radius-full);
+  background: var(--notch-track);
+}
+
+.nb__dots i[data-on="true"]::before {
+  inline-size: calc(6 * var(--u));
+  block-size: calc(6 * var(--u));
+  background: var(--color-text);
+}
+
+/* --- widget tiles --------------------------------------------------
+   One surface for every family: small 1×1, medium 2×1, large 2×2 on
+   an 80pt cell with an 8pt gutter. */
+
+.wg {
+  /* the sample calendars' own colours */
+  --wg-tint-a: var(--color-positive);
+  --wg-tint-b: oklch(0.76 0.16 60);
+  --wg-tint-c: oklch(0.65 0.25 320);
+  position: relative;
+  display: flex;
+  inline-size: calc(80 * var(--u));
+  block-size: calc(80 * var(--u));
+  padding: calc(9 * var(--u));
+  border-radius: calc(18 * var(--u));
+  background: var(--notch-fill-2);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: calc(10 * var(--u));
+  line-height: 1.25;
+  text-align: start;
+  overflow: hidden;
+}
+
+.wg[data-size="m"],
+.wg[data-size="l"] {
+  inline-size: calc(168 * var(--u));
+  grid-column: span 2;
+}
+
+.wg[data-size="l"] {
+  block-size: calc(168 * var(--u));
+  padding: calc(12 * var(--u));
+  grid-row: span 2;
+}
+
+/* the glass edge: a top specular that fades out down the rim */
+.wg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(180deg, oklch(1 0 0 / 0.14), oklch(1 0 0 / 0.03));
+  -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(black 0 0) content-box exclude, linear-gradient(black 0 0);
+  pointer-events: none;
+}
+
+/* stacks: a column leads from the reading edge, a row centres */
+.wg-v,
+.wg-h {
+  display: flex;
+  gap: calc(var(--g) * var(--u));
+  min-inline-size: 0;
+  min-block-size: 0;
+}
+
+.wg-v { flex-direction: column; align-items: flex-start; }
+.wg-h { align-items: center; }
+.wg-h--top { align-items: flex-start; }
+.wg-h--base { align-items: baseline; }
+.wg-v > * { max-inline-size: 100%; }
+.wg-v > .wg-h { align-self: stretch; }
+.wg-v > .wg-h.wg-fit { align-self: flex-start; }
+.wg-tight > * + * { margin-block-start: calc(-2 * var(--u)); }
+
+.wg-sp { flex: 1 1 0; min-inline-size: 0; min-block-size: 0; }
+.wg-fill { flex: 1 1 0; align-self: stretch; }
+.wg-grow { flex: 1 1 0; }
+.wg-tall,
+.wg-wide { align-self: stretch; }
+.wg-nudge { margin-inline-start: calc(-5 * var(--u)); }
+.wg-pad-top { align-self: stretch; padding-block-start: calc(4 * var(--u)); }
+
+.wg-corner {
+  position: absolute;
+  inset-block-start: calc(5 * var(--u));
+  inset-inline-end: calc(5 * var(--u));
+}
+
+.wg-t {
+  display: block;
+  max-inline-size: 100%;
+  font-size: calc(var(--s) * var(--u));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wg-v > .wg-t { flex: none; }
+
+.wg-t--label {
+  font-weight: 600;
+  background: var(--brand-gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.wg-t--cap { font-weight: 500; color: var(--color-text-tertiary); }
+
+.wg-t--num {
+  flex: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.16;
+}
+
+.wg-t--md { font-weight: 500; }
+.wg-t--sb { font-weight: 600; }
+.wg-t--bold { font-weight: 700; }
+.wg-t--mono { font-family: var(--font-mono); }
+.wg-t--2 { color: var(--color-text-secondary); }
+.wg-t--3 { color: var(--color-text-tertiary); }
+.wg-t--critical { color: var(--color-critical); }
+
+.wg-t--lines2,
+.wg-t--lines3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+}
+
+.wg-t--lines3 { -webkit-line-clamp: 3; }
+.wg-h > .wg-t--lines2 { flex: 1 1 0; }
+
+.wg-g {
+  display: block;
+  flex: none;
+  inline-size: calc(var(--s) * var(--u));
+  block-size: calc(var(--s) * var(--u));
+}
+
+.wg-g--2 { color: var(--color-text-secondary); }
+.wg-g--3 { color: var(--color-text-tertiary); }
+.wg-g--positive { color: var(--color-positive); }
+.wg-g--critical { color: var(--color-critical); }
+
+/* gauges */
+.wg-ring {
+  position: relative;
+  display: block;
+  flex: none;
+  inline-size: calc(var(--d) * var(--u));
+  block-size: calc(var(--d) * var(--u));
+}
+
+.wg-ring > svg { display: block; inline-size: 100%; block-size: 100%; }
+.wg-ring__center { position: absolute; inset: 0; display: grid; place-items: center; }
+
+.wg-bar {
+  display: block;
+  align-self: stretch;
+  flex: none;
+  block-size: calc(var(--d) * var(--u));
+  border-radius: var(--radius-full);
+  background: var(--notch-track);
+  overflow: hidden;
+}
+
+.wg-bar i {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--brand-mint), var(--brand-blue));
+}
+
+/* controls */
+.wg-cbtn {
+  flex: none;
+  inline-size: calc(var(--d) * var(--u));
+  block-size: calc(var(--d) * var(--u));
   display: grid;
   place-items: center;
   border-radius: var(--radius-full);
 }
 
-.nx__tbtn--main {
-  inline-size: 44px;
-  block-size: 44px;
-  background: var(--color-ice);
+.wg-cbtn[data-filled="true"] {
+  background: var(--color-primary-fill);
+  color: var(--color-primary-ink);
+  box-shadow: 0 calc(3 * var(--u)) calc(6 * var(--u)) oklch(0 0 0 / 0.3);
+}
+
+.wg-rec {
+  flex: none;
+  inline-size: calc(30 * var(--u));
+  block-size: calc(30 * var(--u));
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-critical);
+  color: var(--color-accent-contrast);
+}
+
+.wg-actions {
+  flex: none;
+  align-self: stretch;
+  block-size: calc(var(--d) * var(--u));
+  display: flex;
+  gap: calc(6 * var(--u));
+}
+
+.wg-actions i {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(4 * var(--u));
+  border-radius: var(--radius-full);
+  background: var(--notch-track);
+  font-size: calc(11 * var(--u));
+  font-style: normal;
+  font-weight: 600;
+}
+
+.wg-actions i[data-kind="stop"] {
+  background: var(--color-critical);
+  color: var(--color-accent-contrast);
+}
+
+/* marks */
+.wg-art {
+  flex: none;
+  inline-size: calc(var(--d) * var(--u));
+  block-size: calc(var(--d) * var(--u));
+  border-radius: calc(var(--r) * var(--u));
+  background: var(--notch-art);
+}
+
+.wg-badge {
+  flex: none;
+  inline-size: calc(var(--d) * var(--u));
+  block-size: calc(var(--d) * var(--u));
+  display: grid;
+  place-items: center;
+  border-radius: calc(var(--d) * 0.3 * var(--u));
+  background: var(--brand-gradient);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.4);
+  color: var(--color-accent-contrast);
+}
+
+.wg-badge--round { border-radius: var(--radius-full); box-shadow: none; }
+
+.wg-check {
+  flex: none;
+  inline-size: calc(var(--d) * var(--u));
+  block-size: calc(var(--d) * var(--u));
+  border: calc(1.5 * var(--u)) solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+}
+
+.wg-event {
+  flex: none;
+  inline-size: calc(3 * var(--u));
+  block-size: calc(24 * var(--u));
+  border-radius: calc(1.5 * var(--u));
+}
+
+.wg-dot {
+  flex: none;
+  inline-size: calc(5 * var(--u));
+  block-size: calc(5 * var(--u));
+  border-radius: var(--radius-full);
+}
+
+.wg-dot--live {
+  inline-size: calc(6 * var(--u));
+  block-size: calc(6 * var(--u));
+  background: var(--color-positive);
+}
+
+[data-tint="a"] { background: var(--wg-tint-a); }
+[data-tint="b"] { background: var(--wg-tint-b); }
+[data-tint="c"] { background: var(--wg-tint-c); }
+
+.wg-wave {
+  flex: none;
+  block-size: calc(var(--d) * var(--u));
+  display: flex;
+  align-items: center;
+  gap: calc(2 * var(--u));
+}
+
+.wg-wave i {
+  inline-size: calc(2 * var(--u));
+  min-block-size: calc(3 * var(--u));
+  border-radius: var(--radius-full);
+  background: var(--brand-gradient);
+}
+
+.wg-stats { flex: none; align-self: stretch; display: flex; }
+
+.wg-stats > span {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* clipboard: filter pills over the entries */
+.wg-pills {
+  flex: none;
+  align-self: stretch;
+  block-size: calc(16 * var(--u));
+  display: flex;
+  gap: calc(4 * var(--u));
+  overflow: hidden;
+}
+
+.wg-pills i {
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding-inline: calc(6 * var(--u));
+  border-radius: var(--radius-full);
+  background: var(--notch-track);
+  font-size: calc(9 * var(--u));
+  font-style: normal;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.wg-pills i[data-on="true"] {
+  background: var(--color-primary-fill);
   color: var(--color-primary-ink);
 }
 
-.nx__side { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-.nx__big {
-  display: block;
-  margin-block-start: 8px;
-  font-family: var(--font-display);
-  font-size: 1.625rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+.wg-clips {
+  flex: 1 1 0;
+  align-self: stretch;
+  min-block-size: 0;
+  display: flex;
+  gap: calc(5 * var(--u));
+  overflow: hidden;
 }
 
-.nx__tile--wide {
-  grid-column: span 2;
+.wg-clips--one { flex: none; block-size: calc(34 * var(--u)); }
+.wg-clips--one .wg-clip { flex: 1 1 0; }
+.wg-clips--row .wg-clip { flex: none; inline-size: calc(52 * var(--u)); }
+
+.wg-clips--grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: calc(6 * var(--u));
+}
+
+.wg-clip {
+  position: relative;
+  min-inline-size: 0;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(2 * var(--u));
+  padding: calc(5 * var(--u));
+  border-radius: calc(8 * var(--u));
+  background: var(--notch-fill-2);
+  overflow: hidden;
+}
+
+.wg-clip__age {
+  position: absolute;
+  inset-block-end: calc(3 * var(--u));
+  inset-inline-end: calc(3 * var(--u));
+  font-size: calc(7 * var(--u));
+  color: var(--color-text-tertiary);
 }
 
 /* --- act ticks --------------------------------------------------- */
@@ -915,7 +1391,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
    never meet */
 @media (max-height: 820px) {
   .stage__pin { padding-block-start: 88px; }
-  .stage__frame { block-size: 292px; }
+  .stage { --stage-h: 292px; }
   .stage__ticks { margin-block-start: 18px; }
   .act__title { font-size: clamp(var(--text-24), 4vw, var(--text-40)); }
 }
@@ -928,10 +1404,45 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   /* widths are fluid here, so the height follows the content instead */
   .notch { block-size: auto; min-block-size: var(--notch-h, 34px); }
   .stage__ticks { display: none; }
-  .nx--surface { grid-template-columns: 1fr; }
-  .nx__lead { grid-template-columns: 56px minmax(0, 1fr); }
-  .nx__art--lg { inline-size: 56px; block-size: 56px; border-radius: 14px; }
-  .nx__scrub, .nx__transport, .nx__tile--wide { display: none; }
+  /* the open notch keeps its proportions and shows a four-column page */
+  .stage__screen { --nb-w: 414; --nb-cols: 4; }
+  .nb__grid .wg[data-extra="true"] { display: none; }
+  /* a narrow display is only as deep as its open notch needs, which
+     leaves the caption the rest of a short phone screen */
+  .stage {
+    --stage-h: min(292px, 114px + (var(--stage-w) - 48px) * 230 / 414);
+  }
+}
+
+@media (max-width: 640px) and (max-height: 620px) {
+  .act { padding-block-end: 36px; }
+  .act__body { margin-block-start: 12px; font-size: var(--text-15); }
+}
+
+/* a phone on its side has no room to stack the two, so the display
+   takes the reading edge and the captions scroll past beside it */
+@media (orientation: landscape) and (max-height: 540px) and (min-width: 560px) {
+  .stage {
+    --stage-w: calc((100vw - 2 * var(--gutter)) * 0.56);
+    --stage-h: min(330px, 100svh - 96px);
+  }
+  .stage__pin { align-items: flex-start; }
+  .stage__frame { inline-size: var(--stage-w); }
+  .stage__screen { --nb-w: 414; --nb-cols: 4; }
+  .nb__grid .wg[data-extra="true"] { display: none; }
+  .notch { block-size: auto; min-block-size: var(--notch-h, 34px); }
+
+  .act {
+    align-items: center;
+    justify-content: flex-end;
+    padding-block: 88px 0;
+  }
+  .act__copy {
+    inline-size: calc((100vw - 2 * var(--gutter)) * 0.44 - 28px);
+    text-align: start;
+  }
+  .act__step { margin-block-end: 10px; }
+  .act__body { margin: 12px 0 0; font-size: var(--text-15); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -961,9 +1472,17 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 
 .nav[data-condensed="true"] { padding-block: 12px; }
 
-.nav__island {
+/* the bar is the island's width, so the menu below can match it */
+.nav__bar {
+  position: relative;
   inline-size: 100%;
   max-inline-size: 1000px;
+  transition: max-inline-size var(--dur-page) var(--spring);
+}
+
+.nav[data-condensed="true"] .nav__bar { max-inline-size: 880px; }
+
+.nav__island {
   min-block-size: 58px;
   display: flex;
   align-items: center;
@@ -975,10 +1494,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
   box-shadow: var(--elevation-3), var(--glass-ring);
-  transition: max-inline-size var(--dur-page) var(--spring);
 }
-
-.nav[data-condensed="true"] .nav__island { max-inline-size: 880px; }
 
 .nav__brand {
   display: inline-flex;
@@ -1027,10 +1543,120 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 .nav__cta { flex: none; }
 .nav__cta .btn { min-block-size: 38px; padding-inline: 18px; font-size: var(--text-14); }
 
+/* --- the menu: where the links go when the island can't hold them --- */
+
+.nav__toggle {
+  display: none;
+  flex: none;
+  inline-size: 44px;
+  block-size: 44px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease);
+}
+
+.nav__toggle[aria-expanded="true"] { background: var(--color-surface-raised); }
+
+/* two bars that cross into a close mark */
+.nav__bars {
+  position: relative;
+  inline-size: 18px;
+  block-size: 9px;
+}
+
+.nav__bars::before,
+.nav__bars::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  block-size: 1.5px;
+  border-radius: var(--radius-full);
+  background: currentColor;
+  transition: transform var(--dur-transition) var(--spring);
+}
+
+.nav__bars::before { inset-block-start: 0; }
+.nav__bars::after { inset-block-end: 0; }
+
+.nav__toggle[aria-expanded="true"] .nav__bars::before { transform: translateY(3.75px) rotate(45deg); }
+.nav__toggle[aria-expanded="true"] .nav__bars::after { transform: translateY(-3.75px) rotate(-45deg); }
+
+.nav__menu {
+  position: absolute;
+  inset-block-start: calc(100% + 10px);
+  inset-inline: 0;
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  display: grid;
+  gap: 2px;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-overlay);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--elevation-3), var(--glass-ring);
+  transform-origin: 50% 0;
+  animation: menu-in var(--dur-transition) var(--spring) both;
+}
+
+.nav__menu[hidden] { display: none; }
+
+@keyframes menu-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+.nav__menu a {
+  display: flex;
+  align-items: center;
+  min-block-size: 48px;
+  padding-inline: 16px;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-16);
+  font-weight: 500;
+  transition: background-color var(--dur-micro) var(--ease);
+}
+
+.nav__menu a:hover,
+.nav__menu a:active { background: var(--color-surface); }
+
 @media (max-width: 860px) {
   .nav__links { display: none; }
-  .nav__island { justify-content: space-between; }
   .nav__cta { margin-inline-start: auto; }
+  .nav__toggle { display: grid; }
+  .nav__island { gap: 8px; padding-inline: 18px 7px; }
+  /* already tight; holding still also keeps anchor jumps exact */
+  .nav,
+  .nav[data-condensed="true"] { padding-block: 12px; }
+}
+
+@media (min-width: 861px) {
+  .nav__menu { display: none; }
+}
+
+/* on a tablet the menu is a popover under its button, not a full sheet */
+@media (min-width: 561px) {
+  .nav__menu {
+    inset-inline-start: auto;
+    inline-size: 300px;
+    transform-origin: 100% 0;
+  }
+}
+
+/* fingers: every control in the island is a full 44pt target */
+@media (pointer: coarse) {
+  .nav__brand,
+  .nav__links a,
+  .nav__cta .btn { min-block-size: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__menu { animation: none; }
 }
 
 /* ============================================================
@@ -1135,13 +1761,24 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 .grid--3 { grid-template-columns: repeat(3, 1fr); }
 .grid--4 { grid-template-columns: repeat(4, 1fr); gap: 16px; }
 
+/* a tablet held upright keeps three widgets to a row; a phone keeps two,
+   since a tile is only an icon, a name and a line */
 @media (max-width: 900px) {
   .grid--3 { grid-template-columns: repeat(2, 1fr); }
-  .grid--4 { grid-template-columns: repeat(2, 1fr); }
+  .grid--4 { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .grid--4 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
 
 @media (max-width: 560px) {
-  .grid--3, .grid--4 { grid-template-columns: 1fr; }
+  .grid { margin-block-start: 40px; }
+  .grid--3 { grid-template-columns: 1fr; gap: 14px; }
+}
+
+@media (max-width: 340px) {
+  .grid--4 { grid-template-columns: 1fr; }
 }
 
 .grid > * { block-size: 100%; }
@@ -1335,6 +1972,11 @@ kbd {
 }
 
 .tablist li:hover { background: var(--color-surface); }
+
+/* stacked under its heading on a tablet, the list has room for two columns */
+@media (min-width: 641px) and (max-width: 900px) {
+  .tablist { grid-template-columns: 1fr 1fr; }
+}
 
 .tablist__name { font-size: var(--text-15); font-weight: 600; line-height: 1.4; }
 .tablist__body { font-size: var(--text-13); color: var(--color-text-tertiary); line-height: 1.4; }
@@ -1679,7 +2321,8 @@ kbd {
   align-items: start;
 }
 
-@media (max-width: 760px) {
+/* stacked through a tablet held upright, so no link has to wrap */
+@media (max-width: 900px) {
   .footer__inner { grid-template-columns: 1fr; }
 }
 
@@ -1695,9 +2338,14 @@ kbd {
   gap: 28px;
 }
 
+/* two columns on a phone; the address takes a row of its own, since it
+   is wider than either */
 @media (max-width: 560px) {
   .footer__cols { grid-template-columns: 1fr 1fr; }
+  .footer__cols > :last-child { grid-column: 1 / -1; }
 }
+
+.footer__cols svg { flex: none; }
 
 .footer__cols h2 {
   font-family: var(--font-ui);
@@ -2122,3 +2770,51 @@ select.field__input { appearance: none; cursor: pointer; }
 .table td { color: var(--color-text-secondary); }
 .table tbody tr:last-child th,
 .table tbody tr:last-child td { border-block-end: 0; }
+
+/* ============================================================
+   Phones and iPads
+   ============================================================ */
+
+/* a step down the scale for running copy, and closer-set surfaces */
+@media (max-width: 560px) {
+  .section-lede,
+  .hero__lede { font-size: var(--text-17); line-height: 1.5; }
+
+  .card { padding: 24px; }
+  .tile { padding: 16px; }
+  .faq__item summary { padding: 18px 20px; }
+  .faq__item p { padding: 0 20px 20px; }
+}
+
+/* Fingers: every link that stands alone is a 44pt target. Links inside a
+   sentence keep the line's height. */
+@media (pointer: coarse) {
+  .textlink,
+  .footer__cols a,
+  .page-head__mail a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 44px;
+  }
+
+  .footer__cols ul { gap: 0; }
+  .footer__cols h2 { margin-block-end: 4px; }
+  .page-head__mail { padding-block: 0; }
+  .panel__link { margin-block-start: 18px; }
+
+  /* iOS zooms the page into any field set smaller than 16px */
+  .field__input { font-size: var(--text-16); }
+}
+
+/* Nothing hovers under a finger, and a hover that arrives with a tap
+   stays until the next one — so lifts and swells are left to :active. */
+@media (hover: none) {
+  .card:hover,
+  .tile:hover,
+  .plan:hover { transform: none; }
+
+  .card:hover,
+  .tile:hover { background: var(--color-surface); }
+
+  .btn:hover:not(:active) { scale: none; }
+}
