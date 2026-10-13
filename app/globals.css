@@ -70,6 +70,8 @@
   );
   --notch-tint: oklch(0.65 0.12 240);
   --notch-tint-warm: oklch(0.70 0.19 20);
+  --notch-art-ink: oklch(0.86 0.11 20); /* text and spectrum, from the artwork */
+  --hud-accent: oklch(0.75 0.17 45); /* the Sunset HUD theme */
   --notch-art:
     radial-gradient(120% 120% at 20% 15%, oklch(0.72 0.19 24), transparent 60%),
     linear-gradient(140deg, oklch(0.55 0.20 300), oklch(0.42 0.16 250));
@@ -521,9 +523,16 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
    ============================================================ */
 
 .stage {
-  --stage-h: 330px;
+  --stage-h: 344px;
   /* the display's width: the window, less its gutters */
   --stage-w: calc(100vw - 2 * var(--gutter));
+  /* the hardware notch, and the wing a track's title or artist gets
+     either side of it, in app points */
+  --hw: 200;
+  --wm: 134;
+  /* one app point for the closed notch: 1px, unless the widest live
+     activity (Now Playing) wouldn't fit the display */
+  --cu: min(1px, (var(--stage-w) - 48px) / (var(--hw) + 2 * var(--wm) + 88));
   position: relative;
   margin-block-start: 90px;
   padding-block-end: clamp(40px, 8vw, 96px);
@@ -572,27 +581,69 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 .stage__menubar {
   position: absolute;
   inset: 0 0 auto;
-  block-size: 34px;
+  block-size: calc(34 * var(--cu));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 18px;
   background: oklch(0 0 0 / 0.25);
+  color: var(--color-text);
+  font-size: var(--text-13);
+  white-space: nowrap;
 }
 
-/* Black where it meets the bezel, melting into tinted glass toward the
-   bottom. Size springs; the corner radius follows the height. */
-.notch {
+.stage__menus,
+.stage__status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stage__menus b { font-weight: 600; }
+
+.stage__cell {
   position: relative;
-  inline-size: var(--notch-w, 200px);
-  max-inline-size: calc(100% - 24px);
-  block-size: var(--notch-h, 34px);
+  inline-size: 23px;
+  block-size: 11px;
+  padding: 2px;
+  border-radius: 3.5px;
+  box-shadow: inset 0 0 0 1px var(--color-text-tertiary);
+}
+
+.stage__cell::before {
+  content: "";
+  display: block;
+  inline-size: 78%;
+  block-size: 100%;
+  border-radius: 1.5px;
+  background: var(--color-text);
+}
+
+.stage__cell::after {
+  content: "";
+  position: absolute;
+  inset-block: 3.5px;
+  inset-inline-start: calc(100% + 1px);
+  inline-size: 2px;
+  border-start-end-radius: 1px;
+  border-end-end-radius: 1px;
+  background: var(--color-text-tertiary);
+}
+
+/* Black, like the hardware it grows out of. A live activity only ever
+   widens it; opening it is the one thing that makes it taller. --w is
+   the body's width in app points. */
+.notch {
+  --u: var(--cu);
+  position: relative;
+  inline-size: calc(var(--w, var(--hw)) * var(--u));
+  max-inline-size: 100%;
+  block-size: calc(34 * var(--u));
   overflow: hidden;
-  border-end-start-radius: var(--notch-r, 14px);
-  border-end-end-radius: var(--notch-r, 14px);
-  background: var(--notch-body);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  box-shadow:
-    inset 0 -1px 0 oklch(1 0 0 / 0.14),
-    inset 0 0 0 1px oklch(1 0 0 / 0.05),
-    var(--elevation-4);
+  border-end-start-radius: calc(14 * var(--u));
+  border-end-end-radius: calc(14 * var(--u));
+  background: var(--color-hardware);
+  box-shadow: var(--elevation-4);
   color: var(--color-text);
   line-height: 1.4;
   transition:
@@ -601,174 +652,246 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
     border-radius var(--dur-morph) var(--spring);
 }
 
-/* a context glow rising from the lower rim: album colour, charge green */
+.notch[data-act="music"] { --w: calc(var(--hw) + 2 * var(--wm) + 76); }
+.notch[data-act="hud"] { --w: calc(var(--hw) + 212); }
+.notch[data-act="battery"] { --w: calc(var(--hw) + 194); }
+.notch[data-act="download"],
+.notch[data-act="call"] { --w: calc(var(--hw) + 70); }
+
+/* closed, a specular along the lower edge; open, a rim that fades out
+   toward the menu bar */
+.notch::before,
+.notch::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  transition: opacity var(--dur-transition) var(--ease);
+}
+
+.notch::after {
+  inset: auto calc(14 * var(--u)) 0;
+  block-size: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(1 0 0 / 0.14) 20% 80%,
+    transparent
+  );
+}
+
+.notch::before {
+  inset: 0;
+  z-index: 1;
+  border: 1.5px solid oklch(1 0 0 / 0.14);
+  border-block-start: 0;
+  border-radius: inherit;
+  -webkit-mask-image: linear-gradient(180deg, transparent 22%, black 60%);
+  mask-image: linear-gradient(180deg, transparent 22%, black 60%);
+  opacity: 0;
+}
+
+.notch[data-open="true"]::before { opacity: 1; }
+.notch[data-open="true"]::after { opacity: 0; }
+
+/* open, an ambient glow rises from the lower rim; the header band stays
+   pure black so it reads as part of the hardware */
 .notch__glow {
   position: absolute;
-  inset: auto -20% -40% -20%;
-  block-size: 90%;
-  background: radial-gradient(
-    60% 70% at 50% 100%,
-    color-mix(in oklch, var(--tint, var(--notch-tint)) 55%, transparent),
-    transparent 70%
-  );
+  inset: 0;
+  background:
+    radial-gradient(
+      circle calc(360 * var(--u)) at 100% 100%,
+      color-mix(in oklch, var(--notch-tint) 22%, transparent),
+      transparent
+    ),
+    linear-gradient(
+      180deg,
+      transparent 35%,
+      color-mix(in oklch, var(--notch-tint) 16%, transparent)
+    );
+  -webkit-mask-image: linear-gradient(180deg, transparent 22%, black 60%);
+  mask-image: linear-gradient(180deg, transparent 22%, black 60%);
+  opacity: 0;
   pointer-events: none;
   transition: opacity 600ms var(--ease);
 }
 
-.notch[data-act="idle"] .notch__glow { opacity: 0; }
-.notch[data-act="music"],
-.notch[data-act="widgets"] { --tint: var(--notch-tint-warm); }
-.notch[data-act="battery"] { --tint: var(--color-positive); }
+.notch[data-open="true"] .notch__glow { opacity: 1; }
 
 .notch__inner {
   position: relative;
-  padding: 10px 16px 12px;
+  block-size: 100%;
   /* content never pops: it blurs in as the hardware reshapes */
   animation: flow-in 420ms var(--ease) both;
 }
-
-.notch[data-act="idle"] .notch__inner { padding: 0; }
 
 @keyframes flow-in {
   from { opacity: 0; filter: blur(6px); transform: translateY(-4px) scale(0.98); }
   to   { opacity: 1; filter: none; transform: none; }
 }
 
-/* --- act content ------------------------------------------------ */
+/* --- live activities: the closed notch, widened --------------------
+   Laid out in app points, like everything in the notch. What an
+   activity has to say sits either side of the hardware (la__gap) and
+   never under it. */
 
-.nx {
+.la {
+  block-size: 100%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-block-size: 34px;
-  font-size: var(--text-13);
-}
-
-.nx__art {
-  inline-size: 42px;
-  block-size: 42px;
-  border-radius: 12px;
-  flex: none;
-  background: var(--notch-art);
-  box-shadow: 0 4px 14px oklch(0 0 0 / 0.4);
-}
-
-.nx__meta { display: grid; gap: 2px; min-inline-size: 0; flex: 1; }
-
-.nx__title {
-  font-size: var(--text-13);
-  font-weight: 600;
+  justify-content: center;
+  gap: calc(8 * var(--u));
+  font-size: calc(11 * var(--u));
+  line-height: 1.2;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.nx__sub {
-  font-size: var(--text-12);
+.la__mid { flex: none; display: flex; align-items: center; }
+
+.la__gap { flex: none; inline-size: calc(var(--hw) * var(--u)); }
+.la--hud .la__gap { inline-size: calc((var(--hw) - 20) * var(--u)); }
+.la--battery .la__gap { inline-size: calc((var(--hw) + 10) * var(--u)); }
+
+/* what a download or a call names sits across the hardware's width */
+.la__file {
+  inline-size: calc((var(--hw) - 6) * var(--u));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(4 * var(--u));
+  font-size: calc(10 * var(--u));
   color: var(--color-text-tertiary);
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.nx__bars { display: flex; align-items: flex-end; gap: 3px; block-size: 20px; flex: none; }
+.la--call .la__file { color: var(--color-text-secondary); }
 
-.nx__bars i {
-  inline-size: 3.5px;
+.la__wing {
+  flex: none;
+  inline-size: calc(var(--wing, 100) * var(--u));
+  min-inline-size: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(5 * var(--u));
+  overflow: hidden;
+}
+
+.la__wing--end { justify-content: flex-end; }
+.la--music .la__wing { --wing: var(--wm); font-size: calc(12 * var(--u)); }
+.la--battery .la__wing { --wing: 84; }
+
+.la__clip { overflow: hidden; text-overflow: ellipsis; }
+.la__tinted { color: var(--notch-art-ink); }
+.la__name { font-weight: 500; }
+
+.la__sq {
+  flex: none;
+  inline-size: calc(22 * var(--u));
+  block-size: calc(22 * var(--u));
+  display: grid;
+  place-items: center;
+}
+
+.la__art { border-radius: calc(4 * var(--u)); background: var(--notch-art); }
+
+.la__app {
+  border-radius: calc(5 * var(--u));
+  background: var(--brand-gradient);
+  color: var(--color-accent-contrast);
+}
+
+.la__bars { display: flex; gap: calc(2 * var(--u)); }
+
+.la__bars i {
+  inline-size: calc(2.5 * var(--u));
+  block-size: calc(12 * var(--u));
   border-radius: var(--radius-full);
-  background: oklch(0.86 0.11 20);
+  background: var(--notch-art-ink);
   animation: eq 900ms var(--ease) infinite alternate;
 }
 
 @keyframes eq {
-  from { block-size: 5px; opacity: 0.7; }
-  to   { block-size: 20px; opacity: 1; }
+  from { scale: 1 0.35; opacity: 0.7; }
+  to   { scale: 1 1; opacity: 1; }
 }
 
-.nx__track {
-  flex: 1;
-  block-size: 6px;
+.la--hud .la__wing--end {
+  gap: calc(8 * var(--u));
+  padding-inline-end: calc(4 * var(--u));
+}
+
+.la__track {
+  flex: 1 1 0;
+  block-size: calc(5 * var(--u));
   border-radius: var(--radius-full);
   background: var(--notch-track);
   overflow: hidden;
 }
 
-.nx__fill {
+.la__track i {
+  display: block;
   block-size: 100%;
-  border-radius: var(--radius-full);
-  background: var(--color-ice);
+  border-radius: inherit;
+  background: var(--hud-accent);
 }
 
-.nx--battery .nx__fill { background: var(--color-positive); }
-.nx--download .nx__fill { background: var(--brand-gradient); }
-.nx--download .nx__meta { gap: 6px; }
-
-.nx__num { font-size: var(--text-13); font-weight: 600; flex: none; }
-
-.nx__bolt { color: var(--color-positive); flex: none; }
-
-.nx__dot {
-  inline-size: 7px;
-  block-size: 7px;
-  flex: none;
-  border-radius: var(--radius-full);
-  background: var(--color-critical);
-  animation: pulse 1.6s var(--ease) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
-}
-
-.nx__controls { display: flex; gap: 8px; margin-inline-start: auto; flex: none; }
-
-.nx__ctl {
-  inline-size: 30px;
-  block-size: 30px;
-  display: grid;
-  place-items: center;
-  border-radius: var(--radius-full);
-  background: var(--notch-fill-4);
-  color: var(--color-text);
-}
-
-.nx__ctl--danger { background: var(--color-critical); }
-.nx__ctl--leave { background: var(--color-leave); }
-
-.nx--shelf { display: grid; align-items: stretch; gap: 8px; }
-
-.nx__head { display: flex; align-items: center; gap: 8px; }
-.nx__head .nx__sub { margin-inline-start: auto; }
-
-.nx__chips { display: flex; gap: 8px; }
-
-.nx__chip {
-  flex: 1;
-  min-inline-size: 0;
-  padding: 9px 12px;
-  border-radius: 12px;
-  background: var(--notch-fill-3);
-  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.08);
-  font-size: var(--text-12);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.nx__chip--drop {
-  flex: none;
-  background: transparent;
-  box-shadow: none;
-  border: 1px dashed oklch(1 0 0 / 0.3);
+.la__pct {
+  font-size: calc(10 * var(--u));
+  font-weight: 500;
   color: var(--color-text-tertiary);
 }
+
+/* the battery glyph: an outline, the charge inside it, a bolt on top */
+.la__cell {
+  position: relative;
+  inline-size: calc(27 * var(--u));
+  block-size: calc(13 * var(--u));
+  margin-inline-end: calc(3 * var(--u));
+  padding: calc(2 * var(--u));
+  border-radius: calc(4 * var(--u));
+  box-shadow: inset 0 0 0 calc(1 * var(--u)) var(--color-text-tertiary);
+}
+
+.la__cell::after {
+  content: "";
+  position: absolute;
+  inset-block: calc(4 * var(--u));
+  inset-inline-start: calc(100% + 1 * var(--u));
+  inline-size: calc(2 * var(--u));
+  border-start-end-radius: calc(1 * var(--u));
+  border-end-end-radius: calc(1 * var(--u));
+  background: var(--color-text-tertiary);
+}
+
+.la__cell i {
+  display: block;
+  block-size: 100%;
+  border-radius: calc(2.5 * var(--u));
+  background: var(--color-positive);
+}
+
+.la__cell .wg-g { position: absolute; inset: 0; margin: auto; }
+
+.la__live {
+  border-radius: var(--radius-full);
+  background: color-mix(in oklch, var(--color-positive) 20%, transparent);
+}
+
+.la__live i {
+  inline-size: calc(7 * var(--u));
+  block-size: calc(7 * var(--u));
+  border-radius: var(--radius-full);
+  background: var(--color-positive);
+}
+
+.la__muted { color: var(--color-critical); }
 
 /* --- the open notch ----------------------------------------------
    Drawn at the app's own point sizes. --u is one app point: every
    length below is a multiple of it, so the whole bar scales to the
-   display it sits in instead of reflowing. 640 × 230 is the open notch;
-   narrow screens get a four-column page (--nb-w, --nb-cols). */
+   display it sits in instead of reflowing. 640 × 244 is the open notch,
+   and its two flared corners add 19 either side; narrow screens get a
+   four-column page (--nb-w, --nb-cols). */
 
 .stage__screen {
   --nb-w: 640;
@@ -776,16 +899,15 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   /* one app point at the size this display can afford */
   --nb-u: min(
     1px,
-    (var(--stage-w) - 48px) / var(--nb-w),
-    (var(--stage-h) - 114px) / 230
+    (var(--stage-w) - 48px) / (var(--nb-w) + 38),
+    (var(--stage-h) - 114px) / 244
   );
-  --u: var(--nb-u);
 }
 
 /* The shell carries the two flared corners where the notch meets the
    bezel; the notch itself clips its content and can't draw outside. */
 .notch-shell {
-  --ear: 0px;
+  --ear: calc(6 * var(--cu));
   position: relative;
   flex: none;
   max-inline-size: calc(100% - 24px);
@@ -818,21 +940,19 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   mask-image: radial-gradient(circle at 100% 100%, transparent calc(var(--ear) - 0.5px), black var(--ear));
 }
 
-.notch-shell[data-act="widgets"] { --ear: calc(19 * var(--u)); }
+.notch-shell[data-open="true"] { --ear: calc(19 * var(--nb-u)); }
 
-/* open, the body is the hardware's own black; only the glow tints it */
-.notch[data-act="widgets"] {
-  inline-size: calc((var(--nb-w) - 38) * var(--u));
-  block-size: calc(230 * var(--u));
-  min-block-size: 0;
-  border-end-start-radius: calc(34 * var(--u));
-  border-end-end-radius: calc(34 * var(--u));
-  background: var(--color-hardware);
+.notch[data-open="true"] {
+  --u: var(--nb-u);
+  inline-size: calc(var(--nb-w) * var(--u));
+  block-size: calc(244 * var(--u));
+  border-end-start-radius: calc(26 * var(--u));
+  border-end-end-radius: calc(26 * var(--u));
 }
 
-.notch[data-act="widgets"] .notch__inner { block-size: 100%; padding: 0; }
-
 .nb {
+  /* a widget cell: six of them, and five gutters, across the page */
+  --cell: 88.333;
   block-size: 100%;
   display: flex;
   flex-direction: column;
@@ -845,8 +965,8 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 @supports (transform: scale(tan(atan2(1px, 1px)))) {
   .nb {
     --u: 1px;
-    inline-size: calc((var(--nb-w) - 38) * 1px);
-    block-size: 230px;
+    inline-size: calc(var(--nb-w) * 1px);
+    block-size: 244px;
     transform: scale(tan(atan2(var(--nb-u), 1px)));
     transform-origin: 0 0;
   }
@@ -855,7 +975,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 /* the header row: tabs on the reading edge, tools on the far one */
 .nb__head {
   flex: none;
-  block-size: calc(32 * var(--u));
+  block-size: calc(34 * var(--u));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -892,49 +1012,90 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   place-items: center;
 }
 
+/* whichever tab is showing fills what is left under the header */
+.nb__body {
+  flex: 1 1 0;
+  min-block-size: 0;
+  margin-block-start: calc(8 * var(--u));
+}
+
 /* the widget grid: square cells, two rows deep */
 .nb__grid {
-  flex: none;
   display: grid;
-  grid-template-columns: repeat(var(--nb-cols), calc(80 * var(--u)));
-  grid-auto-rows: calc(80 * var(--u));
+  grid-template-columns: repeat(var(--nb-cols), calc(var(--cell) * var(--u)));
+  grid-auto-rows: calc(var(--cell) * var(--u));
   gap: calc(8 * var(--u));
   justify-content: center;
+  align-content: start;
   padding-block-start: calc(4 * var(--u));
 }
 
-.nb__dots {
-  flex: none;
-  block-size: calc(10 * var(--u));
-  margin-block-start: calc(4 * var(--u));
+/* the shelf: Quick Share's target, then the shelf itself */
+.nb-shelf { display: flex; gap: calc(12 * var(--u)); }
+
+.nb-share,
+.nb-drop {
+  position: relative;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: calc(2 * var(--u));
+  font-family: ui-rounded, var(--font-ui);
+  white-space: nowrap;
 }
 
-.nb__dots i {
-  inline-size: calc(12 * var(--u));
+.nb-share {
+  flex: none;
+  aspect-ratio: 1;
+  gap: calc(5 * var(--u));
+  border-radius: calc(18 * var(--u));
+  background: linear-gradient(135deg, oklch(0 0 0 / 0.35), oklch(0 0 0 / 0.2));
+}
+
+.nb-share__icon {
+  inline-size: calc(55 * var(--u));
+  block-size: calc(55 * var(--u));
   display: grid;
   place-items: center;
-}
-
-.nb__dots i::before {
-  content: "";
-  inline-size: calc(4 * var(--u));
-  block-size: calc(4 * var(--u));
   border-radius: var(--radius-full);
-  background: var(--notch-track);
+  background: var(--notch-fill-3);
+  color: var(--color-text-secondary);
 }
 
-.nb__dots i[data-on="true"]::before {
-  inline-size: calc(6 * var(--u));
-  block-size: calc(6 * var(--u));
-  background: var(--color-text);
+.nb-share__name {
+  font-size: calc(13 * var(--u));
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.nb-drop { flex: 1 1 0; gap: calc(10 * var(--u)); }
+
+.nb-drop__label {
+  font-size: calc(15 * var(--u));
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+}
+
+.nb-dashes {
+  position: absolute;
+  inset: calc(1.5 * var(--u));
+  inline-size: calc(100% - 3 * var(--u));
+  block-size: calc(100% - 3 * var(--u));
+  overflow: visible;
+}
+
+.nb-dashes rect {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: calc(3 * var(--u));
+  stroke-linecap: round;
+  stroke-dasharray: calc(10 * var(--u));
+  rx: calc(18 * var(--u));
 }
 
 /* --- widget tiles --------------------------------------------------
    One surface for every family: small 1×1, medium 2×1, large 2×2 on
-   an 80pt cell with an 8pt gutter. */
+   the page's cell (--cell) with an 8pt gutter. */
 
 .wg {
   /* the sample calendars' own colours */
@@ -943,8 +1104,8 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   --wg-tint-c: oklch(0.65 0.25 320);
   position: relative;
   display: flex;
-  inline-size: calc(80 * var(--u));
-  block-size: calc(80 * var(--u));
+  inline-size: calc(var(--cell, 80) * var(--u));
+  block-size: calc(var(--cell, 80) * var(--u));
   padding: calc(9 * var(--u));
   border-radius: calc(18 * var(--u));
   background: var(--notch-fill-2);
@@ -958,12 +1119,12 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 
 .wg[data-size="m"],
 .wg[data-size="l"] {
-  inline-size: calc(168 * var(--u));
+  inline-size: calc((2 * var(--cell, 80) + 8) * var(--u));
   grid-column: span 2;
 }
 
 .wg[data-size="l"] {
-  block-size: calc(168 * var(--u));
+  block-size: calc((2 * var(--cell, 80) + 8) * var(--u));
   padding: calc(12 * var(--u));
   grid-row: span 2;
 }
@@ -995,6 +1156,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 .wg-h { align-items: center; }
 .wg-h--top { align-items: flex-start; }
 .wg-h--base { align-items: baseline; }
+.wg-h--stretch { align-items: stretch; }
 .wg-v > * { max-inline-size: 100%; }
 .wg-v > .wg-h { align-self: stretch; }
 .wg-v > .wg-h.wg-fit { align-self: flex-start; }
@@ -1007,6 +1169,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 .wg-wide { align-self: stretch; }
 .wg-nudge { margin-inline-start: calc(-5 * var(--u)); }
 .wg-pad-top { align-self: stretch; padding-block-start: calc(4 * var(--u)); }
+.wg-col58 { flex: none; inline-size: calc(58 * var(--u)); }
 
 .wg-corner {
   position: absolute;
@@ -1236,6 +1399,27 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   align-items: center;
 }
 
+/* weather: the next few hours, one column each */
+.wg-hours { flex: 1 1 0; min-inline-size: 0; display: flex; align-items: center; }
+
+.wg-hours > span {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(3 * var(--u));
+}
+
+.wg-refresh {
+  flex: none;
+  inline-size: calc(18 * var(--u));
+  block-size: calc(18 * var(--u));
+  margin: calc(-3 * var(--u)) calc(-4 * var(--u)) 0 0;
+  display: grid;
+  place-items: center;
+}
+
 /* clipboard: filter pills over the entries */
 .wg-pills {
   flex: none;
@@ -1391,7 +1575,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
    never meet */
 @media (max-height: 820px) {
   .stage__pin { padding-block-start: 88px; }
-  .stage { --stage-h: 292px; }
+  .stage { --stage-h: 306px; }
   .stage__ticks { margin-block-start: 18px; }
   .act__title { font-size: clamp(var(--text-24), 4vw, var(--text-40)); }
 }
@@ -1400,17 +1584,24 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   .stage__ticks { display: none; }
 }
 
+/* a display too narrow for menus beside an open notch goes without */
+@media (max-width: 960px) {
+  .stage__menus,
+  .stage__status { display: none; }
+}
+
 @media (max-width: 640px) {
-  /* widths are fluid here, so the height follows the content instead */
-  .notch { block-size: auto; min-block-size: var(--notch-h, 34px); }
   .stage__ticks { display: none; }
   /* the open notch keeps its proportions and shows a four-column page */
-  .stage__screen { --nb-w: 414; --nb-cols: 4; }
+  .stage__screen { --nb-w: 448; --nb-cols: 4; }
   .nb__grid .wg[data-extra="true"] { display: none; }
   /* a narrow display is only as deep as its open notch needs, which
-     leaves the caption the rest of a short phone screen */
+     leaves the caption the rest of a short phone screen; its hardware
+     is narrower too, so a live activity stays legible */
   .stage {
-    --stage-h: min(292px, 114px + (var(--stage-w) - 48px) * 230 / 414);
+    --hw: 96;
+    --wm: 90;
+    --stage-h: min(306px, 114px + (var(--stage-w) - 48px) * 244 / 486);
   }
 }
 
@@ -1424,13 +1615,14 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 @media (orientation: landscape) and (max-height: 540px) and (min-width: 560px) {
   .stage {
     --stage-w: calc((100vw - 2 * var(--gutter)) * 0.56);
-    --stage-h: min(330px, 100svh - 96px);
+    --stage-h: min(344px, 100svh - 96px);
+    --hw: 96;
+    --wm: 90;
   }
   .stage__pin { align-items: flex-start; }
   .stage__frame { inline-size: var(--stage-w); }
-  .stage__screen { --nb-w: 414; --nb-cols: 4; }
+  .stage__screen { --nb-w: 448; --nb-cols: 4; }
   .nb__grid .wg[data-extra="true"] { display: none; }
-  .notch { block-size: auto; min-block-size: var(--notch-h, 34px); }
 
   .act {
     align-items: center;
@@ -1446,8 +1638,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nx__bars i { block-size: 12px; animation: none; }
-  .nx__dot { animation: none; }
+  .la__bars i { animation: none; }
   .notch__inner { animation: none; }
   .act__copy { opacity: 1; transform: none; }
   .magnetic { transform: none !important; }

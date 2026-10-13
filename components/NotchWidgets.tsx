@@ -374,7 +374,7 @@ function Weather({ size }: { size: WidgetSize }) {
       <Glyph n="cloudSun" s={size === "m" ? 17 : 20} />
       <Sp />
       <Num s={24}>{weather.temp}</Num>
-      <Cap s={size === "m" ? 9 : 10}>{weather.condition}</Cap>
+      <Cap s={size === "m" ? 8 : 10}>{weather.condition}</Cap>
     </V>
   );
   if (size === "s") return current;
@@ -883,10 +883,10 @@ export function WidgetTile({
 export type NotchTab = "shelf" | "widgets";
 
 const tabs: { id: string; icon: string; s: number }[] = [
-  { id: "home", icon: "house", s: 16 },
-  { id: "shelf", icon: "tray", s: 16 },
-  { id: "clipboard", icon: "clipboard", s: 16 },
-  { id: "widgets", icon: "group", s: 16 },
+  { id: "home", icon: "house", s: 17 },
+  { id: "shelf", icon: "tray", s: 17 },
+  { id: "clipboard", icon: "clipboard", s: 17 },
+  { id: "widgets", icon: "group", s: 17 },
 ];
 
 const labels: Record<NotchTab, string> = {
