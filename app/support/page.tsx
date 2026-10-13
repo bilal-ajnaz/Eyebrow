@@ -18,7 +18,7 @@ const before = [
   {
     icon: "lock",
     title: "Check the permission was granted",
-    body: "HUD replacement and Zoom mute detection need Accessibility. Screenshot interception needs Screen Recording. Transcription needs Microphone and Speech Recognition. macOS only asks once.",
+    body: "Mute, camera and leave during a call need Accessibility. Screenshot interception needs access to the folder your screenshots are saved to. Transcription needs Microphone and Speech Recognition. macOS only asks once.",
   },
   {
     icon: "display",

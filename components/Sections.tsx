@@ -14,7 +14,7 @@ export function Features() {
         <Reveal className="section-head">
           <span className="eyebrow-label">Everything it does</span>
           <h2 className="section-title">
-            Twenty things
+            Eighteen things
             <br />
             <span className="section-title__muted">
               you were opening an app for.
@@ -107,7 +107,7 @@ export function Widgets() {
         <Reveal className="section-head">
           <span className="eyebrow-label">Widgets</span>
           <h2 className="section-title">
-            Sixteen widgets,
+            Fifteen widgets,
             <br />
             <span className="section-title__muted">three sizes.</span>
           </h2>
@@ -151,8 +151,8 @@ export function Privacy() {
             </h2>
             <p className="section-lede">
               There is no sign-in and no server of ours to send anything to.
-              Your clipboard, shelf, screenshots, calendar and held
-              notifications stay on your Mac, transcription runs on
+              Your clipboard, shelf, screenshots and calendar stay on
+              your Mac, transcription runs on
               Apple&apos;s on-device recogniser, and every permission is asked
               for only when you switch on the feature that needs it.
             </p>

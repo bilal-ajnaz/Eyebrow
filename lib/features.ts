@@ -32,7 +32,7 @@ export const features: Feature[] = [
     group: "System",
     icon: "sliders",
     title: "HUD replacement",
-    body: "Volume, display brightness and keyboard backlight stop covering your work. Hierarchical or gradient styling, optional glow, accent tinting, inline or full. Pro adds custom colours and themes.",
+    body: "Volume changes stop covering your work. Hierarchical or gradient styling, optional glow, accent tinting, inline or full. Pro adds custom colours and themes.",
   },
   {
     group: "System",
@@ -84,12 +84,6 @@ export const features: Feature[] = [
   },
   {
     group: "Focus",
-    icon: "moon",
-    title: "Notification triage",
-    body: "While Focus is on, notifications are held in the notch behind a count instead of interrupting. When Focus ends, expand the digest and clear it in one pass.",
-  },
-  {
-    group: "Focus",
     icon: "timer",
     title: "Timers and focus sessions",
     body: "Start a timer in the notch and watch it count down in the closed state. No extra window, no extra app.",
@@ -124,17 +118,11 @@ export const features: Feature[] = [
     title: "Browser tab switcher",
     body: "Jump between open Safari, Chrome and Brave tabs from the notch, without hunting through windows.",
   },
-  {
-    group: "Input",
-    icon: "message",
-    title: "Messages in the notch",
-    body: "Read incoming messages and reply inline, without leaving what you're doing.",
-  },
 ];
 
 export type Widget = { name: string; body: string; icon: string };
 
-/** WidgetKind — all sixteen, sizes S / M / L. */
+/** WidgetKind — all fifteen, sizes S / M / L. */
 export const widgets: Widget[] = [
   { name: "Clock", body: "Current time and date", icon: "clock" },
   { name: "Weather", body: "Temperature and conditions", icon: "cloud" },
@@ -151,7 +139,6 @@ export const widgets: Widget[] = [
   { name: "Meeting Alert", body: "Alert when a meeting starts", icon: "bell" },
   { name: "Call Controls", body: "Zoom / Meet / Teams controls", icon: "phone" },
   { name: "Browser Tabs", body: "Safari and Chrome tab switcher", icon: "globe" },
-  { name: "Messages", body: "In-notch messaging and replies", icon: "message" },
 ];
 
 /** NotchViews — the tabs you can put in the notch. */
@@ -163,7 +150,6 @@ export const tabs = [
   { name: "Screenshots", body: "Captures caught before the desktop" },
   { name: "Call", body: "Mute, camera and leave" },
   { name: "Audio", body: "Inputs and outputs" },
-  { name: "Focus", body: "Held notifications and the digest" },
   { name: "Weather", body: "Conditions right now" },
   { name: "Widgets", body: "Your own layout, S / M / L" },
 ];
@@ -187,7 +173,7 @@ export const plans: Plan[] = [
     name: "Free",
     summary: "Every feature on this page, with no trial and no time limit.",
     items: [
-      "All twenty features, all sixteen widgets, every tab",
+      "All eighteen features, all fifteen widgets, every tab",
       "Clipboard history — your last 500 items",
       "One page of widgets",
       "HUD replacement in the default style",
@@ -220,7 +206,7 @@ export const faqs = [
   },
   {
     q: "Does my data leave my Mac?",
-    a: "Almost none of it. There is no account, no telemetry and no server of ours to send anything to. Your clipboard, shelf, screenshots, calendar and notifications stay local, and transcription runs on Apple's on-device recogniser. Three optional features do reach out, because they can't work otherwise: Weather sends your approximate coordinates to Open-Meteo, Lyrics sends the track title and artist to LRCLIB, and sports scores come from ESPN. With Pro, iCloud sync — off until you turn it on — keeps your Shelf and clipboard in your own private iCloud, which we cannot read. The privacy policy lists every request in full.",
+    a: "Almost none of it. There is no account, no telemetry and no server of ours to send anything to. Your clipboard, shelf, screenshots and calendar stay local, and transcription runs on Apple's on-device recogniser. Three optional features do reach out, because they can't work otherwise: Weather sends your approximate coordinates to Open-Meteo, Lyrics sends the track title and artist to LRCLIB, and sports scores come from ESPN. With Pro, iCloud sync — off until you turn it on — keeps your Shelf and clipboard in your own private iCloud, which we cannot read. The privacy policy lists every request in full.",
   },
   {
     q: "Do I need a Mac with a notch?",
@@ -232,7 +218,7 @@ export const faqs = [
   },
   {
     q: "Which permissions does it ask for, and why?",
-    a: "Only for what you turn on. Calendar and Reminders for your day, Microphone and Speech Recognition for transcription, Accessibility for HUD replacement and mute detection, Screen Recording for screenshot interception, Notifications for triage. Every one is optional and revocable.",
+    a: "Only for what you turn on. Calendar and Reminders for your day, Microphone and Speech Recognition for transcription, Accessibility for call controls, access to your screenshots folder for screenshot interception, Notifications for timer alerts. Every one is optional and revocable.",
   },
   {
     q: "Will it get in the way of full-screen video?",

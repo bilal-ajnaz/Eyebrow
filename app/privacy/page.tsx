@@ -74,9 +74,8 @@ const local = [
   ["Shelf items", "Files you dragged into the notch, held in the app's own storage until you remove them or drag them out."],
   ["Screenshots", "Captures intercepted before they reach your desktop, until you save, copy or dismiss them."],
   ["Calendar and Reminders", "Read from macOS to display your day. Never copied anywhere else."],
-  ["Notifications", "Held in the notch during Focus and shown back to you as a digest."],
   ["Transcription", "Speech is transcribed by Apple's on-device recogniser. Audio never leaves your Mac and is not written to disk."],
-  ["Browser tabs and messages", "Read from the apps you allow, shown in the notch, never stored or transmitted."],
+  ["Browser tabs", "Read from the browsers you allow, shown in the notch, never stored or transmitted."],
   ["Settings", "Your preferences, stored in the app's own settings on your Mac."],
   ["Pro", "Whether you own Eyebrow Pro. The app checks this with the App Store through Apple's StoreKit; Eyebrow never sees your name, card or Apple Account details, and keeps no record of the purchase beyond the entitlement Apple returns."],
 ];
@@ -84,12 +83,11 @@ const local = [
 const permissions = [
   ["Calendar and Reminders", "To show your events and reminders."],
   ["Microphone and Speech Recognition", "For on-device transcription."],
-  ["Accessibility", "To replace the system HUDs and read mute state in call apps."],
-  ["Screen Recording", "To intercept screenshots before they reach the desktop."],
-  ["Notifications", "To hold notifications during Focus."],
+  ["Accessibility", "To mute, turn the camera off and leave from the notch during a call."],
+  ["Screenshots folder", "The one folder you choose, so new screenshots can be picked up from it. Eyebrow does not record your screen."],
+  ["Notifications", "To alert you when a focus timer ends."],
   ["Location", "To fetch weather for where you are."],
   ["Bluetooth", "To read the battery level of connected devices."],
-  ["Contacts", "To show names alongside messages."],
 ];
 
 export default function PrivacyPage() {
