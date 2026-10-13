@@ -23,7 +23,7 @@ const acts: Act[] = [
     id: "music",
     label: "Now Playing",
     title: "Then a track starts",
-    body: "Artwork, title and a colour-matched spectrogram slide out. Scrub, skip, shuffle — Apple Music, Spotify, YouTube Music or anything using system Now Playing.",
+    body: "Its artwork and a colour-matched spectrogram slide out either side of the notch — Apple Music, Spotify, YouTube Music or anything using system Now Playing.",
   },
   {
     id: "hud",
@@ -50,6 +50,13 @@ const acts: Act[] = [
     body: "Zoom, Google Meet and Microsoft Teams are detected automatically. Mute, camera and leave, always in the same place.",
   },
   {
+    id: "home",
+    label: "Home",
+    title: "Hover, and it opens",
+    body: "Home puts what's playing next to your day. Scrub, skip and favourite on one side; this week's calendar, today's events and your reminders on the other.",
+    tab: "home",
+  },
+  {
     id: "shelf",
     label: "Shelf",
     title: "You drag a file up",
@@ -60,7 +67,7 @@ const acts: Act[] = [
     id: "widgets",
     label: "Widgets",
     title: "And when you want everything",
-    body: "Hover, and the notch opens into your own layout — fifteen widgets in three sizes, plus tabs for the shelf, clipboard, screenshots, audio and weather.",
+    body: "The Widgets tab is your own layout — fifteen widgets in three sizes, alongside tabs for the shelf, clipboard, screenshots, audio and weather.",
     tab: "widgets",
   },
 ];
@@ -76,13 +83,7 @@ function ActContent({ act }: { act: Act }) {
       return (
         <div className="la la--music">
           <span className="la__sq la__art" aria-hidden="true" />
-          <span className="la__mid">
-            <span className="la__wing la__tinted">Bad Decisions</span>
-            <span className="la__gap" />
-            <span className="la__wing la__wing--end la__tinted">
-              <span className="la__clip">Two Door Cinema Club</span>
-            </span>
-          </span>
+          <span className="la__gap" />
           <span className="la__sq la__bars" aria-hidden="true">
             {[0, 1, 2, 3].map((i) => (
               <i key={i} style={{ animationDelay: `${i * 120}ms` }} />
@@ -125,13 +126,13 @@ function ActContent({ act }: { act: Act }) {
       return (
         <div className="la la--download">
           <span className="la__sq la__app" aria-hidden="true">
-            <Glyph n="compass" s={15} />
+            <Glyph n="compass" s={14} />
           </span>
           <span className="la__mid">
             <span className="la__gap la__file">Xcode_16.4.xip</span>
           </span>
           <span className="la__sq">
-            <Ring side={22} lw={2} p={0.68} tint="accent" />
+            <Ring side={20} lw={2} p={0.68} tint="accent" />
           </span>
         </div>
       );

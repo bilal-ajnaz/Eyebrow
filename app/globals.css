@@ -523,16 +523,14 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
    ============================================================ */
 
 .stage {
-  --stage-h: 344px;
+  --stage-h: 330px;
   /* the display's width: the window, less its gutters */
   --stage-w: calc(100vw - 2 * var(--gutter));
-  /* the hardware notch, and the wing a track's title or artist gets
-     either side of it, in app points */
+  /* the hardware notch's width, in app points */
   --hw: 200;
-  --wm: 134;
   /* one app point for the closed notch: 1px, unless the widest live
-     activity (Now Playing) wouldn't fit the display */
-  --cu: min(1px, (var(--stage-w) - 48px) / (var(--hw) + 2 * var(--wm) + 88));
+     activity (the volume HUD) wouldn't fit the display */
+  --cu: min(1px, (var(--stage-w) - 48px) / (var(--hw) + 224));
   position: relative;
   margin-block-start: 90px;
   padding-block-end: clamp(40px, 8vw, 96px);
@@ -581,7 +579,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 .stage__menubar {
   position: absolute;
   inset: 0 0 auto;
-  block-size: calc(34 * var(--cu));
+  block-size: calc(32 * var(--cu));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -638,7 +636,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   position: relative;
   inline-size: calc(var(--w, var(--hw)) * var(--u));
   max-inline-size: 100%;
-  block-size: calc(34 * var(--u));
+  block-size: calc(32 * var(--u));
   overflow: hidden;
   border-end-start-radius: calc(14 * var(--u));
   border-end-end-radius: calc(14 * var(--u));
@@ -652,11 +650,11 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
     border-radius var(--dur-morph) var(--spring);
 }
 
-.notch[data-act="music"] { --w: calc(var(--hw) + 2 * var(--wm) + 76); }
 .notch[data-act="hud"] { --w: calc(var(--hw) + 212); }
 .notch[data-act="battery"] { --w: calc(var(--hw) + 194); }
+.notch[data-act="music"],
 .notch[data-act="download"],
-.notch[data-act="call"] { --w: calc(var(--hw) + 70); }
+.notch[data-act="call"] { --w: calc(var(--hw) + 66); }
 
 /* closed, a specular along the lower edge; open, a rim that fades out
    toward the menu bar */
@@ -749,6 +747,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 .la__mid { flex: none; display: flex; align-items: center; }
 
 .la__gap { flex: none; inline-size: calc(var(--hw) * var(--u)); }
+.la--music .la__gap { inline-size: calc((var(--hw) - 6) * var(--u)); }
 .la--hud .la__gap { inline-size: calc((var(--hw) - 20) * var(--u)); }
 .la--battery .la__gap { inline-size: calc((var(--hw) + 10) * var(--u)); }
 
@@ -777,17 +776,14 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 }
 
 .la__wing--end { justify-content: flex-end; }
-.la--music .la__wing { --wing: var(--wm); font-size: calc(12 * var(--u)); }
 .la--battery .la__wing { --wing: 84; }
 
-.la__clip { overflow: hidden; text-overflow: ellipsis; }
-.la__tinted { color: var(--notch-art-ink); }
 .la__name { font-weight: 500; }
 
 .la__sq {
   flex: none;
-  inline-size: calc(22 * var(--u));
-  block-size: calc(22 * var(--u));
+  inline-size: calc(20 * var(--u));
+  block-size: calc(20 * var(--u));
   display: grid;
   place-items: center;
 }
@@ -800,7 +796,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   color: var(--color-accent-contrast);
 }
 
-.la__bars { display: flex; gap: calc(2 * var(--u)); }
+.la__bars { display: flex; justify-content: center; gap: calc(2 * var(--u)); }
 
 .la__bars i {
   inline-size: calc(2.5 * var(--u));
@@ -889,18 +885,18 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 /* --- the open notch ----------------------------------------------
    Drawn at the app's own point sizes. --u is one app point: every
    length below is a multiple of it, so the whole bar scales to the
-   display it sits in instead of reflowing. 640 × 244 is the open notch,
+   display it sits in instead of reflowing. 602 × 230 is the open notch,
    and its two flared corners add 19 either side; narrow screens get a
    four-column page (--nb-w, --nb-cols). */
 
 .stage__screen {
-  --nb-w: 640;
+  --nb-w: 602;
   --nb-cols: 6;
   /* one app point at the size this display can afford */
   --nb-u: min(
     1px,
     (var(--stage-w) - 48px) / (var(--nb-w) + 38),
-    (var(--stage-h) - 114px) / 244
+    (var(--stage-h) - 114px) / 230
   );
 }
 
@@ -945,14 +941,14 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 .notch[data-open="true"] {
   --u: var(--nb-u);
   inline-size: calc(var(--nb-w) * var(--u));
-  block-size: calc(244 * var(--u));
-  border-end-start-radius: calc(26 * var(--u));
-  border-end-end-radius: calc(26 * var(--u));
+  block-size: calc(230 * var(--u));
+  border-end-start-radius: calc(24 * var(--u));
+  border-end-end-radius: calc(24 * var(--u));
 }
 
 .nb {
-  /* a widget cell: six of them, and five gutters, across the page */
-  --cell: 88.333;
+  /* a widget cell: two rows of them fill the page's height */
+  --cell: 83;
   block-size: 100%;
   display: flex;
   flex-direction: column;
@@ -966,7 +962,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   .nb {
     --u: 1px;
     inline-size: calc(var(--nb-w) * 1px);
-    block-size: 244px;
+    block-size: 230px;
     transform: scale(tan(atan2(var(--nb-u), 1px)));
     transform-origin: 0 0;
   }
@@ -975,7 +971,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 /* the header row: tabs on the reading edge, tools on the far one */
 .nb__head {
   flex: none;
-  block-size: calc(34 * var(--u));
+  block-size: calc(32 * var(--u));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1030,6 +1026,223 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   padding-block-start: calc(4 * var(--u));
 }
 
+/* home: what's playing takes the room, the calendar a fixed column */
+.nb-home { display: flex; gap: calc(10 * var(--u)); }
+
+.nb-card {
+  position: relative;
+  min-inline-size: 0;
+  padding: calc(14 * var(--u));
+  border-radius: calc(20 * var(--u));
+  background: linear-gradient(180deg, var(--notch-fill-3), var(--notch-fill-2));
+  overflow: hidden;
+}
+
+/* the same glass edge the widget tiles carry */
+.nb-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(180deg, oklch(1 0 0 / 0.14), oklch(1 0 0 / 0.03));
+  -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(black 0 0) content-box exclude, linear-gradient(black 0 0);
+  pointer-events: none;
+}
+
+.nb-play {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  gap: calc(16 * var(--u));
+}
+
+.nb-play__art {
+  position: relative;
+  flex: none;
+  inline-size: calc(108 * var(--u));
+  block-size: calc(108 * var(--u));
+  border-radius: calc(14 * var(--u));
+  background: var(--notch-art);
+  box-shadow: 0 calc(6 * var(--u)) calc(18 * var(--u)) oklch(0 0 0 / 0.4);
+}
+
+/* the player the track is coming from, pinned to the artwork's corner */
+.nb-play__app {
+  position: absolute;
+  inset-block-end: calc(-6 * var(--u));
+  inset-inline-end: calc(-6 * var(--u));
+  inline-size: calc(24 * var(--u));
+  block-size: calc(24 * var(--u));
+  display: grid;
+  place-items: center;
+  border-radius: calc(6 * var(--u));
+  background: var(--color-primary-fill);
+  color: var(--color-critical);
+  box-shadow: 0 calc(1 * var(--u)) calc(3 * var(--u)) oklch(0 0 0 / 0.35);
+}
+
+.nb-play__info {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  white-space: nowrap;
+}
+
+.nb-play__title,
+.nb-play__artist { display: block; overflow: hidden; text-overflow: ellipsis; }
+
+.nb-play__title { font-size: calc(15 * var(--u)); font-weight: 600; line-height: 1.25; }
+
+.nb-play__artist {
+  margin-block-end: auto;
+  font-size: calc(13 * var(--u));
+  color: var(--color-text-tertiary);
+}
+
+.nb-play__time {
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  margin-block-end: auto;
+  font-size: calc(11 * var(--u));
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-tertiary);
+}
+
+.nb-play__time .wg-bar { flex: 1 1 0; align-self: center; }
+.nb-play__time .wg-bar i { background: var(--color-text-secondary); }
+
+.nb-play__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nb-cal {
+  flex: none;
+  inline-size: calc(232 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+  white-space: nowrap;
+}
+
+.nb-cal__head { flex: none; display: flex; align-items: center; justify-content: space-between; }
+.nb-cal__month { font-size: calc(15 * var(--u)); font-weight: 600; }
+
+.nb-cal__toggle {
+  display: flex;
+  align-items: center;
+  border-radius: calc(7 * var(--u));
+  background: var(--notch-fill-4);
+}
+
+.nb-cal__toggle .wg-g { margin: calc(4.5 * var(--u)) calc(6.5 * var(--u)); }
+
+.nb-cal__toggle i {
+  inline-size: 1px;
+  block-size: calc(12 * var(--u));
+  background: var(--color-border);
+}
+
+/* a week on a wheel: the days either end run off under a fade */
+.nb-cal__days {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  margin-inline: calc(-14 * var(--u));
+  -webkit-mask-image: linear-gradient(90deg, transparent 4%, black 16% 84%, transparent 96%);
+  mask-image: linear-gradient(90deg, transparent 4%, black 16% 84%, transparent 96%);
+}
+
+.nb-cal__days span {
+  flex: none;
+  inline-size: calc(30 * var(--u));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(3 * var(--u));
+  padding: calc(4 * var(--u)) calc(3 * var(--u));
+  border-radius: calc(9 * var(--u));
+}
+
+.nb-cal__days small {
+  font-size: calc(10 * var(--u));
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+}
+
+.nb-cal__days b {
+  inline-size: calc(22 * var(--u));
+  block-size: calc(22 * var(--u));
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  font-size: calc(13 * var(--u));
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.nb-cal__days span[data-on="true"] { background: var(--notch-fill-3); }
+.nb-cal__days span[data-on="true"] small { color: var(--color-text-secondary); }
+
+.nb-cal__days span[data-on="true"] b {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+/* today's events scroll in the app; here the list runs off the card */
+.nb-cal__events {
+  flex: 1 1 0;
+  min-block-size: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, black 70%, transparent);
+  mask-image: linear-gradient(180deg, black 70%, transparent);
+}
+
+.nb-cal__event {
+  display: flex;
+  justify-content: space-between;
+  gap: calc(8 * var(--u));
+  padding-block: calc(4 * var(--u));
+  line-height: 1.25;
+}
+
+.nb-cal__event + .nb-cal__event { border-block-start: 1px solid var(--color-border); }
+
+.nb-cal__what,
+.nb-cal__when { display: flex; flex-direction: column; gap: calc(2 * var(--u)); min-inline-size: 0; }
+
+.nb-cal__what {
+  padding-inline-start: calc(7 * var(--u));
+  box-shadow: inset calc(3 * var(--u)) 0 0 var(--color-accent);
+  border-radius: calc(1.5 * var(--u));
+}
+
+.nb-cal__when { flex: none; align-items: flex-end; font-variant-numeric: tabular-nums; }
+
+.nb-cal__event b {
+  font-size: calc(12 * var(--u));
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nb-cal__when b { font-size: calc(11 * var(--u)); font-weight: 500; }
+
+.nb-cal__event small {
+  font-size: calc(10 * var(--u));
+  color: var(--color-text-tertiary);
+}
+
 /* the shelf: Quick Share's target, then the shelf itself */
 .nb-shelf { display: flex; gap: calc(12 * var(--u)); }
 
@@ -1044,11 +1257,13 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   white-space: nowrap;
 }
 
+/* a square as tall as the tab; sized outright, since a stretched flex
+   item's aspect-ratio is not honoured everywhere */
 .nb-share {
   flex: none;
-  aspect-ratio: 1;
-  gap: calc(5 * var(--u));
-  border-radius: calc(18 * var(--u));
+  inline-size: calc(178 * var(--u));
+  gap: calc(6 * var(--u));
+  border-radius: calc(14 * var(--u));
   background: linear-gradient(135deg, oklch(0 0 0 / 0.35), oklch(0 0 0 / 0.2));
 }
 
@@ -1059,22 +1274,24 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   place-items: center;
   border-radius: var(--radius-full);
   background: var(--notch-fill-3);
-  color: var(--color-text-secondary);
+  color: var(--color-text-tertiary);
 }
 
 .nb-share__name {
-  font-size: calc(13 * var(--u));
-  font-weight: 600;
+  font-size: calc(14 * var(--u));
+  font-weight: 700;
   color: var(--color-text-secondary);
 }
 
-.nb-drop { flex: 1 1 0; gap: calc(10 * var(--u)); }
-
-.nb-drop__label {
-  font-size: calc(15 * var(--u));
-  font-weight: 500;
+.nb-drop {
+  flex: 1 1 0;
+  gap: calc(10 * var(--u));
   color: var(--color-text-tertiary);
 }
+
+.nb-drop__label { font-size: calc(15 * var(--u)); font-weight: 600; }
+
+.nb-share .nb-dashes rect { rx: calc(14 * var(--u)); }
 
 .nb-dashes {
   position: absolute;
@@ -1575,7 +1792,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
    never meet */
 @media (max-height: 820px) {
   .stage__pin { padding-block-start: 88px; }
-  .stage { --stage-h: 306px; }
+  .stage { --stage-h: 292px; }
   .stage__ticks { margin-block-start: 18px; }
   .act__title { font-size: clamp(var(--text-24), 4vw, var(--text-40)); }
 }
@@ -1593,15 +1810,15 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 @media (max-width: 640px) {
   .stage__ticks { display: none; }
   /* the open notch keeps its proportions and shows a four-column page */
-  .stage__screen { --nb-w: 448; --nb-cols: 4; }
-  .nb__grid .wg[data-extra="true"] { display: none; }
+  .stage__screen { --nb-w: 420; --nb-cols: 4; }
+  .nb__grid .wg[data-extra="true"],
+  .nb-cal { display: none; }
   /* a narrow display is only as deep as its open notch needs, which
      leaves the caption the rest of a short phone screen; its hardware
      is narrower too, so a live activity stays legible */
   .stage {
     --hw: 96;
-    --wm: 90;
-    --stage-h: min(306px, 114px + (var(--stage-w) - 48px) * 244 / 486);
+    --stage-h: min(292px, 114px + (var(--stage-w) - 48px) * 230 / 458);
   }
 }
 
@@ -1615,14 +1832,14 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 @media (orientation: landscape) and (max-height: 540px) and (min-width: 560px) {
   .stage {
     --stage-w: calc((100vw - 2 * var(--gutter)) * 0.56);
-    --stage-h: min(344px, 100svh - 96px);
+    --stage-h: min(330px, 100svh - 96px);
     --hw: 96;
-    --wm: 90;
   }
   .stage__pin { align-items: flex-start; }
   .stage__frame { inline-size: var(--stage-w); }
-  .stage__screen { --nb-w: 448; --nb-cols: 4; }
-  .nb__grid .wg[data-extra="true"] { display: none; }
+  .stage__screen { --nb-w: 420; --nb-cols: 4; }
+  .nb__grid .wg[data-extra="true"],
+  .nb-cal { display: none; }
 
   .act {
     align-items: center;

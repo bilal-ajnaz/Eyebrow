@@ -99,6 +99,10 @@ const glyphs: Record<string, React.ReactNode> = {
   micSlash: <><rect x="9.2" y="2.5" width="5.6" height="11" rx="2.8" /><path {...stroke} strokeWidth="1.8" d="M5.8 11a6.2 6.2 0 0 0 12.4 0M12 17.4v3.4" /><path {...stroke} strokeWidth="2.1" d="M4.2 3.6 19.8 20.4" /></>,
   sun: <><circle cx="12" cy="12" r="4.4" /><path {...stroke} strokeWidth="1.9" d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.5 1.5M17.1 17.1l1.5 1.5M18.6 5.4l-1.5 1.5M6.9 17.1l-1.5 1.5" /></>,
   cloud: <path d="M7.4 19.5a4.4 4.4 0 0 1-.5-8.77 5.6 5.6 0 0 1 10.6 1.4 3.75 3.75 0 0 1-.4 7.37Z" />,
+  heart: <path {...stroke} strokeWidth="2" d="M12 20.2s-7.6-4.5-7.6-10.2A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.6 2.7c0 5.7-7.6 10.2-7.6 10.2Z" />,
+  calendar: <><rect {...stroke} strokeWidth="2" x="3.4" y="4.6" width="17.2" height="15.6" rx="3" /><path d="M3.4 7.6a3 3 0 0 1 3-3h11.2a3 3 0 0 1 3 3v2H3.4Z" /><path {...stroke} strokeWidth="1.7" d="M7.6 13.4h.1M12 13.4h.1M16.4 13.4h.1M7.6 16.6h.1M12 16.6h.1M16.4 16.6h.1" /></>,
+  checkCircle: <><circle {...stroke} strokeWidth="2" cx="12" cy="12" r="8.6" /><path {...stroke} strokeWidth="2" d="m8.2 12.4 2.6 2.6 5-5.6" /></>,
+  note: <path d="M9.2 5.4a1 1 0 0 1 .8-1l7.6-1.7a1 1 0 0 1 1.2 1v10.9a3 3 0 1 1-1.8-2.75V7.3l-6 1.35v8.1a3 3 0 1 1-1.8-2.75Z" />,
   cloudSun: <><g opacity="0.55"><circle cx="15.6" cy="8.4" r="3.4" /><path {...stroke} strokeWidth="1.7" d="M15.6 2.2v1.3M21.8 8.4h-1.3M20 4l-.9.9M11.2 4l.9.9M20 12.8l-.9-.9" /></g><path d="M7.4 20.5a4.4 4.4 0 0 1-.5-8.77 5.6 5.6 0 0 1 10.6 1.4 3.75 3.75 0 0 1-.4 7.37Z" /></>,
   bolt: <path d="M13.6 1.8 4.4 13.3a.6.6 0 0 0 .5 1h5.4l-1.4 7.5a.4.4 0 0 0 .7.3l9.2-11.4a.6.6 0 0 0-.5-1h-5.4l1.4-7.6a.4.4 0 0 0-.7-.3Z" />,
   pause: <><rect x="5.5" y="4.5" width="4.6" height="15" rx="1.5" /><rect x="13.9" y="4.5" width="4.6" height="15" rx="1.5" /></>,
@@ -249,7 +253,8 @@ function TimeWeather({ size }: { size: WidgetSize }) {
   if (size === "s") {
     return (
       <V c="wg-fill">
-        <Label>{now.greeting}</Label>
+        {/* the app lets this line shrink to fit a small tile */}
+        <Label s={9}>{now.greeting}</Label>
         <Sp />
         <Num s={22}>{now.time}</Num>
         <Cap>Sun 11</Cap>
@@ -762,7 +767,8 @@ function AIHeader() {
   );
 }
 
-function AIStats() {
+/** `s` is the figure size: the large tile's narrower cells take a point off. */
+function AIStats({ s = 13 }: { s?: number }) {
   const cells = [
     ["3.2M", "tokens"],
     ["13", "turns"],
@@ -772,7 +778,7 @@ function AIStats() {
     <span className="wg-stats">
       {cells.map(([value, label]) => (
         <span key={label}>
-          <T s={13} c="wg-t--sb">{value}</T>
+          <T s={s} c="wg-t--sb">{value}</T>
           <Cap s={8}>{label}</Cap>
         </span>
       ))}
@@ -804,7 +810,7 @@ function AIUsage({ size }: { size: WidgetSize }) {
     <V c="wg-fill">
       <AIHeader />
       <Sp />
-      <AIStats />
+      <AIStats s={12} />
       <Sp />
       <V g={5} c="wg-wide">
         {limits.map((limit) => (
@@ -880,7 +886,7 @@ export function WidgetTile({
 
 /* --- the open notch: header row, then the tab under it ------------------ */
 
-export type NotchTab = "shelf" | "widgets";
+export type NotchTab = "home" | "shelf" | "widgets";
 
 const tabs: { id: string; icon: string; s: number }[] = [
   { id: "home", icon: "house", s: 17 },
@@ -890,6 +896,8 @@ const tabs: { id: string; icon: string; s: number }[] = [
 ];
 
 const labels: Record<NotchTab, string> = {
+  home:
+    "The open notch on its Home tab: what's playing, with artwork, progress and transport controls, beside this week's calendar and today's events.",
   shelf:
     "The open notch on its Shelf tab: an AirDrop target beside an empty shelf that reads Drop files here.",
   widgets:
@@ -905,17 +913,101 @@ function Dashes() {
   );
 }
 
+/* --- Home: what's playing, beside the calendar --------------------------
+   NotchHomeView.swift: a Now Playing card that takes the room, and a
+   232pt calendar card. */
+
+const week = [
+  ["Wed", "07"],
+  ["Thu", "08"],
+  ["Fri", "09"],
+  ["Sat", "10"],
+  ["Sun", "11"],
+  ["Mon", "12"],
+  ["Tue", "13"],
+  ["Wed", "14"],
+];
+
+const agenda = [
+  { title: "Supplier call", place: "Zoom", start: "10:00 AM", end: "10:30 AM" },
+  { title: "Quarterly planning", place: "Boardroom", start: "11:30 AM", end: "12:30 PM" },
+  { title: "Dinner", place: "Marina", start: "7:30 PM", end: "9:00 PM" },
+];
+
+function HomeTab() {
+  return (
+    <div className="nb__body nb-home">
+      <div className="nb-card nb-play">
+        <span className="nb-play__art">
+          <span className="nb-play__app"><Glyph n="note" s={14} /></span>
+        </span>
+        <div className="nb-play__info">
+          <span className="nb-play__title">{track.title}</span>
+          <span className="nb-play__artist">{track.artist}</span>
+          <span className="nb-play__time">
+            <span>1:12</span>
+            <span className="wg-bar" style={{ "--d": 4 } as Vars}>
+              <i style={{ inlineSize: "35%" }} />
+            </span>
+            <span>3:26</span>
+          </span>
+          <span className="nb-play__controls">
+            <CircleButton d={32}><Glyph n="heart" s={17} c="wg-g--2" /></CircleButton>
+            <CircleButton d={32}><Glyph n="backward" s={20} /></CircleButton>
+            <CircleButton d={44} filled><Glyph n="pause" s={19} /></CircleButton>
+            <CircleButton d={32}><Glyph n="forward" s={20} /></CircleButton>
+            <CircleButton d={32}><Glyph n="speaker" s={18} /></CircleButton>
+          </span>
+        </div>
+      </div>
+
+      <div className="nb-card nb-cal">
+        <div className="nb-cal__head">
+          <span className="nb-cal__month">October 2026</span>
+          <span className="nb-cal__toggle">
+            <Glyph n="calendar" s={11} />
+            <i />
+            <Glyph n="checkCircle" s={11} c="wg-g--3" />
+          </span>
+        </div>
+        <div className="nb-cal__days">
+          {week.map(([day, date]) => (
+            <span key={date} data-on={date === "11"}>
+              <small>{day}</small>
+              <b>{date}</b>
+            </span>
+          ))}
+        </div>
+        <div className="nb-cal__events">
+          {agenda.map((event) => (
+            <div key={event.title} className="nb-cal__event">
+              <span className="nb-cal__what">
+                <b>{event.title}</b>
+                <small>{event.place}</small>
+              </span>
+              <span className="nb-cal__when">
+                <b>{event.start}</b>
+                <small>{event.end}</small>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ShelfTab() {
   return (
     <div className="nb__body nb-shelf">
       <div className="nb-share">
         <Dashes />
-        <span className="nb-share__icon"><Glyph n="share" s={19} /></span>
+        <span className="nb-share__icon"><Glyph n="share" s={20} /></span>
         <span className="nb-share__name">AirDrop</span>
       </div>
       <div className="nb-drop">
         <Dashes />
-        <Glyph n="trayDown" s={22} />
+        <Glyph n="trayDown" s={24} />
         <span className="nb-drop__label">Drop files here</span>
       </div>
     </div>
@@ -956,7 +1048,9 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
         </div>
       </div>
 
-      {tab === "shelf" ? <ShelfTab /> : <WidgetsTab />}
+      {tab === "home" && <HomeTab />}
+      {tab === "shelf" && <ShelfTab />}
+      {tab === "widgets" && <WidgetsTab />}
     </div>
   );
 }
