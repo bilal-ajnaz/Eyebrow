@@ -97,7 +97,7 @@ export const features: Feature[] = [
     group: "Day",
     icon: "calendar",
     title: "Calendar and Reminders",
-    body: "Upcoming events with auto-scroll to what's next, all-day events hidden if you like, and reminders you can tick off in place. Meeting alerts fire as the call starts.",
+    body: "Upcoming events with auto-scroll to what's next, all-day events hidden if you like, and reminders you can tick off in place. Events with a Zoom, Google Meet or Teams link get a Join button, so the call opens straight from the notch.",
   },
   {
     group: "Day",
@@ -155,7 +155,7 @@ export const widgets: Widget[] = [
   { name: "Weather", body: "Temperature and conditions", icon: "cloud" },
   { name: "Battery", body: "Battery level and status", icon: "battery" },
   { name: "Now Playing", body: "Now playing with controls", icon: "music" },
-  { name: "Calendar", body: "Upcoming calendar events", icon: "calendar" },
+  { name: "Calendar", body: "Upcoming events, with one-click Join", icon: "calendar" },
   { name: "Reminders", body: "Pending reminders", icon: "check" },
   { name: "System Stats", body: "CPU and memory usage", icon: "cpu" },
   { name: "Time & Weather", body: "Time, date and weather together", icon: "sun" },

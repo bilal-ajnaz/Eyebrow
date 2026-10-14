@@ -1357,6 +1357,13 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   border-radius: calc(1.5 * var(--u));
 }
 
+.nb-cal__call {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  margin-block-start: calc(2 * var(--u));
+}
+
 .nb-cal__when { flex: none; align-items: flex-end; font-variant-numeric: tabular-nums; }
 
 .nb-cal__event b {
@@ -2146,6 +2153,29 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   inline-size: calc(3 * var(--u));
   block-size: calc(24 * var(--u));
   border-radius: calc(1.5 * var(--u));
+}
+
+/* Join: opens the event's video call from the notch */
+.wg-join {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(3 * var(--u));
+  padding: calc(3 * var(--u)) calc(8 * var(--u));
+  border-radius: var(--radius-full);
+  background: var(--notch-track);
+  color: var(--color-text);
+  font-size: calc(10 * var(--u));
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.wg-v > .wg-join { align-self: flex-start; }
+
+.wg-join[data-live="true"] {
+  background: var(--color-positive);
+  color: var(--color-primary-ink);
 }
 
 .wg-dot {

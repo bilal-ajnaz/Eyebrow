@@ -32,8 +32,8 @@ const now = { time: "8:36", meridiem: "AM", greeting: "good morning" };
 const weather = { temp: "31°", condition: "Partly Cloudy" };
 const track = { title: "Bad Decisions", artist: "Two Door Cinema Club" };
 
-const events = [
-  { title: "Supplier call", time: "10:00 AM", tint: "a" },
+const events: { title: string; time: string; tint: string; call?: string }[] = [
+  { title: "Supplier call", time: "10:00 AM", tint: "a", call: "Zoom" },
   { title: "Quarterly planning", time: "11:30 AM", tint: "b" },
   { title: "Dinner", time: "7:30 PM", tint: "c" },
 ];
@@ -88,6 +88,7 @@ const glyphs: Record<string, React.ReactNode> = {
   group: <><rect x="2.5" y="5" width="8.6" height="14" rx="2.2" /><rect x="12.9" y="5" width="8.6" height="6.1" rx="2.2" /><rect x="12.9" y="12.9" width="8.6" height="6.1" rx="2.2" /></>,
   pencil: <path d="M15.4 4.1a2.1 2.1 0 0 1 3 0l1.5 1.5a2.1 2.1 0 0 1 0 3L9 19.5l-4.9 1.4a.5.5 0 0 1-.6-.6L4.9 15.4Z" />,
   gear: <><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" strokeWidth="3.4" strokeDasharray="3.4 3.12" /><circle cx="12" cy="12" r="5.1" fill="none" stroke="currentColor" strokeWidth="3.6" /></>,
+  video: <><rect x="2.4" y="6.2" width="13.2" height="11.6" rx="2.8" /><path d="m16.8 10.4 4.8-3v9.2l-4.8-3Z" /></>,
   webcam: <><circle {...stroke} strokeWidth="1.9" cx="12" cy="9.4" r="6.5" /><circle cx="12" cy="9.4" r="2.6" /><path {...stroke} strokeWidth="1.9" d="M12 16.2v4.4M7.8 20.8h8.4" /></>,
   speaker: <><path d="M3 9.2h3.2l4.6-3.9a.7.7 0 0 1 1.2.5v12.4a.7.7 0 0 1-1.2.5l-4.6-3.9H3a1 1 0 0 1-1-1v-3.6a1 1 0 0 1 1-1Z" /><path {...stroke} strokeWidth="1.8" d="M15.2 9.3a3.8 3.8 0 0 1 0 5.4M18 6.8a7.4 7.4 0 0 1 0 10.4" /></>,
   laptop: <><rect {...stroke} strokeWidth="1.8" x="5" y="5.5" width="14" height="9.5" rx="1.6" /><path d="M2.2 17h19.6v.6a1.4 1.4 0 0 1-1.4 1.4H3.6a1.4 1.4 0 0 1-1.4-1.4Z" /></>,
@@ -405,6 +406,17 @@ function Weather({ size }: { size: WidgetSize }) {
 
 /* --- Calendar ---------------------------------------------------------- */
 
+/** Joins the event's video call from the notch. Green once the call is
+    about to start; grey until then. */
+function JoinPill({ live = false }: { live?: boolean }) {
+  return (
+    <span className="wg-join" data-live={live}>
+      <Glyph n="video" s={9} />
+      Join
+    </span>
+  );
+}
+
 function EventRow({ event, s }: { event: (typeof events)[number]; s: number }) {
   return (
     <H g={6}>
@@ -413,6 +425,7 @@ function EventRow({ event, s }: { event: (typeof events)[number]; s: number }) {
         <T s={s} c="wg-t--md">{event.title}</T>
         <T s={s - 2} c="wg-t--3">{event.time}</T>
       </V>
+      {event.call && <JoinPill />}
     </H>
   );
 }
@@ -430,6 +443,7 @@ function Calendar({ size }: { size: WidgetSize }) {
           <i className="wg-dot" data-tint={events[0].tint} />
           <T c="wg-t--md wg-t--2">{events[0].title}</T>
         </H>
+        {events[0].call && <JoinPill />}
       </V>
     );
   }
@@ -950,8 +964,8 @@ const week = [
   ["Wed", "14"],
 ];
 
-const agenda = [
-  { title: "Supplier call", place: "Zoom", start: "10:00 AM", end: "10:30 AM" },
+const agenda: { title: string; place: string; start: string; end: string; call?: boolean }[] = [
+  { title: "Supplier call", place: "Zoom", start: "10:00 AM", end: "10:30 AM", call: true },
   { title: "Quarterly planning", place: "Boardroom", start: "11:30 AM", end: "12:30 PM" },
   { title: "Dinner", place: "Marina", start: "7:30 PM", end: "9:00 PM" },
 ];
@@ -1005,7 +1019,14 @@ function HomeTab() {
             <div key={event.title} className="nb-cal__event">
               <span className="nb-cal__what">
                 <b>{event.title}</b>
-                <small>{event.place}</small>
+                {event.call ? (
+                  <span className="nb-cal__call">
+                    <JoinPill />
+                    <small>{event.place}</small>
+                  </span>
+                ) : (
+                  <small>{event.place}</small>
+                )}
               </span>
               <span className="nb-cal__when">
                 <b>{event.start}</b>
