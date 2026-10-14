@@ -48,7 +48,10 @@ export default function FeatureGrid() {
               <span className="card__icon">
                 <Icon name={f.icon} size={26} />
               </span>
-              <span className="card__group">{f.group}</span>
+              <span className="card__group">
+                {f.group}
+                {f.pro && <span className="card__pro">Pro</span>}
+              </span>
               <h3 className="card__title">{f.title}</h3>
               <p className="card__body">{f.body}</p>
             </div>

@@ -3,6 +3,8 @@ export type Feature = {
   body: string;
   icon: string; // key into components/Icon.tsx
   group: string;
+  /** an Eyebrow Pro feature */
+  pro?: boolean;
 };
 
 /**
@@ -118,6 +120,19 @@ export const features: Feature[] = [
     title: "Browser tab switcher",
     body: "Jump between open Safari, Chrome and Brave tabs from the notch, without hunting through windows.",
   },
+  {
+    group: "AI",
+    icon: "sparkle",
+    title: "Claude Code in the notch",
+    body: "Claude's mark turns beside the notch while a session works, and goes amber when it needs your permission. With Pro, each session also gets a page in the Live tab, a box to message it, and Allow and Deny right in the notch.",
+  },
+  {
+    group: "Security",
+    icon: "face",
+    title: "Face Unlock",
+    body: "When your Mac is locked, Eyebrow recognises your face through the camera and types your password for you. Face data and password stay encrypted in this Mac's Keychain. A convenience, not extra security.",
+    pro: true,
+  },
 ];
 
 export type Widget = { name: string; body: string; icon: string };
@@ -162,10 +177,11 @@ export type Plan = {
 };
 
 /**
- * Free vs Pro. Pro never takes anything away from Free — it raises two
- * ceilings (clipboard history, widget pages) and adds three things that did
- * not exist before (custom HUD colours and themes, iCloud sync, icon packs
- * with a custom Widgets tab icon).
+ * Free vs Pro. Pro never takes anything away from Free — it raises three
+ * ceilings (clipboard history, widget pages, tabs) and adds what did not
+ * exist before (Face Unlock, the Live tab with Claude Code sessions, custom
+ * HUD colours and themes, iCloud sync, icon packs with a custom Widgets tab
+ * icon).
  */
 export const plans: Plan[] = [
   {
@@ -173,7 +189,9 @@ export const plans: Plan[] = [
     name: "Free",
     summary: "Every feature on this page, with no trial and no time limit.",
     items: [
-      "All eighteen features, all fifteen widgets, every tab",
+      "Nineteen of the twenty features, all fifteen widgets",
+      "Up to four tabs",
+      "Claude Code's status in the closed notch",
       "Clipboard history — your last 500 items",
       "One page of widgets",
       "HUD replacement in the default style",
@@ -191,6 +209,9 @@ export const plans: Plan[] = [
       "Custom HUD colours and themes",
       "iCloud sync for your Shelf and clipboard across Macs",
       "App icon packs and a custom Widgets tab icon",
+      "Face Unlock",
+      "The Live tab: a page for every running activity and each Claude Code session, with quick messages and permission answers",
+      "Up to six tabs",
     ],
   },
 ];
@@ -198,7 +219,7 @@ export const plans: Plan[] = [
 export const faqs = [
   {
     q: "Is Eyebrow really free?",
-    a: "Yes. Every feature on this page ships in the free app, with no trial, no time limit and no ads. Pro is a single one-time purchase that raises two ceilings — clipboard history and widget pages — and adds custom HUD colours and themes, iCloud sync, and app icon packs with a custom Widgets tab icon. Nothing you get for free is ever moved behind it.",
+    a: "Yes. Every feature on this page ships in the free app, with no trial, no time limit and no ads. Pro is a single one-time purchase that raises three ceilings — clipboard history, widget pages and tabs — and adds Face Unlock, the Live tab with Claude Code sessions, custom HUD colours and themes, iCloud sync, and app icon packs with a custom Widgets tab icon. Nothing you get for free is ever moved behind it.",
   },
   {
     q: "Is Pro a subscription?",

@@ -25,6 +25,7 @@ const paths: Record<string, React.ReactNode> = {
   check: <><circle cx="12" cy="12" r="9" /><path d="M8 12.5l2.8 2.7L16 9.5" /></>,
   sun: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M5 5l1.8 1.8M17.2 17.2 19 19M19 5l-1.8 1.8M6.8 17.2 5 19" /></>,
   sparkle: <><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z" /><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8Z" /></>,
+  face: <><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2" /><path d="M9 9.5v1M15 9.5v1M12 9.5V13h-1M9.5 15.5a4 4 0 0 0 5 0" /></>,
   bell: <><path d="M18 15V10a6 6 0 1 0-12 0v5l-2 3h16Z" /><path d="M10 21h4" /></>,
   lock: <><rect x="4" y="10" width="16" height="11" rx="2.5" /><path d="M8 10V7a4 4 0 1 1 8 0v3" /></>,
   bolt: <><path d="M13 2 4 14h7l-1 8 9-12h-7Z" /></>,

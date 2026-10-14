@@ -116,8 +116,14 @@ const glyphs: Record<string, React.ReactNode> = {
   link: <g {...stroke} strokeWidth="2.1" transform="rotate(-45 12 12)"><rect x="1.6" y="8.6" width="11.4" height="6.8" rx="3.4" /><rect x="11" y="8.6" width="11.4" height="6.8" rx="3.4" /></g>,
   wave: <><path {...stroke} strokeWidth="2.1" d="M2.6 9.5v5M6.2 5.2v13.6M9.8 8v8M13.4 3v10" /><rect x="16.2" y="10" width="4.4" height="7.4" rx="2.2" /><path {...stroke} strokeWidth="1.6" d="M14.4 15a4 4 0 0 0 8 0M18.4 19v2.2" /></>,
   stop: <rect x="5" y="5" width="14" height="14" rx="2.6" />,
-  spark: <path {...stroke} strokeWidth="2.3" d="M12 9.4V1.6M13.53 9.9l2.94-4.05M14.47 11.2l7.42-2.41M14.47 12.8l4.76 1.55M13.53 14.1l4.58 6.31M12 14.6v5M10.47 14.1l-4.58 6.31M9.53 12.8l-4.76 1.55M9.53 11.2 2.11 8.79M10.47 9.9 7.53 5.85" />,
+  /* Claude Code's mark, traced from the artwork; its hub sits at 12,12 so it turns in place */
+  spark: <path d="M16.89 12.0L14.88 12.48L14.81 12.52L14.85 12.58L21.75 14.03L21.64 14.36L20.62 14.84L14.93 13.48L14.74 13.47L14.71 13.53L15.66 14.49L19.49 18.01L19.58 18.53L19.3 18.87L18.95 18.77L17.16 17.44L15.28 15.81L14.72 15.42L14.67 15.48L14.73 15.63L17.06 19.16L17.17 20.03L17.02 20.35L16.53 20.52L15.96 20.41L14.79 18.81L13.42 16.73L12.68 15.42L12.52 15.29L12.45 15.39L12.0 20.13L11.87 21.55L11.61 21.85L10.94 22.06L10.47 21.69L10.29 21.24L11.43 14.64L11.29 14.71L8.24 18.84L6.81 20.38L6.45 20.55L5.81 20.21L5.87 19.7L6.12 19.33L10.19 14.18L10.25 13.91L4.78 17.44L3.87 17.54L3.46 17.18L3.48 16.58L3.7 16.32L5.23 15.27L9.23 13.02L9.4 12.78L9.33 12.65L2.42 12.38L1.74 12.27L1.56 12.0L1.29 11.67L1.3 11.53L1.4 11.31L1.7 11.1L6.68 11.42L9.1 11.66L9.39 11.66L9.44 11.58L9.26 11.35L5.03 8.52L3.28 7.26L2.97 6.84L2.87 6.01L3.38 5.44L4.25 5.5L9.17 9.2L9.3 9.13L9.3 9.03L8.06 6.77L6.18 3.54L6.05 3.01L6.02 2.52L6.64 1.71L6.98 1.6L7.84 1.7L8.16 1.98L9.54 5.06L11.26 8.37L11.6 9.4L11.72 9.38L11.83 7.65L12.0 6.45L12.31 3.04L12.59 2.35L13.24 1.91L13.74 2.12L14.16 2.66L13.1 8.82L13.25 8.82L13.42 8.65L15.65 5.8L17.09 4.24L17.57 3.89L18.43 3.91L19.04 4.84L18.77 5.85L16.1 9.31L15.36 10.59L15.57 10.67L17.64 10.22L20.95 9.64L21.61 9.96L21.68 10.34L21.44 10.97L21.29 11.02Z" />,
   terminal: <><rect {...stroke} strokeWidth="1.8" x="2.8" y="4.2" width="18.4" height="15.6" rx="3" /><path {...stroke} strokeWidth="1.9" d="m7 9.6 2.8 2.4L7 14.4M12.4 14.6h4.4" /></>,
+  live: <><circle cx="12" cy="12" r="2.6" /><path {...stroke} strokeWidth="1.9" d="M8.3 8.3a5.2 5.2 0 0 0 0 7.4M15.7 8.3a5.2 5.2 0 0 1 0 7.4M5.5 5.5a9.2 9.2 0 0 0 0 13M18.5 5.5a9.2 9.2 0 0 1 0 13" /></>,
+  bubble: <path {...stroke} strokeWidth="1.8" d="M5.6 4.5h12.8A2.1 2.1 0 0 1 20.5 6.6v8.3a2.1 2.1 0 0 1-2.1 2.1H11l-4.4 3.3V17H5.6a2.1 2.1 0 0 1-2.1-2.1V6.6a2.1 2.1 0 0 1 2.1-2.1Z" />,
+  lock: <><rect x="5" y="10.5" width="14" height="10" rx="2.6" /><path {...stroke} strokeWidth="2.2" d="M8.2 10.5V8a3.8 3.8 0 0 1 7.6 0v2.5" /></>,
+  lockOpen: <><rect x="5" y="10.5" width="14" height="10" rx="2.6" /><path {...stroke} strokeWidth="2.2" d="M8.2 10.5V8a3.8 3.8 0 0 1 7.3-1.5" /></>,
+  faceid: <g {...stroke} strokeWidth="1.9"><path d="M3.5 8V6.2a2.7 2.7 0 0 1 2.7-2.7H8M16 3.5h1.8a2.7 2.7 0 0 1 2.7 2.7V8M20.5 16v1.8a2.7 2.7 0 0 1-2.7 2.7H16M8 20.5H6.2a2.7 2.7 0 0 1-2.7-2.7V16" /><path d="M8.6 9v1.4M15.4 9v1.4M12.2 9v4.2h-1.1M9 16a4.6 4.6 0 0 0 6 0" /></g>,
   chip: <><path fillRule="evenodd" d="M8.4 5h7.2A3.4 3.4 0 0 1 19 8.4v7.2a3.4 3.4 0 0 1-3.4 3.4H8.4A3.4 3.4 0 0 1 5 15.6V8.4A3.4 3.4 0 0 1 8.4 5Zm1.3 3.5a1.2 1.2 0 0 0-1.2 1.2v4.6a1.2 1.2 0 0 0 1.2 1.2h4.6a1.2 1.2 0 0 0 1.2-1.2V9.7a1.2 1.2 0 0 0-1.2-1.2Z" /><path {...stroke} strokeWidth="1.7" d="M9 2.4v1.4M12 2.4v1.4M15 2.4v1.4M9 20.2v1.4M12 20.2v1.4M15 20.2v1.4M2.4 9h1.4M2.4 12h1.4M2.4 15h1.4M20.2 9h1.4M20.2 12h1.4M20.2 15h1.4" /></>,
 };
 
@@ -888,7 +894,7 @@ export function WidgetTile({
 
 /* --- the open notch: header row, then the tab under it ------------------ */
 
-export type NotchTab = "home" | "shelf" | "widgets" | "approve";
+export type NotchTab = "home" | "shelf" | "widgets" | "approve" | "live";
 
 const tabs: { id: string; icon: string; s: number }[] = [
   { id: "home", icon: "house", s: 17 },
@@ -904,6 +910,8 @@ const labels: Record<NotchTab, string> = {
     "The open notch on its Shelf tab: an AirDrop target beside an empty shelf that reads Drop files here.",
   widgets:
     "The open notch on its Widgets tab: reminders, battery, AI usage, Safari tabs, memory in use, the weather and the time.",
+  live:
+    "The open notch on its Live tab, beside the notch: a page for each running Claude Code session and for Now Playing. The open session shows what was asked, what Claude is doing, a message sent from the notch, and a box to message Claude.",
   approve:
     "The open notch asking: Allow Claude to run a command? The command is rm -rf node_modules && npm install, with Deny and Allow buttons and a countdown.",
 };
@@ -1043,6 +1051,57 @@ function ApproveTab() {
   );
 }
 
+/* --- The Live tab (Pro): a page per running activity -------------------
+   LiveTabView.swift: a row of pages, then the open one. A Claude Code
+   session shows its conversation, with a box to message it, beside a
+   card that says what it's doing. */
+
+function LiveTab() {
+  return (
+    <div className="nb__body nb-live">
+      <div className="nb-live__chips">
+        <span className="nb-live__chip" data-on="true">
+          <Glyph n="spark" s={12} c="nb-live__spark nb-live__spark--turning" />
+          Eyebrow-Website
+        </span>
+        <span className="nb-live__chip">
+          <Glyph n="spark" s={12} c="nb-live__spark" />
+          falcon-dates
+        </span>
+        <span className="nb-live__chip">
+          <Glyph n="note" s={11} />
+          Now Playing
+        </span>
+      </div>
+      <div className="nb-live__page">
+        <div className="nb-live__chat">
+          <div className="nb-live__log">
+            <span className="nb-live__you">Add Face Unlock to the website</span>
+            <span className="nb-live__tool">Editing components/NotchStage.tsx</span>
+            <span className="nb-live__you nb-live__you--notch">
+              Put it after the Shelf
+              <small>Sent from the notch</small>
+            </span>
+          </div>
+          <span className="nb-live__compose">
+            <Glyph n="bubble" s={12} />
+            Message Claude…
+          </span>
+        </div>
+        <div className="nb-card nb-live__status">
+          <span className="nb-live__name">
+            <Glyph n="spark" s={15} c="nb-live__spark nb-live__spark--turning" />
+            Eyebrow-Website
+          </span>
+          <span className="nb-live__state num">Working · 1:25</span>
+          <span className="nb-live__doing">Editing NotchStage.tsx</span>
+          <span className="nb-live__path">…/Eyebrow/Eyebrow-Website</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function WidgetsTab() {
   return (
     <div className="nb__body nb__grid">
@@ -1068,6 +1127,13 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
             </span>
           ))}
         </div>
+        {tab === "live" && (
+          /* with Pro, the Live tab sits just right of the hardware notch */
+          <span className="nb__tab nb__tab--live" data-on="true">
+            <Glyph n="live" s={17} />
+            <i />
+          </span>
+        )}
         <div className="nb__tools">
           {tab === "widgets" && (
             <span className="nb__tool"><Glyph n="pencil" s={15} /></span>
@@ -1081,6 +1147,7 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
       {tab === "shelf" && <ShelfTab />}
       {tab === "widgets" && <WidgetsTab />}
       {tab === "approve" && <ApproveTab />}
+      {tab === "live" && <LiveTab />}
     </div>
   );
 }

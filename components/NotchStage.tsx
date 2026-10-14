@@ -10,8 +10,12 @@ type Act = {
   body: string;
   /** set when this act opens the notch; the footprint itself is the stylesheet's */
   tab?: NotchTab;
+  /** an Eyebrow Pro feature */
+  pro?: boolean;
 };
 
+/* Most important first: what the notch is for, then what it does for you
+   every day, then the moments that come and go. */
 const acts: Act[] = [
   {
     id: "idle",
@@ -20,10 +24,72 @@ const acts: Act[] = [
     body: "Eyebrow stays the size of your notch and stays quiet. No badge, no bounce, no widget begging to be looked at.",
   },
   {
+    id: "home",
+    label: "Home",
+    title: "Hover, and it opens",
+    body: "Home puts what's playing next to your day. Scrub, skip and favourite on one side; this week's calendar, today's events and your reminders on the other.",
+    tab: "home",
+  },
+  {
     id: "music",
     label: "Now Playing",
     title: "Then a track starts",
     body: "Its artwork and a colour-matched spectrogram slide out either side of the notch — Apple Music, Spotify, YouTube Music or anything using system Now Playing.",
+  },
+  {
+    id: "claude",
+    label: "Claude Code",
+    title: "Claude Code gets to work",
+    body: "While a Claude Code session works, its mark turns beside the notch, and it goes amber when Claude needs your permission. Anything else that's running waits in a second, smaller notch beside it. Click it to swap.",
+  },
+  {
+    id: "live",
+    label: "Live",
+    title: "Open any session",
+    body: "While something is running, the Live tab sits just right of the notch. Each Claude Code session gets its own page: what you asked, what it's doing, what it said, and a box to send it a quick message without finding the terminal. Calls, music, timers and downloads get a page too.",
+    tab: "live",
+    pro: true,
+  },
+  {
+    id: "approve",
+    label: "Approvals",
+    title: "It asks, and you answer",
+    body: "When Claude Code needs permission, the request is right there: the command or the file, with Allow and Deny. Leave it, and Claude Code asks in the terminal as usual.",
+    tab: "approve",
+    pro: true,
+  },
+  {
+    id: "widgets",
+    label: "Widgets",
+    title: "And when you want everything",
+    body: "The Widgets tab is your own layout — fifteen widgets in three sizes, alongside tabs for the shelf, clipboard, screenshots, audio and weather.",
+    tab: "widgets",
+  },
+  {
+    id: "shelf",
+    label: "Shelf",
+    title: "You drag a file up",
+    body: "The Shelf catches it and holds it. Drag it back out into any app, any window, any Space. Quick Share is one tap away.",
+    tab: "shelf",
+  },
+  {
+    id: "face",
+    label: "Face Unlock",
+    title: "It knows it's you",
+    body: "When your Mac is locked, Eyebrow recognises your face through the camera and types your password for you. Your password and face data stay encrypted in this Mac's Keychain, never in iCloud. It's a convenience, not extra security, and your password always works.",
+    pro: true,
+  },
+  {
+    id: "call",
+    label: "Calls",
+    title: "A meeting begins",
+    body: "Zoom, Google Meet and Microsoft Teams are detected automatically. Mute, camera and leave, always in the same place.",
+  },
+  {
+    id: "download",
+    label: "Downloads",
+    title: "A download starts",
+    body: "Safari, Chrome, Firefox, Arc and Brave report live progress into the notch, with the source app's icon and no Downloads window.",
   },
   {
     id: "hud",
@@ -37,53 +103,29 @@ const acts: Act[] = [
     title: "You plug in",
     body: "Charge state, percentage and power-source changes appear for a second, then leave. Bluetooth device batteries too.",
   },
-  {
-    id: "download",
-    label: "Downloads",
-    title: "A download starts",
-    body: "Safari, Chrome, Firefox, Arc and Brave report live progress into the notch, with the source app's icon and no Downloads window.",
-  },
-  {
-    id: "call",
-    label: "Calls",
-    title: "A meeting begins",
-    body: "Zoom, Google Meet and Microsoft Teams are detected automatically. Mute, camera and leave, always in the same place.",
-  },
-  {
-    id: "claude",
-    label: "Claude Code",
-    title: "Claude Code gets to work",
-    body: "Each Claude Code session shows in the notch while it works, and the notch turns amber when one needs your permission. The song and the download don't go anywhere: they wait in a second, smaller notch beside it. Click it to swap.",
-  },
-  {
-    id: "approve",
-    label: "Approvals",
-    title: "It asks, and you answer",
-    body: "Hover, and the request is right there: the command or the file, with Allow and Deny. Leave it, and Claude Code asks in the terminal as usual.",
-    tab: "approve",
-  },
-  {
-    id: "home",
-    label: "Home",
-    title: "Hover, and it opens",
-    body: "Home puts what's playing next to your day. Scrub, skip and favourite on one side; this week's calendar, today's events and your reminders on the other.",
-    tab: "home",
-  },
-  {
-    id: "shelf",
-    label: "Shelf",
-    title: "You drag a file up",
-    body: "The Shelf catches it and holds it. Drag it back out into any app, any window, any Space. Quick Share is one tap away.",
-    tab: "shelf",
-  },
-  {
-    id: "widgets",
-    label: "Widgets",
-    title: "And when you want everything",
-    body: "The Widgets tab is your own layout — fifteen widgets in three sizes, alongside tabs for the shelf, clipboard, screenshots, audio and weather.",
-    tab: "widgets",
-  },
 ];
+
+/* Face Unlock: the lock opens once the face is recognised. */
+function FaceUnlockActivity() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setOpen(true), 1500);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="la la--face" data-open={open}>
+      <span className="la__wing">
+        <Glyph n={open ? "lockOpen" : "lock"} s={15} />
+      </span>
+      <span className="la__gap" />
+      <span className="la__wing">
+        <Glyph n="faceid" s={19} c="la__faceid" />
+      </span>
+    </div>
+  );
+}
 
 /* Claude Code at work, then asking: the glyph turns while it works, and
    both marks go amber when a permission request comes in. */
@@ -180,6 +222,8 @@ function ActContent({ act }: { act: Act }) {
       );
     case "claude":
       return <ClaudeActivity />;
+    case "face":
+      return <FaceUnlockActivity />;
     case "call":
       return (
         <div className="la la--call">
@@ -287,6 +331,7 @@ export default function NotchStage() {
             <div className="act__copy" data-on={i === active}>
               <span className="act__step num">
                 {String(i + 1).padStart(2, "0")}
+                {a.pro && <span className="act__pro">Pro</span>}
               </span>
               <h3 className="act__title">{a.title}.</h3>
               <p className="act__body">{a.body}</p>

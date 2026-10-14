@@ -14,16 +14,16 @@ export function Features() {
         <Reveal className="section-head">
           <span className="eyebrow-label">Everything it does</span>
           <h2 className="section-title">
-            Eighteen things
+            Twenty things
             <br />
             <span className="section-title__muted">
               you were opening an app for.
             </span>
           </h2>
           <p className="section-lede">
-            Turn on what you want, ignore the rest. Everything here is in the
-            free app, and nothing here phones home. Pro only raises two
-            ceilings and adds a few extras.
+            Turn on what you want, ignore the rest. Everything here except
+            Face Unlock is in the free app, and nothing here phones home. Pro
+            raises a few ceilings and adds a few extras.
           </p>
         </Reveal>
 
