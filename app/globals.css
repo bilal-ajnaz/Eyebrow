@@ -1584,6 +1584,74 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 
 .nb-tp__row b { font-weight: 600; color: var(--color-text); }
 
+/* a note from the Notes widget: the editor, and the card beside it */
+.nb-note__editor {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  padding: calc(10 * var(--u)) calc(13 * var(--u));
+  border-radius: calc(18 * var(--u));
+  background: oklch(1 0 0 / 0.06);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.07);
+  overflow: hidden;
+}
+
+.nb-note__text {
+  margin: 0;
+  white-space: pre-line;
+  font-size: calc(12.5 * var(--u));
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.nb-note__text b { font-weight: 600; }
+
+.nb-note__caret {
+  display: inline-block;
+  inline-size: 1.5px;
+  block-size: 1.1em;
+  margin-inline-start: 1px;
+  vertical-align: text-bottom;
+  background: var(--brand-blue);
+  animation: caret-blink 1.1s steps(1) infinite;
+}
+
+@keyframes caret-blink { 50% { opacity: 0; } }
+
+.nb-note__recent {
+  margin-block-start: calc(4 * var(--u));
+  font-size: calc(10 * var(--u));
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+}
+
+.nb-note__saved {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nb-note__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-start: auto;
+  color: var(--color-text-secondary);
+}
+
+.nb-note__save {
+  block-size: calc(24 * var(--u));
+  padding-inline: calc(11 * var(--u));
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-fill);
+  color: var(--color-primary-ink);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 /* a Claude Code permission request, filling Home */
 .nb-ask { display: flex; }
 
@@ -2281,6 +2349,7 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   .la__spark .wg-g,
   .nb-live__spark--turning,
   .nb-tp__text,
+  .nb-note__caret,
   .nb__tab--live i,
   .la__faceid,
   .la__busy::before,

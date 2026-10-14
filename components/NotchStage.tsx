@@ -62,7 +62,7 @@ const acts: Act[] = [
     id: "widgets",
     label: "Widgets",
     title: "And when you want everything",
-    body: "The Widgets tab is your own layout — sixteen widgets in three sizes, alongside tabs for the shelf, clipboard, screenshots, audio and weather.",
+    body: "The Widgets tab is your own layout — seventeen widgets in three sizes, alongside tabs for the shelf, clipboard, screenshots, audio and weather.",
     tab: "widgets",
   },
   {
@@ -71,6 +71,13 @@ const acts: Act[] = [
     title: "Read your script under the camera",
     body: "Click the Teleprompter widget and your script counts down, then scrolls past a marker right below the camera, so you can read it and still look people in the eye. Set the speed and text size, click to pause, drag to go back a line. It runs in the Live tab, free or Pro.",
     tab: "prompter",
+  },
+  {
+    id: "notes",
+    label: "Notes",
+    title: "Jot it down without switching apps",
+    body: "Click the Notes widget and the Widgets tab becomes a note. Type a title on the first line, press ⌘↩, and it's saved to the Notes app, in your default folder. Close it halfway and the draft waits for you.",
+    tab: "note",
   },
   {
     id: "shelf",

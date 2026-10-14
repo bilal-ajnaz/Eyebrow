@@ -107,7 +107,7 @@ export function Widgets() {
         <Reveal className="section-head">
           <span className="eyebrow-label">Widgets</span>
           <h2 className="section-title">
-            Sixteen widgets,
+            Seventeen widgets,
             <br />
             <span className="section-title__muted">three sizes.</span>
           </h2>

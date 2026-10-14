@@ -124,6 +124,9 @@ const glyphs: Record<string, React.ReactNode> = {
   lock: <><rect x="5" y="10.5" width="14" height="10" rx="2.6" /><path {...stroke} strokeWidth="2.2" d="M8.2 10.5V8a3.8 3.8 0 0 1 7.6 0v2.5" /></>,
   lockOpen: <><rect x="5" y="10.5" width="14" height="10" rx="2.6" /><path {...stroke} strokeWidth="2.2" d="M8.2 10.5V8a3.8 3.8 0 0 1 7.3-1.5" /></>,
   faceid: <g {...stroke} strokeWidth="1.9"><path d="M3.5 8V6.2a2.7 2.7 0 0 1 2.7-2.7H8M16 3.5h1.8a2.7 2.7 0 0 1 2.7 2.7V8M20.5 16v1.8a2.7 2.7 0 0 1-2.7 2.7H16M8 20.5H6.2a2.7 2.7 0 0 1-2.7-2.7V16" /><path d="M8.6 9v1.4M15.4 9v1.4M12.2 9v4.2h-1.1M9 16a4.6 4.6 0 0 0 6 0" /></g>,
+  noteText: <><rect {...stroke} strokeWidth="1.9" x="3.4" y="3.4" width="17.2" height="17.2" rx="3.4" /><path {...stroke} strokeWidth="1.9" d="M7.6 8.6h8.8M7.6 12.2h8.8M7.6 15.8h5.2" /></>,
+  xmark: <path {...stroke} strokeWidth="2.4" d="M6.5 6.5l11 11M17.5 6.5l-11 11" />,
+  trash: <><path {...stroke} strokeWidth="1.9" d="M4 6.6h16M9.4 6.6V4.4h5.2v2.2M6.4 6.6l.9 12.2a1.9 1.9 0 0 0 1.9 1.8h5.6a1.9 1.9 0 0 0 1.9-1.8l.9-12.2" /><path {...stroke} strokeWidth="1.7" d="M10.2 10.4v6.2M13.8 10.4v6.2" /></>,
   script: <><rect {...stroke} strokeWidth="1.9" x="4.4" y="2.8" width="15.2" height="18.4" rx="3" /><path {...stroke} strokeWidth="1.9" d="M8.2 8h7.6M8.2 12h7.6M8.2 16h4.6" /></>,
   chip: <><path fillRule="evenodd" d="M8.4 5h7.2A3.4 3.4 0 0 1 19 8.4v7.2a3.4 3.4 0 0 1-3.4 3.4H8.4A3.4 3.4 0 0 1 5 15.6V8.4A3.4 3.4 0 0 1 8.4 5Zm1.3 3.5a1.2 1.2 0 0 0-1.2 1.2v4.6a1.2 1.2 0 0 0 1.2 1.2h4.6a1.2 1.2 0 0 0 1.2-1.2V9.7a1.2 1.2 0 0 0-1.2-1.2Z" /><path {...stroke} strokeWidth="1.7" d="M9 2.4v1.4M12 2.4v1.4M15 2.4v1.4M9 20.2v1.4M12 20.2v1.4M15 20.2v1.4M2.4 9h1.4M2.4 12h1.4M2.4 15h1.4M20.2 9h1.4M20.2 12h1.4M20.2 15h1.4" /></>,
 };
@@ -895,7 +898,7 @@ export function WidgetTile({
 
 /* --- the open notch: header row, then the tab under it ------------------ */
 
-export type NotchTab = "home" | "shelf" | "widgets" | "approve" | "live" | "prompter";
+export type NotchTab = "home" | "shelf" | "widgets" | "approve" | "live" | "prompter" | "note";
 
 const tabs: { id: string; icon: string; s: number }[] = [
   { id: "home", icon: "house", s: 17 },
@@ -915,6 +918,8 @@ const labels: Record<NotchTab, string> = {
     "The open notch on its Live tab, beside the notch: a page for each running Claude Code session and for Now Playing. The open session shows what was asked, what Claude is doing, a message sent from the notch, and a box to message Claude.",
   prompter:
     "The open notch on its Live tab, showing the teleprompter: a script scrolling up past a marker, beside play, pause and stop buttons and speed and text-size controls.",
+  note:
+    "The open notch on its Widgets tab, turned into a note: a meeting note being typed on the left, and on the right a New Note card listing recently saved notes, with a Save to Notes button.",
   approve:
     "The open notch asking: Allow Claude to run a command? The command is rm -rf node_modules && npm install, with Deny and Allow buttons and a countdown.",
 };
@@ -1161,6 +1166,40 @@ function PrompterTab() {
   );
 }
 
+/* --- A note, from the Notes widget ---------------------------------------
+   NoteComposerView.swift: the Widgets tab becomes an editor, and the note
+   is saved to the Notes app with its first line as the title. */
+
+function NoteTab() {
+  return (
+    <div className="nb__body nb-live__page nb-note">
+      <div className="nb-note__editor">
+        <p className="nb-note__text">
+          <b>Thursday standup</b>
+          {"\n"}Ship the Notes widget on Friday.
+          {"\n"}Send the beta build to the testers
+          <span className="nb-note__caret" />
+        </p>
+      </div>
+      <div className="nb-card nb-live__status nb-note__side">
+        <span className="nb-live__name">
+          <Glyph n="noteText" s={14} c="nb-tp__glyph" />
+          New Note
+          <Glyph n="xmark" s={11} c="nb-tp__edit" />
+        </span>
+        <span className="nb-note__recent">Recently saved</span>
+        <span className="nb-note__saved">Groceries for Saturday</span>
+        <span className="nb-note__saved">Ideas for the launch video</span>
+        <span className="nb-note__saved">Call the landlord about the sink</span>
+        <span className="nb-note__actions">
+          <CircleButton d={24}><Glyph n="trash" s={12} /></CircleButton>
+          <span className="nb-note__save">Save to Notes</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function WidgetsTab() {
   return (
     <div className="nb__body nb__grid">
@@ -1181,7 +1220,7 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
       <div className="nb__head">
         <div className="nb__tabs">
           {tabs.map((t) => (
-            <span key={t.id} className="nb__tab" data-on={t.id === (tab === "approve" ? "home" : tab)}>
+            <span key={t.id} className="nb__tab" data-on={t.id === (tab === "approve" ? "home" : tab === "note" ? "widgets" : tab)}>
               <Glyph n={t.icon} s={t.s} />
             </span>
           ))}
@@ -1208,6 +1247,7 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
       {tab === "approve" && <ApproveTab />}
       {tab === "live" && <LiveTab />}
       {tab === "prompter" && <PrompterTab />}
+      {tab === "note" && <NoteTab />}
     </div>
   );
 }
