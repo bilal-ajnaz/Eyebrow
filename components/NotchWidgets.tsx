@@ -33,7 +33,7 @@ const weather = { temp: "31°", condition: "Partly Cloudy" };
 const track = { title: "Bad Decisions", artist: "Two Door Cinema Club" };
 
 const events: { title: string; time: string; tint: string; call?: string }[] = [
-  { title: "Supplier call", time: "10:00 AM", tint: "a", call: "Zoom" },
+  { title: "Supplier call", time: "8:30 AM", tint: "a", call: "Zoom" },
   { title: "Quarterly planning", time: "11:30 AM", tint: "b" },
   { title: "Dinner", time: "7:30 PM", tint: "c" },
 ];
@@ -425,7 +425,7 @@ function EventRow({ event, s }: { event: (typeof events)[number]; s: number }) {
         <T s={s} c="wg-t--md">{event.title}</T>
         <T s={s - 2} c="wg-t--3">{event.time}</T>
       </V>
-      {event.call && <JoinPill />}
+      {event.call && <JoinPill live />}
     </H>
   );
 }
@@ -443,7 +443,7 @@ function Calendar({ size }: { size: WidgetSize }) {
           <i className="wg-dot" data-tint={events[0].tint} />
           <T c="wg-t--md wg-t--2">{events[0].title}</T>
         </H>
-        {events[0].call && <JoinPill />}
+        {events[0].call && <JoinPill live />}
       </V>
     );
   }
@@ -965,7 +965,7 @@ const week = [
 ];
 
 const agenda: { title: string; place: string; start: string; end: string; call?: boolean }[] = [
-  { title: "Supplier call", place: "Zoom", start: "10:00 AM", end: "10:30 AM", call: true },
+  { title: "Supplier call", place: "Zoom", start: "8:30 AM", end: "9:00 AM", call: true },
   { title: "Quarterly planning", place: "Boardroom", start: "11:30 AM", end: "12:30 PM" },
   { title: "Dinner", place: "Marina", start: "7:30 PM", end: "9:00 PM" },
 ];
@@ -1021,7 +1021,7 @@ function HomeTab() {
                 <b>{event.title}</b>
                 {event.call ? (
                   <span className="nb-cal__call">
-                    <JoinPill />
+                    <JoinPill live />
                     <small>{event.place}</small>
                   </span>
                 ) : (
