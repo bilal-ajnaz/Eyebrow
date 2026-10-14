@@ -42,7 +42,7 @@ const acts: Act[] = [
     id: "claude",
     label: "Claude Code",
     title: "Claude Code gets to work",
-    body: "While a Claude Code session works, its mark turns beside the notch, and it goes amber when Claude needs your permission. Anything else that's running waits in small notches either side of it, two at most. Click one to swap.",
+    body: "While a Claude Code session works, its mark turns beside the notch, and it goes amber when Claude needs your permission. With Pro, anything else that's running waits in small notches either side of it, two at most. Click one to swap.",
     soon: true,
   },
   {
@@ -90,8 +90,9 @@ const acts: Act[] = [
     id: "vertical",
     label: "Vertical tabs",
     title: "Or turn your tabs on a wheel",
-    body: "Switch on vertical tabs and they run down the side of the open notch. Scroll over them and the wheel turns one tab at a time, with a click on the trackpad for each. With Pro, add as many tabs as you like.",
+    body: "Switch on vertical tabs and they run down the side of the open notch. Scroll over them and the wheel turns one tab at a time, with a click on the trackpad for each, and add as many tabs as you like.",
     tab: "vertical",
+    pro: true,
     soon: true,
   },
   {

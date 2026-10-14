@@ -42,7 +42,7 @@ export const features: Feature[] = [
     group: "System",
     icon: "battery",
     title: "Battery and power",
-    body: "Charge state, percentage and power-source changes as a live activity — plus the battery level of connected Bluetooth devices.",
+    body: "Charge state, percentage and power-source changes in the closed notch — plus the battery level of connected Bluetooth devices.",
   },
   {
     group: "System",
@@ -134,7 +134,8 @@ export const features: Feature[] = [
     group: "System",
     icon: "live",
     title: "Live activities",
-    body: "Music, a call, a timer, a download or a Claude Code session shows in the closed notch while it runs. When more than one is going, the rest wait in small notches either side; click one to swap. With Pro, each gets a page in the Live tab.",
+    body: "When music, a call, a timer, a download and a Claude Code session are all going at once, the rest wait in small notches either side of the one in front; click one to swap. Each also gets a page in the Live tab.",
+    pro: true,
     soon: "new",
   },
   {
@@ -193,7 +194,8 @@ export type Plan = {
 /**
  * Free vs Pro. Pro never takes anything away from Free — it raises three
  * ceilings (clipboard history, widget pages, tabs) and adds what did not
- * exist before (Face Unlock, the Live tab with Claude Code sessions, custom
+ * exist before (Face Unlock, vertical tabs, live activities and the Live
+ * tab with Claude Code sessions, custom
  * HUD colours and themes, iCloud sync, icon packs with a custom Widgets tab
  * icon).
  */
@@ -201,10 +203,10 @@ export const plans: Plan[] = [
   {
     id: "free",
     name: "Free",
-    summary: "Every feature on this page, with no trial and no time limit.",
+    summary: "Every feature on this page not marked Pro, with no trial and no time limit.",
     items: [
-      "Twenty of the twenty-one features, all seventeen widgets",
-      "Up to four tabs, across the top or as vertical tabs (coming soon)",
+      "Nineteen of the twenty-one features, all seventeen widgets",
+      "Up to four tabs, across the top",
       "Claude Code's status in the closed notch (coming soon)",
       "Clipboard history — your last 500 items",
       "One page of widgets",
@@ -224,8 +226,9 @@ export const plans: Plan[] = [
       "iCloud sync for your Shelf and clipboard across Macs",
       "App icon packs and a custom Widgets tab icon",
       "Face Unlock (coming soon)",
+      "Live activities: everything that's running waits in small notches either side, one click to swap (coming soon)",
       "The Live tab: a page for every running activity and each Claude Code session, with quick messages and permission answers (coming soon)",
-      "Up to six tabs, or as many as you like with vertical tabs (coming soon)",
+      "Up to six tabs across the top, or vertical tabs down the side with as many as you like (coming soon)",
     ],
   },
 ];
@@ -233,7 +236,7 @@ export const plans: Plan[] = [
 export const faqs = [
   {
     q: "Is Eyebrow really free?",
-    a: "Yes. Every feature on this page ships in the free app (those marked Coming soon arrive in the next update), with no trial, no time limit and no ads. Pro is a single one-time purchase that raises three ceilings — clipboard history, widget pages and tabs — and adds Face Unlock and the Live tab with Claude Code sessions (both coming in the next update), custom HUD colours and themes, iCloud sync, and app icon packs with a custom Widgets tab icon. Nothing you get for free is ever moved behind it.",
+    a: "Yes. Every feature on this page not marked Pro ships in the free app (those marked Coming soon arrive in the next update), with no trial, no time limit and no ads. Pro is a single one-time purchase that raises three ceilings — clipboard history, widget pages and tabs — and adds Face Unlock, vertical tabs, live activities and the Live tab with Claude Code sessions (all coming in the next update), custom HUD colours and themes, iCloud sync, and app icon packs with a custom Widgets tab icon. Nothing you get for free is ever moved behind it.",
   },
   {
     q: "Is Pro a subscription?",

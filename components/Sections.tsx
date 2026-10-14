@@ -22,7 +22,8 @@ export function Features() {
           </h2>
           <p className="section-lede">
             Turn on what you want, ignore the rest. Everything here except
-            Face Unlock is in the free app, and nothing here phones home. Pro
+            Face Unlock and live activities is in the free app, and nothing
+            here phones home. Pro
             raises a few ceilings and adds a few extras. Anything marked
             Coming soon arrives in the next update.
           </p>
@@ -55,8 +56,9 @@ export function Tabs() {
               <li>
                 <Icon name="sliders" size={16} />
                 <span>
-                  Vertical tabs: a scroll wheel down the side of the notch, with
-                  a click for every tab. Unlimited tabs with Pro.{" "}
+                  Vertical tabs, with Pro: a scroll wheel down the side of the
+                  notch, with a click for every tab, and as many tabs as you
+                  like.{" "}
                   <span className="soon">Coming soon</span>
                 </span>
               </li>
