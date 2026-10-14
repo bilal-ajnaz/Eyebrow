@@ -116,6 +116,8 @@ const glyphs: Record<string, React.ReactNode> = {
   link: <g {...stroke} strokeWidth="2.1" transform="rotate(-45 12 12)"><rect x="1.6" y="8.6" width="11.4" height="6.8" rx="3.4" /><rect x="11" y="8.6" width="11.4" height="6.8" rx="3.4" /></g>,
   wave: <><path {...stroke} strokeWidth="2.1" d="M2.6 9.5v5M6.2 5.2v13.6M9.8 8v8M13.4 3v10" /><rect x="16.2" y="10" width="4.4" height="7.4" rx="2.2" /><path {...stroke} strokeWidth="1.6" d="M14.4 15a4 4 0 0 0 8 0M18.4 19v2.2" /></>,
   stop: <rect x="5" y="5" width="14" height="14" rx="2.6" />,
+  spark: <path {...stroke} strokeWidth="2.3" d="M12 9.4V1.6M13.53 9.9l2.94-4.05M14.47 11.2l7.42-2.41M14.47 12.8l4.76 1.55M13.53 14.1l4.58 6.31M12 14.6v5M10.47 14.1l-4.58 6.31M9.53 12.8l-4.76 1.55M9.53 11.2 2.11 8.79M10.47 9.9 7.53 5.85" />,
+  terminal: <><rect {...stroke} strokeWidth="1.8" x="2.8" y="4.2" width="18.4" height="15.6" rx="3" /><path {...stroke} strokeWidth="1.9" d="m7 9.6 2.8 2.4L7 14.4M12.4 14.6h4.4" /></>,
   chip: <><path fillRule="evenodd" d="M8.4 5h7.2A3.4 3.4 0 0 1 19 8.4v7.2a3.4 3.4 0 0 1-3.4 3.4H8.4A3.4 3.4 0 0 1 5 15.6V8.4A3.4 3.4 0 0 1 8.4 5Zm1.3 3.5a1.2 1.2 0 0 0-1.2 1.2v4.6a1.2 1.2 0 0 0 1.2 1.2h4.6a1.2 1.2 0 0 0 1.2-1.2V9.7a1.2 1.2 0 0 0-1.2-1.2Z" /><path {...stroke} strokeWidth="1.7" d="M9 2.4v1.4M12 2.4v1.4M15 2.4v1.4M9 20.2v1.4M12 20.2v1.4M15 20.2v1.4M2.4 9h1.4M2.4 12h1.4M2.4 15h1.4M20.2 9h1.4M20.2 12h1.4M20.2 15h1.4" /></>,
 };
 
@@ -886,7 +888,7 @@ export function WidgetTile({
 
 /* --- the open notch: header row, then the tab under it ------------------ */
 
-export type NotchTab = "home" | "shelf" | "widgets";
+export type NotchTab = "home" | "shelf" | "widgets" | "approve";
 
 const tabs: { id: string; icon: string; s: number }[] = [
   { id: "home", icon: "house", s: 17 },
@@ -902,6 +904,8 @@ const labels: Record<NotchTab, string> = {
     "The open notch on its Shelf tab: an AirDrop target beside an empty shelf that reads Drop files here.",
   widgets:
     "The open notch on its Widgets tab: reminders, battery, AI usage, Safari tabs, memory in use, the weather and the time.",
+  approve:
+    "The open notch asking: Allow Claude to run a command? The command is rm -rf node_modules && npm install, with Deny and Allow buttons and a countdown.",
 };
 
 /** A dashed outline with round caps, which a CSS border can't draw. */
@@ -1014,6 +1018,31 @@ function ShelfTab() {
   );
 }
 
+/* --- A Claude Code permission request ------------------------------------
+   AgentActivityViews.swift: while Claude Code is waiting on a permission,
+   one card takes Home over until it's answered. */
+
+function ApproveTab() {
+  return (
+    <div className="nb__body nb-ask">
+      <div className="nb-card nb-ask__card">
+        <div className="nb-ask__head">
+          <Glyph n="spark" s={13} c="nb-ask__spark" />
+          <span className="nb-ask__who">Claude Code · Eyebrow-Website</span>
+          <span className="nb-ask__left num">42s</span>
+        </div>
+        <span className="nb-ask__q">Allow Claude to run a command?</span>
+        <code className="nb-ask__cmd">rm -rf node_modules &amp;&amp; npm install</code>
+        <div className="nb-ask__actions">
+          <span className="nb-ask__later">Answer in Terminal</span>
+          <span className="nb-ask__btn">Deny</span>
+          <span className="nb-ask__btn nb-ask__btn--yes">Allow</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function WidgetsTab() {
   return (
     <div className="nb__body nb__grid">
@@ -1034,7 +1063,7 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
       <div className="nb__head">
         <div className="nb__tabs">
           {tabs.map((t) => (
-            <span key={t.id} className="nb__tab" data-on={t.id === tab}>
+            <span key={t.id} className="nb__tab" data-on={t.id === (tab === "approve" ? "home" : tab)}>
               <Glyph n={t.icon} s={t.s} />
             </span>
           ))}
@@ -1051,6 +1080,7 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
       {tab === "home" && <HomeTab />}
       {tab === "shelf" && <ShelfTab />}
       {tab === "widgets" && <WidgetsTab />}
+      {tab === "approve" && <ApproveTab />}
     </div>
   );
 }

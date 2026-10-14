@@ -50,6 +50,19 @@ const acts: Act[] = [
     body: "Zoom, Google Meet and Microsoft Teams are detected automatically. Mute, camera and leave, always in the same place.",
   },
   {
+    id: "claude",
+    label: "Claude Code",
+    title: "Claude Code gets to work",
+    body: "Each Claude Code session shows in the notch while it works, and the notch turns amber when one needs your permission. The song and the download don't go anywhere: they wait in a second, smaller notch beside it. Click it to swap.",
+  },
+  {
+    id: "approve",
+    label: "Approvals",
+    title: "It asks, and you answer",
+    body: "Hover, and the request is right there: the command or the file, with Allow and Deny. Leave it, and Claude Code asks in the terminal as usual.",
+    tab: "approve",
+  },
+  {
     id: "home",
     label: "Home",
     title: "Hover, and it opens",
@@ -71,6 +84,35 @@ const acts: Act[] = [
     tab: "widgets",
   },
 ];
+
+/* Claude Code at work, then asking: the glyph turns while it works, and
+   both marks go amber when a permission request comes in. */
+function ClaudeActivity() {
+  const [asking, setAsking] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setAsking(true), 2600);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="la la--claude" data-asking={asking}>
+      <span className="la__sq la__spark" aria-hidden="true">
+        <Glyph n="spark" s={18} />
+      </span>
+      <span className="la__gap" />
+      <span className="la__sq" aria-hidden="true">
+        {asking ? (
+          <span className="la__ask">!</span>
+        ) : (
+          <span className="la__busy">
+            <span className="num">2</span>
+          </span>
+        )}
+      </span>
+    </div>
+  );
+}
 
 /* The closed notch never grows downward: a live activity widens it, and
    puts what it has to say either side of the hardware. `la__gap` is the
@@ -136,6 +178,8 @@ function ActContent({ act }: { act: Act }) {
           </span>
         </div>
       );
+    case "claude":
+      return <ClaudeActivity />;
     case "call":
       return (
         <div className="la la--call">
@@ -209,6 +253,13 @@ export default function NotchStage() {
                   <ActContent act={current} />
                 </div>
               </div>
+              {current.id === "claude" && (
+                /* the second notch: what else is running, waiting its turn */
+                <div className="notch2" aria-hidden="true">
+                  <span className="notch2__art" />
+                  <span className="notch2__more num">+1</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

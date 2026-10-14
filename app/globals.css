@@ -654,7 +654,8 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 .notch[data-act="battery"] { --w: calc(var(--hw) + 194); }
 .notch[data-act="music"],
 .notch[data-act="download"],
-.notch[data-act="call"] { --w: calc(var(--hw) + 66); }
+.notch[data-act="call"],
+.notch[data-act="claude"] { --w: calc(var(--hw) + 66); }
 
 /* closed, a specular along the lower edge; open, a rim that fades out
    toward the menu bar */
@@ -881,6 +882,119 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 }
 
 .la__muted { color: var(--color-critical); }
+
+/* Claude Code: a turning glyph, then a busy ring with the number of
+   sessions at work. Both go amber when it asks for permission. */
+.la--claude { --claude: oklch(0.68 0.13 42); }
+.la--claude .la__gap { inline-size: calc((var(--hw) - 6) * var(--u)); }
+
+.la__spark { color: var(--claude); }
+.la__spark .wg-g { animation: spin 6s linear infinite; }
+.la--claude[data-asking="true"] .la__spark { color: var(--color-caution); }
+.la--claude[data-asking="true"] .la__spark .wg-g { animation: none; }
+
+.la__busy {
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 0 calc(2 * var(--u)) var(--color-border);
+  font-size: calc(8.5 * var(--u));
+  font-weight: 700;
+}
+
+/* the turning arc: a third of the ring, in Claude's orange */
+.la__busy::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: conic-gradient(var(--claude) 0 30%, transparent 30%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2 * var(--u)), black calc(100% - 2 * var(--u) + 0.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2 * var(--u)), black calc(100% - 2 * var(--u) + 0.5px));
+  animation: spin 1s linear infinite;
+}
+
+.la__ask {
+  inline-size: 100%;
+  block-size: 100%;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-caution);
+  color: var(--color-hardware);
+  font-size: calc(12 * var(--u));
+  font-weight: 800;
+  animation: ask-pulse 1.4s var(--ease) infinite alternate, flow-in 420ms var(--ease) both;
+}
+
+@keyframes spin { to { rotate: 1turn; } }
+@keyframes ask-pulse { from { opacity: 0.6; } to { opacity: 1; } }
+
+/* The second notch: when more than one live activity is running, the next
+   in line waits in a small notch of its own, 6pt to the right of the main
+   one. Like the main notch, it carries its own flared corners. */
+.notch2 {
+  --u: var(--cu);
+  --ear2: calc(4 * var(--u));
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: calc(100% + var(--ear) + 6 * var(--u) + var(--ear2));
+  inline-size: calc(44 * var(--u));
+  block-size: calc(32 * var(--u));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(3 * var(--u));
+  border-end-start-radius: calc(10 * var(--u));
+  border-end-end-radius: calc(10 * var(--u));
+  background: var(--color-hardware);
+  box-shadow: var(--elevation-4);
+  transform-origin: 0 0;
+  animation: notch2-in var(--dur-morph) var(--spring) 160ms both;
+}
+
+.notch2::before,
+.notch2::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inline-size: var(--ear2);
+  block-size: var(--ear2);
+  background: var(--color-hardware);
+}
+
+.notch2::before {
+  inset-inline-end: 100%;
+  -webkit-mask-image: radial-gradient(circle at 0 100%, transparent calc(var(--ear2) - 0.5px), black var(--ear2));
+  mask-image: radial-gradient(circle at 0 100%, transparent calc(var(--ear2) - 0.5px), black var(--ear2));
+}
+
+.notch2::after {
+  inset-inline-start: 100%;
+  -webkit-mask-image: radial-gradient(circle at 100% 100%, transparent calc(var(--ear2) - 0.5px), black var(--ear2));
+  mask-image: radial-gradient(circle at 100% 100%, transparent calc(var(--ear2) - 0.5px), black var(--ear2));
+}
+
+.notch2__art {
+  inline-size: calc(18 * var(--u));
+  block-size: calc(18 * var(--u));
+  border-radius: calc(4 * var(--u));
+  background: var(--notch-art);
+}
+
+.notch2__more {
+  font-size: calc(9 * var(--u));
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+}
+
+@keyframes notch2-in {
+  from { opacity: 0; scale: 0.3; }
+  to   { opacity: 1; scale: 1; }
+}
 
 /* --- the open notch ----------------------------------------------
    Drawn at the app's own point sizes. --u is one app point: every
@@ -1244,6 +1358,73 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 }
 
 /* the shelf: Quick Share's target, then the shelf itself */
+/* a Claude Code permission request, filling Home */
+.nb-ask { display: flex; }
+
+.nb-ask__card {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+}
+
+.nb-ask__head {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  font-size: calc(12 * var(--u));
+  color: var(--color-text-secondary);
+}
+
+.nb-ask__spark { color: var(--color-caution); }
+.nb-ask__who { flex: 1 1 0; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nb-ask__left { color: var(--color-text-tertiary); }
+
+.nb-ask__q { font-size: calc(15 * var(--u)); font-weight: 600; line-height: 1.25; }
+
+.nb-ask__cmd {
+  padding: calc(7 * var(--u)) calc(10 * var(--u));
+  border-radius: calc(12 * var(--u));
+  background: var(--color-field);
+  font-family: var(--font-mono);
+  font-size: calc(11 * var(--u));
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nb-ask__actions {
+  margin-block-start: auto;
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+}
+
+.nb-ask__later {
+  margin-inline-end: auto;
+  font-size: calc(12 * var(--u));
+  color: var(--color-text-tertiary);
+}
+
+.nb-ask__btn {
+  block-size: calc(34 * var(--u));
+  padding-inline: calc(18 * var(--u));
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  font-size: calc(13 * var(--u));
+  font-weight: 600;
+}
+
+.nb-ask__btn--yes {
+  background: var(--color-primary-fill);
+  box-shadow: none;
+  color: var(--color-primary-ink);
+}
+
 .nb-shelf { display: flex; gap: calc(12 * var(--u)); }
 
 .nb-share,
@@ -1856,6 +2037,10 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 
 @media (prefers-reduced-motion: reduce) {
   .la__bars i { animation: none; }
+  .la__spark .wg-g,
+  .la__busy::before,
+  .la__ask,
+  .notch2 { animation: none; }
   .notch__inner { animation: none; }
   .act__copy { opacity: 1; transform: none; }
   .magnetic { transform: none !important; }
