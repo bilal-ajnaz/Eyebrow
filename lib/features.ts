@@ -5,6 +5,8 @@ export type Feature = {
   group: string;
   /** an Eyebrow Pro feature */
   pro?: boolean;
+  /** not in the released app yet: "new" for a feature, "update" for a change to one that is */
+  soon?: "new" | "update";
 };
 
 /**
@@ -88,7 +90,8 @@ export const features: Feature[] = [
     group: "Focus",
     icon: "timer",
     title: "Timers and focus sessions",
-    body: "Start a timer in the notch and watch it count down in the closed state. No extra window, no extra app.",
+    body: "Start a timer in the notch and watch it count down in the closed state. No extra window, no extra app. Coming next: set it on a minutes ruler like Control Center's, with a click for every minute, and it remembers the length you like.",
+    soon: "update",
   },
   {
     group: "Day",
@@ -125,6 +128,14 @@ export const features: Feature[] = [
     icon: "sparkle",
     title: "Claude Code in the notch",
     body: "Claude's mark turns beside the notch while a session works, and goes amber when it needs your permission. With Pro, each session also gets a page in the Live tab, a box to message it, and Allow and Deny right in the notch.",
+    soon: "new",
+  },
+  {
+    group: "System",
+    icon: "live",
+    title: "Live activities",
+    body: "Music, a call, a timer, a download or a Claude Code session shows in the closed notch while it runs. When more than one is going, the rest wait in small notches either side; click one to swap. With Pro, each gets a page in the Live tab.",
+    soon: "new",
   },
   {
     group: "Security",
@@ -132,10 +143,11 @@ export const features: Feature[] = [
     title: "Face Unlock",
     body: "When your Mac is locked, Eyebrow recognises your face through the camera and types your password for you. Face data and password stay encrypted in this Mac's Keychain. A convenience, not extra security.",
     pro: true,
+    soon: "new",
   },
 ];
 
-export type Widget = { name: string; body: string; icon: string };
+export type Widget = { name: string; body: string; icon: string; soon?: "new" | "update" };
 
 /** WidgetKind — all seventeen, sizes S / M / L. */
 export const widgets: Widget[] = [
@@ -147,9 +159,9 @@ export const widgets: Widget[] = [
   { name: "Reminders", body: "Pending reminders", icon: "check" },
   { name: "System Stats", body: "CPU and memory usage", icon: "cpu" },
   { name: "Time & Weather", body: "Time, date and weather together", icon: "sun" },
-  { name: "Timer / Focus", body: "Focus timer with controls", icon: "timer" },
-  { name: "Teleprompter", body: "Your script, scrolling under the camera", icon: "text" },
-  { name: "Notes", body: "Write a note that saves to Notes", icon: "notes" },
+  { name: "Timer / Focus", body: "Focus timer with controls", icon: "timer", soon: "update" },
+  { name: "Teleprompter", body: "Your script, scrolling under the camera", icon: "text", soon: "new" },
+  { name: "Notes", body: "Write a note that saves to Notes", icon: "notes", soon: "new" },
   { name: "Clipboard", body: "Clipboard history by type", icon: "clipboard" },
   { name: "Transcription", body: "On-device speech transcription", icon: "waveform" },
   { name: "AI Usage", body: "Claude / Codex session info", icon: "sparkle" },
@@ -191,9 +203,9 @@ export const plans: Plan[] = [
     name: "Free",
     summary: "Every feature on this page, with no trial and no time limit.",
     items: [
-      "Nineteen of the twenty features, all seventeen widgets",
-      "Up to four tabs",
-      "Claude Code's status in the closed notch",
+      "Twenty of the twenty-one features, all seventeen widgets",
+      "Up to four tabs, across the top or as vertical tabs (coming soon)",
+      "Claude Code's status in the closed notch (coming soon)",
       "Clipboard history — your last 500 items",
       "One page of widgets",
       "HUD replacement in the default style",
@@ -211,9 +223,9 @@ export const plans: Plan[] = [
       "Custom HUD colours and themes",
       "iCloud sync for your Shelf and clipboard across Macs",
       "App icon packs and a custom Widgets tab icon",
-      "Face Unlock",
-      "The Live tab: a page for every running activity and each Claude Code session, with quick messages and permission answers",
-      "Up to six tabs",
+      "Face Unlock (coming soon)",
+      "The Live tab: a page for every running activity and each Claude Code session, with quick messages and permission answers (coming soon)",
+      "Up to six tabs, or as many as you like with vertical tabs (coming soon)",
     ],
   },
 ];
@@ -221,7 +233,7 @@ export const plans: Plan[] = [
 export const faqs = [
   {
     q: "Is Eyebrow really free?",
-    a: "Yes. Every feature on this page ships in the free app, with no trial, no time limit and no ads. Pro is a single one-time purchase that raises three ceilings — clipboard history, widget pages and tabs — and adds Face Unlock, the Live tab with Claude Code sessions, custom HUD colours and themes, iCloud sync, and app icon packs with a custom Widgets tab icon. Nothing you get for free is ever moved behind it.",
+    a: "Yes. Every feature on this page ships in the free app (those marked Coming soon arrive in the next update), with no trial, no time limit and no ads. Pro is a single one-time purchase that raises three ceilings — clipboard history, widget pages and tabs — and adds Face Unlock and the Live tab with Claude Code sessions (both coming in the next update), custom HUD colours and themes, iCloud sync, and app icon packs with a custom Widgets tab icon. Nothing you get for free is ever moved behind it.",
   },
   {
     q: "Is Pro a subscription?",

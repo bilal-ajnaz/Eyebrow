@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
 
 /**
  * The app's widget tiles, redrawn for the web from
@@ -898,7 +898,7 @@ export function WidgetTile({
 
 /* --- the open notch: header row, then the tab under it ------------------ */
 
-export type NotchTab = "home" | "shelf" | "widgets" | "approve" | "live" | "prompter" | "note";
+export type NotchTab = "home" | "shelf" | "widgets" | "approve" | "live" | "prompter" | "note" | "vertical";
 
 const tabs: { id: string; icon: string; s: number }[] = [
   { id: "home", icon: "house", s: 17 },
@@ -920,6 +920,8 @@ const labels: Record<NotchTab, string> = {
     "The open notch on its Live tab, showing the teleprompter: a script scrolling up past a marker, beside play, pause and stop buttons and speed and text-size controls.",
   note:
     "The open notch on its Widgets tab, turned into a note: a meeting note being typed on the left, and on the right a New Note card listing recently saved notes, with a Save to Notes button.",
+  vertical:
+    "The open notch with vertical tabs: a column of tab icons down the left, turning like a scroll wheel from Home to Shelf to Widgets, with that tab's page beside it.",
   approve:
     "The open notch asking: Allow Claude to run a command? The command is rm -rf node_modules && npm install, with Deny and Allow buttons and a countdown.",
 };
@@ -1216,12 +1218,66 @@ function WidgetsTab() {
   );
 }
 
+/* --- Vertical tabs: the tabs on a wheel down the side ------------------
+   TabSelectionView.swift's TabWheel: the selected tab sits in a band at
+   the middle, the rest shrink and fade, and each step is a haptic click. */
+
+const wheel = [
+  { id: "home", icon: "house" },
+  { id: "shelf", icon: "tray" },
+  { id: "widgets", icon: "group" },
+  { id: "clipboard", icon: "clipboard" },
+  { id: "audio", icon: "speaker" },
+];
+
+/** the wheel turns down two tabs and back, one step at a time */
+const wheelStops = [0, 1, 2, 1];
+
+function VerticalTab() {
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setInterval(() => setStep((s) => (s + 1) % wheelStops.length), 1800);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const on = wheelStops[step];
+  const page = wheel[on].id;
+
+  return (
+    <div className="nb__body nb-vert">
+      <div className="nb-wheel" style={{ "--on": on } as React.CSSProperties}>
+        {/* keyed on the step so the click ring plays again each turn */}
+        <span className="nb-wheel__band" key={step} data-turned={step > 0} />
+        <span className="nb-wheel__list">
+          {wheel.map((t, i) => (
+            <span
+              key={t.id}
+              className="nb-wheel__tab"
+              data-on={i === on}
+              style={{ "--away": Math.min(Math.abs(i - on), 3) } as React.CSSProperties}
+            >
+              <Glyph n={t.icon} s={17} />
+            </span>
+          ))}
+        </span>
+      </div>
+      <div className="nb-vert__page">
+        {page === "home" && <HomeTab />}
+        {page === "shelf" && <ShelfTab />}
+        {page === "widgets" && <WidgetsTab />}
+      </div>
+    </div>
+  );
+}
+
 export function OpenNotch({ tab }: { tab: NotchTab }) {
   return (
     <div className="nb" role="img" aria-label={labels[tab]}>
       <div className="nb__head">
         <div className="nb__tabs">
-          {tabs.map((t) => (
+          {tab !== "vertical" && tabs.map((t) => (
             <span key={t.id} className="nb__tab" data-on={t.id === (tab === "approve" ? "home" : tab === "note" ? "widgets" : tab)}>
               <Glyph n={t.icon} s={t.s} />
             </span>
@@ -1250,6 +1306,7 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
       {tab === "live" && <LiveTab />}
       {tab === "prompter" && <PrompterTab />}
       {tab === "note" && <NoteTab />}
+      {tab === "vertical" && <VerticalTab />}
     </div>
   );
 }

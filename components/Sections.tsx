@@ -14,7 +14,7 @@ export function Features() {
         <Reveal className="section-head">
           <span className="eyebrow-label">Everything it does</span>
           <h2 className="section-title">
-            Twenty things
+            Twenty-one things
             <br />
             <span className="section-title__muted">
               you were opening an app for.
@@ -23,7 +23,8 @@ export function Features() {
           <p className="section-lede">
             Turn on what you want, ignore the rest. Everything here except
             Face Unlock is in the free app, and nothing here phones home. Pro
-            raises a few ceilings and adds a few extras.
+            raises a few ceilings and adds a few extras. Anything marked
+            Coming soon arrives in the next update.
           </p>
         </Reveal>
 
@@ -51,6 +52,14 @@ export function Tabs() {
               them, and have it remember the one you were last on.
             </p>
             <ul className="keyline">
+              <li>
+                <Icon name="sliders" size={16} />
+                <span>
+                  Vertical tabs: a scroll wheel down the side of the notch, with
+                  a click for every tab. Unlimited tabs with Pro.{" "}
+                  <span className="soon">Coming soon</span>
+                </span>
+              </li>
               <li>
                 <Icon name="keyboard" size={16} />
                 <span>
@@ -124,7 +133,14 @@ export function Widgets() {
                 <span className="tile__icon">
                   <Icon name={w.icon} size={18} />
                 </span>
-                <span className="tile__name">{w.name}</span>
+                <span className="tile__name">
+                  {w.name}
+                  {w.soon && (
+                    <span className="soon">
+                      {w.soon === "update" ? "Update soon" : "Coming soon"}
+                    </span>
+                  )}
+                </span>
                 <span className="tile__body">{w.body}</span>
               </div>
             </Reveal>

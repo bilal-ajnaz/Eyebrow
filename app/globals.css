@@ -1384,6 +1384,70 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   inset-block-start: calc(3 * var(--u));
 }
 
+/* Vertical tabs: the tabs on a wheel down the left of the open notch,
+   the selected one in a band at the middle */
+/* wheel + gap is 40, so a full page of widget cells still fits beside it */
+.nb-vert { display: flex; gap: calc(4 * var(--u)); }
+
+.nb-wheel {
+  position: relative;
+  flex: none;
+  inline-size: calc(36 * var(--u));
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(transparent, black 22%, black 78%, transparent);
+  mask-image: linear-gradient(transparent, black 22%, black 78%, transparent);
+}
+
+.nb-wheel__band {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: calc(50% - 13 * var(--u));
+  inline-size: calc(36 * var(--u));
+  block-size: calc(26 * var(--u));
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  box-shadow: inset 0 0 0 1px var(--notch-fill-2);
+}
+
+/* each turn of the wheel is a haptic click in the app: a ring, here */
+.nb-wheel__band[data-turned="true"] { animation: wheel-click 420ms var(--ease); }
+
+@keyframes wheel-click {
+  from { box-shadow: inset 0 0 0 1px var(--notch-fill-2), 0 0 0 0 color-mix(in oklch, var(--color-text) 40%, transparent); }
+  to { box-shadow: inset 0 0 0 1px var(--notch-fill-2), 0 0 0 calc(5 * var(--u)) transparent; }
+}
+
+.nb-wheel__list {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(50% - 15 * var(--u));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(calc(var(--on) * -30 * var(--u)));
+  transition: transform 380ms cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+
+.nb-wheel__tab {
+  block-size: calc(30 * var(--u));
+  display: grid;
+  place-items: center;
+  color: var(--color-text-tertiary);
+  opacity: calc(1 - var(--away) * 0.25);
+  transform: scale(calc(1 - var(--away) * 0.12));
+  transition: opacity 380ms var(--ease), transform 380ms var(--ease), color 380ms var(--ease);
+}
+
+.nb-wheel__tab[data-on="true"] { color: var(--color-text); }
+
+.nb-vert__page { flex: 1 1 0; min-inline-size: 0; display: flex; flex-direction: column; }
+.nb-vert__page > .nb__body { margin-block-start: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nb-wheel__list, .nb-wheel__tab { transition: none; }
+  .nb-wheel__band { animation: none; }
+}
+
 .nb__tab--live i {
   position: absolute;
   inset-block-start: calc(5 * var(--u));
@@ -2768,6 +2832,24 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
   font-size: 11px;
   color: var(--brand-mint);
 }
+
+/* not in the released app yet: on cards, demo acts, widget tiles and tabs */
+.soon {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  background: color-mix(in oklch, var(--color-caution) 16%, transparent);
+  font-family: var(--font-sans, inherit);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: var(--color-caution);
+  white-space: nowrap;
+}
+
+.act__step .soon { padding: 2px 8px; }
+.tile__name .soon { display: block; inline-size: fit-content; margin-block-start: 4px; }
 
 /* --- filter chips ------------------------------------------------ */
 
