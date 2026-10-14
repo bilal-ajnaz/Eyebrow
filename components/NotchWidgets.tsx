@@ -1071,6 +1071,7 @@ function LiveTab() {
         <span className="nb-live__chip" data-on="true">
           <Glyph n="spark" s={12} c="nb-live__spark nb-live__spark--turning" />
           Eyebrow-Website
+          <i className="nb-live__close" />
         </span>
         <span className="nb-live__chip">
           <Glyph n="spark" s={12} c="nb-live__spark" />
@@ -1133,6 +1134,7 @@ function PrompterTab() {
         <span className="nb-live__chip" data-on="true">
           <Glyph n="script" s={12} />
           Teleprompter
+          <i className="nb-live__close" />
         </span>
       </div>
       <div className="nb-live__page">

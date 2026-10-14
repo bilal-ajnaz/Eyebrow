@@ -40,7 +40,7 @@ const acts: Act[] = [
     id: "claude",
     label: "Claude Code",
     title: "Claude Code gets to work",
-    body: "While a Claude Code session works, its mark turns beside the notch, and it goes amber when Claude needs your permission. Anything else that's running waits in a second, smaller notch beside it. Click it to swap.",
+    body: "While a Claude Code session works, its mark turns beside the notch, and it goes amber when Claude needs your permission. Anything else that's running waits in small notches either side of it, two at most. Click one to swap.",
   },
   {
     id: "live",
@@ -312,11 +312,16 @@ export default function NotchStage() {
                 </div>
               </div>
               {current.id === "claude" && (
-                /* the second notch: what else is running, waiting its turn */
-                <div className="notch2" aria-hidden="true">
-                  <span className="notch2__art" />
-                  <span className="notch2__more num">+1</span>
-                </div>
+                /* what else is running waits its turn in small notches, one
+                   each side: the song next on the right, the download left */
+                <>
+                  <div className="notch2" aria-hidden="true">
+                    <span className="notch2__art" />
+                  </div>
+                  <div className="notch2 notch2--left" aria-hidden="true">
+                    <Ring side={18} lw={2} p={0.68} tint="accent" />
+                  </div>
+                </>
               )}
             </div>
           </div>

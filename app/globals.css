@@ -941,27 +941,35 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 @keyframes spin { to { rotate: 1turn; } }
 @keyframes ask-pulse { from { opacity: 0.6; } to { opacity: 1; } }
 
-/* The second notch: when more than one live activity is running, the next
-   in line waits in a small notch of its own, 6pt to the right of the main
-   one. Like the main notch, it carries its own flared corners. */
+/* The small notches: when more than one live activity is running, the
+   next in line waits in a small notch 6pt to the right of the main one,
+   and the one after that to the left (at most two). Each has the main
+   notch's own shape: the same flared top corners and 14pt bottom radius. */
 .notch2 {
   --u: var(--cu);
-  --ear2: calc(4 * var(--u));
+  --ear2: var(--ear);
   position: absolute;
   inset-block-start: 0;
   inset-inline-start: calc(100% + var(--ear) + 6 * var(--u) + var(--ear2));
-  inline-size: calc(44 * var(--u));
+  inline-size: calc(34 * var(--u));
   block-size: calc(32 * var(--u));
   display: flex;
   align-items: center;
   justify-content: center;
   gap: calc(3 * var(--u));
-  border-end-start-radius: calc(10 * var(--u));
-  border-end-end-radius: calc(10 * var(--u));
+  border-end-start-radius: calc(14 * var(--u));
+  border-end-end-radius: calc(14 * var(--u));
   background: var(--color-hardware);
   box-shadow: var(--elevation-4);
   transform-origin: 0 0;
   animation: notch2-in var(--dur-morph) var(--spring) 160ms both;
+}
+
+.notch2--left {
+  inset-inline-start: auto;
+  inset-inline-end: calc(100% + var(--ear) + 6 * var(--u) + var(--ear2));
+  transform-origin: 100% 0;
+  animation-delay: 260ms;
 }
 
 .notch2::before,
@@ -1407,10 +1415,37 @@ main > .section:last-child { padding-block-end: var(--section-pad); }
 }
 
 .nb-live__chip[data-on="true"] {
+  padding-inline-end: calc(5 * var(--u));
   background: oklch(1 0 0 / 0.16);
   box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.1);
   color: var(--color-text);
 }
+
+/* the open page's chip carries an ×: closing a page hides it until that
+   activity starts again (LiveTabView.swift, LiveChip) */
+.nb-live__close {
+  position: relative;
+  flex: none;
+  inline-size: calc(14 * var(--u));
+  block-size: calc(14 * var(--u));
+  border-radius: var(--radius-full);
+  background: oklch(1 0 0 / 0.08);
+}
+
+.nb-live__close::before,
+.nb-live__close::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  inline-size: calc(7 * var(--u));
+  block-size: calc(1.5 * var(--u));
+  border-radius: var(--radius-full);
+  background: currentColor;
+  rotate: 45deg;
+}
+
+.nb-live__close::after { rotate: -45deg; }
 
 .nb-live__spark { color: oklch(0.68 0.13 42); }
 .nb-live__spark--turning { animation: spin 4s linear infinite; }
