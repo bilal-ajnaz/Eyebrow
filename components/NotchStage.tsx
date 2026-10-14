@@ -264,6 +264,37 @@ function ActContent({ act }: { act: Act }) {
 export default function NotchStage() {
   const [active, setActive] = useState(0);
   const actRefs = useRef<(HTMLElement | null)[]>([]);
+  const tickRow = useRef<HTMLOListElement | null>(null);
+
+  // The label row fades out at an end only where labels are hidden past it.
+  useEffect(() => {
+    const row = tickRow.current;
+    if (!row) return;
+    const measure = () => {
+      row.dataset.fadeStart = String(row.scrollLeft > 1);
+      row.dataset.fadeEnd = String(row.scrollLeft + row.clientWidth < row.scrollWidth - 1);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(row);
+    row.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      observer.disconnect();
+      row.removeEventListener("scroll", measure);
+    };
+  }, []);
+
+  // One row of labels: when they don't all fit, keep the current one centred.
+  useEffect(() => {
+    const row = tickRow.current;
+    const tick = row?.children[active] as HTMLElement | undefined;
+    if (!row || !tick || row.scrollWidth <= row.clientWidth + 1) return;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    row.scrollTo({
+      left: tick.offsetLeft - (row.clientWidth - tick.offsetWidth) / 2,
+      behavior: still ? "auto" : "smooth",
+    });
+  }, [active]);
 
   useEffect(() => {
     const nodes = actRefs.current.filter(Boolean) as HTMLElement[];
@@ -327,13 +358,15 @@ export default function NotchStage() {
           </div>
         </div>
 
-        <ol className="stage__ticks" aria-hidden="true">
-          {acts.map((a, i) => (
-            <li key={a.id} data-on={i === active}>
-              <span>{a.label}</span>
-            </li>
-          ))}
-        </ol>
+        <div className="stage__ticks" aria-hidden="true">
+          <ol className="stage__ticklist" ref={tickRow}>
+            {acts.map((a, i) => (
+              <li key={a.id} data-on={i === active}>
+                <span>{a.label}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
 
       <div className="stage__acts">
