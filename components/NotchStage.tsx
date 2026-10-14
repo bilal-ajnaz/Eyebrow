@@ -62,8 +62,15 @@ const acts: Act[] = [
     id: "widgets",
     label: "Widgets",
     title: "And when you want everything",
-    body: "The Widgets tab is your own layout — fifteen widgets in three sizes, alongside tabs for the shelf, clipboard, screenshots, audio and weather.",
+    body: "The Widgets tab is your own layout — sixteen widgets in three sizes, alongside tabs for the shelf, clipboard, screenshots, audio and weather.",
     tab: "widgets",
+  },
+  {
+    id: "teleprompter",
+    label: "Teleprompter",
+    title: "Read your script under the camera",
+    body: "Click the Teleprompter widget and your script counts down, then scrolls past a marker right below the camera, so you can read it and still look people in the eye. Set the speed and text size, click to pause, drag to go back a line. It runs in the Live tab, free or Pro.",
+    tab: "prompter",
   },
   {
     id: "shelf",

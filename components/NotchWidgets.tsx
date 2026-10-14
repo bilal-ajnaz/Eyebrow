@@ -124,6 +124,7 @@ const glyphs: Record<string, React.ReactNode> = {
   lock: <><rect x="5" y="10.5" width="14" height="10" rx="2.6" /><path {...stroke} strokeWidth="2.2" d="M8.2 10.5V8a3.8 3.8 0 0 1 7.6 0v2.5" /></>,
   lockOpen: <><rect x="5" y="10.5" width="14" height="10" rx="2.6" /><path {...stroke} strokeWidth="2.2" d="M8.2 10.5V8a3.8 3.8 0 0 1 7.3-1.5" /></>,
   faceid: <g {...stroke} strokeWidth="1.9"><path d="M3.5 8V6.2a2.7 2.7 0 0 1 2.7-2.7H8M16 3.5h1.8a2.7 2.7 0 0 1 2.7 2.7V8M20.5 16v1.8a2.7 2.7 0 0 1-2.7 2.7H16M8 20.5H6.2a2.7 2.7 0 0 1-2.7-2.7V16" /><path d="M8.6 9v1.4M15.4 9v1.4M12.2 9v4.2h-1.1M9 16a4.6 4.6 0 0 0 6 0" /></g>,
+  script: <><rect {...stroke} strokeWidth="1.9" x="4.4" y="2.8" width="15.2" height="18.4" rx="3" /><path {...stroke} strokeWidth="1.9" d="M8.2 8h7.6M8.2 12h7.6M8.2 16h4.6" /></>,
   chip: <><path fillRule="evenodd" d="M8.4 5h7.2A3.4 3.4 0 0 1 19 8.4v7.2a3.4 3.4 0 0 1-3.4 3.4H8.4A3.4 3.4 0 0 1 5 15.6V8.4A3.4 3.4 0 0 1 8.4 5Zm1.3 3.5a1.2 1.2 0 0 0-1.2 1.2v4.6a1.2 1.2 0 0 0 1.2 1.2h4.6a1.2 1.2 0 0 0 1.2-1.2V9.7a1.2 1.2 0 0 0-1.2-1.2Z" /><path {...stroke} strokeWidth="1.7" d="M9 2.4v1.4M12 2.4v1.4M15 2.4v1.4M9 20.2v1.4M12 20.2v1.4M15 20.2v1.4M2.4 9h1.4M2.4 12h1.4M2.4 15h1.4M20.2 9h1.4M20.2 12h1.4M20.2 15h1.4" /></>,
 };
 
@@ -894,7 +895,7 @@ export function WidgetTile({
 
 /* --- the open notch: header row, then the tab under it ------------------ */
 
-export type NotchTab = "home" | "shelf" | "widgets" | "approve" | "live";
+export type NotchTab = "home" | "shelf" | "widgets" | "approve" | "live" | "prompter";
 
 const tabs: { id: string; icon: string; s: number }[] = [
   { id: "home", icon: "house", s: 17 },
@@ -912,6 +913,8 @@ const labels: Record<NotchTab, string> = {
     "The open notch on its Widgets tab: reminders, battery, AI usage, Safari tabs, memory in use, the weather and the time.",
   live:
     "The open notch on its Live tab, beside the notch: a page for each running Claude Code session and for Now Playing. The open session shows what was asked, what Claude is doing, a message sent from the notch, and a box to message Claude.",
+  prompter:
+    "The open notch on its Live tab, showing the teleprompter: a script scrolling up past a marker, beside play, pause and stop buttons and speed and text-size controls.",
   approve:
     "The open notch asking: Allow Claude to run a command? The command is rm -rf node_modules && npm install, with Deny and Allow buttons and a countdown.",
 };
@@ -1102,6 +1105,62 @@ function LiveTab() {
   );
 }
 
+/* --- The teleprompter, a page of the Live tab ----------------------------
+   TeleprompterLivePage.swift: the script scrolling up past a reading line,
+   beside its transport, speed and text size. Started from its widget, so
+   it's there without Pro too. */
+
+const script =
+  "Good morning, everyone. Thanks for joining the quarterly review. " +
+  "Sales are up eleven percent on last quarter, and the new stores " +
+  "in Dubai Marina and Abu Dhabi opened on time. Next, a quick look " +
+  "at what we're planning for the next three months, and then " +
+  "we'll take your questions.";
+
+function PrompterTab() {
+  return (
+    <div className="nb__body nb-live">
+      <div className="nb-live__chips">
+        <span className="nb-live__chip">
+          <Glyph n="note" s={11} />
+          Now Playing
+        </span>
+        <span className="nb-live__chip" data-on="true">
+          <Glyph n="script" s={12} />
+          Teleprompter
+        </span>
+      </div>
+      <div className="nb-live__page">
+        <div className="nb-tp">
+          <span className="nb-tp__band" />
+          <span className="nb-tp__mark" />
+          <div className="nb-tp__view">
+            <p className="nb-tp__text">{script}</p>
+          </div>
+        </div>
+        <div className="nb-card nb-live__status nb-tp__controls">
+          <span className="nb-live__name">
+            <Glyph n="script" s={14} c="nb-tp__glyph" />
+            Teleprompter
+            <Glyph n="pencil" s={12} c="nb-tp__edit" />
+          </span>
+          <span className="nb-tp__transport">
+            <CircleButton d={28}><Glyph n="backward" s={13} /></CircleButton>
+            <CircleButton d={34} filled><Glyph n="pause" s={14} /></CircleButton>
+            <CircleButton d={28}><Glyph n="stop" s={11} /></CircleButton>
+          </span>
+          <span className="nb-tp__row">
+            Speed<b className="num">− &nbsp;1.25× &nbsp;+</b>
+          </span>
+          <span className="nb-tp__row">
+            Size<b className="num">− &nbsp;22 &nbsp;+</b>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function WidgetsTab() {
   return (
     <div className="nb__body nb__grid">
@@ -1127,7 +1186,7 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
             </span>
           ))}
         </div>
-        {tab === "live" && (
+        {(tab === "live" || tab === "prompter") && (
           /* with Pro, the Live tab sits just right of the hardware notch */
           <span className="nb__tab nb__tab--live" data-on="true">
             <Glyph n="live" s={17} />
@@ -1148,6 +1207,7 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
       {tab === "widgets" && <WidgetsTab />}
       {tab === "approve" && <ApproveTab />}
       {tab === "live" && <LiveTab />}
+      {tab === "prompter" && <PrompterTab />}
     </div>
   );
 }

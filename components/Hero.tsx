@@ -23,7 +23,7 @@ export default function Hero() {
         <p className="hero__lede">
           Eyebrow turns the dead black bar at the top of your Mac into a live
           control centre — now playing, system HUDs, a drag-and-drop shelf,
-          clipboard history, screenshots, call controls and fifteen widgets.
+          clipboard history, screenshots, call controls and sixteen widgets.
           It stays out of the way until it&nbsp;has something to say.
         </p>
 

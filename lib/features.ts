@@ -137,7 +137,7 @@ export const features: Feature[] = [
 
 export type Widget = { name: string; body: string; icon: string };
 
-/** WidgetKind — all fifteen, sizes S / M / L. */
+/** WidgetKind — all sixteen, sizes S / M / L. */
 export const widgets: Widget[] = [
   { name: "Clock", body: "Current time and date", icon: "clock" },
   { name: "Weather", body: "Temperature and conditions", icon: "cloud" },
@@ -148,6 +148,7 @@ export const widgets: Widget[] = [
   { name: "System Stats", body: "CPU and memory usage", icon: "cpu" },
   { name: "Time & Weather", body: "Time, date and weather together", icon: "sun" },
   { name: "Timer / Focus", body: "Focus timer with controls", icon: "timer" },
+  { name: "Teleprompter", body: "Your script, scrolling under the camera", icon: "text" },
   { name: "Clipboard", body: "Clipboard history by type", icon: "clipboard" },
   { name: "Transcription", body: "On-device speech transcription", icon: "waveform" },
   { name: "AI Usage", body: "Claude / Codex session info", icon: "sparkle" },
@@ -189,7 +190,7 @@ export const plans: Plan[] = [
     name: "Free",
     summary: "Every feature on this page, with no trial and no time limit.",
     items: [
-      "Nineteen of the twenty features, all fifteen widgets",
+      "Nineteen of the twenty features, all sixteen widgets",
       "Up to four tabs",
       "Claude Code's status in the closed notch",
       "Clipboard history — your last 500 items",
