@@ -11,7 +11,7 @@ export default function Hero() {
       <div className="shell hero__inner">
         <span className="hero__badge">
           <Icon name="sparkle" size={14} />
-          Free. Pro is one purchase, not a subscription.
+          New in 4.0: Face Unlock, the Live tab, Teleprompter and Notes
         </span>
 
         <h1 id="hero-title" className="hero__title">
@@ -23,7 +23,7 @@ export default function Hero() {
         <p className="hero__lede">
           Eyebrow turns the dead black bar at the top of your Mac into a live
           control centre — now playing, system HUDs, a drag-and-drop shelf,
-          clipboard history, screenshots, call controls and seventeen widgets.
+          clipboard history, screenshots, call controls and eighteen widgets.
           It stays out of the way until it&nbsp;has something to say.
         </p>
 

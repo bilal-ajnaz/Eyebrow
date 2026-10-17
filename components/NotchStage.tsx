@@ -43,7 +43,6 @@ const acts: Act[] = [
     label: "Claude Code",
     title: "Claude Code gets to work",
     body: "While a Claude Code session works, its mark turns beside the notch, and it goes amber when Claude needs your permission. With Pro, anything else that's running waits in small notches either side of it, two at most. Click one to swap.",
-    soon: true,
   },
   {
     id: "live",
@@ -52,7 +51,6 @@ const acts: Act[] = [
     body: "While something is running, the Live tab sits just right of the notch. Each Claude Code session gets its own page: what you asked, what it's doing, what it said, and a box to send it a quick message without finding the terminal. Calls, music, timers and downloads get a page too.",
     tab: "live",
     pro: true,
-    soon: true,
   },
   {
     id: "approve",
@@ -61,13 +59,12 @@ const acts: Act[] = [
     body: "When Claude Code needs permission, the request is right there: the command or the file, with Allow and Deny. Leave it, and Claude Code asks in the terminal as usual.",
     tab: "approve",
     pro: true,
-    soon: true,
   },
   {
     id: "widgets",
     label: "Widgets",
     title: "And when you want everything",
-    body: "The Widgets tab is your own layout — seventeen widgets in three sizes, alongside tabs for the shelf, clipboard, screenshots, audio and weather.",
+    body: "The Widgets tab is your own layout — eighteen widgets in three sizes, alongside tabs for the shelf, clipboard, screenshots, audio and weather.",
     tab: "widgets",
   },
   {
@@ -76,7 +73,6 @@ const acts: Act[] = [
     title: "Read your script under the camera",
     body: "Click the Teleprompter widget and your script counts down, then scrolls past a marker right below the camera, so you can read it and still look people in the eye. Set the speed and text size, click to pause, drag to go back a line. It runs in the Live tab, free or Pro.",
     tab: "prompter",
-    soon: true,
   },
   {
     id: "notes",
@@ -84,7 +80,6 @@ const acts: Act[] = [
     title: "Jot it down without switching apps",
     body: "Click the Notes widget and the Widgets tab becomes a note. Type a title on the first line, press ⌘↩, and it's saved to the Notes app, in your default folder. Close it halfway and the draft waits for you.",
     tab: "note",
-    soon: true,
   },
   {
     id: "vertical",
@@ -93,7 +88,6 @@ const acts: Act[] = [
     body: "Switch on vertical tabs and they run down the side of the open notch. Scroll over them and the wheel turns one tab at a time, with a click on the trackpad for each, and add as many tabs as you like.",
     tab: "vertical",
     pro: true,
-    soon: true,
   },
   {
     id: "shelf",
@@ -108,7 +102,6 @@ const acts: Act[] = [
     title: "It knows it's you",
     body: "When your Mac is locked, Eyebrow recognises your face through the camera and types your password for you. Your password and face data stay encrypted in this Mac's Keychain, never in iCloud. It's a convenience, not extra security, and your password always works.",
     pro: true,
-    soon: true,
   },
   {
     id: "call",

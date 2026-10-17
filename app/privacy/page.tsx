@@ -6,10 +6,10 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "What Eyebrow stores on your Mac, the three optional features that contact a third party, and what we never collect. No account, no analytics, no ads.",
+    "What Eyebrow stores on your Mac, the four optional features that contact a third party, and what we never collect. No account, no analytics, no ads.",
 };
 
-const EFFECTIVE = "9 October 2026";
+const EFFECTIVE = "15 October 2026";
 
 /** Every outbound request the app can make, and what triggers it. */
 const outbound = [
@@ -35,6 +35,12 @@ const outbound = [
     service: "ESPN",
     sent: "Nothing about you — a request for public scoreboard data",
     when: "While sports in Live Widgets is switched on",
+    off: "Settings › Widgets › Live Widgets",
+  },
+  {
+    service: "CoinGecko",
+    sent: "Nothing about you — a request for the current Bitcoin and Ethereum prices",
+    when: "While crypto prices in Live Widgets is switched on (off by default)",
     off: "Settings › Widgets › Live Widgets",
   },
   {
@@ -76,6 +82,9 @@ const local = [
   ["Calendar and Reminders", "Read from macOS to display your day. Never copied anywhere else."],
   ["Transcription", "Speech is transcribed by Apple's on-device recogniser. Audio never leaves your Mac and is not written to disk."],
   ["Browser tabs", "Read from the browsers you allow, shown in the notch, never stored or transmitted."],
+  ["Face Unlock", "Off until you turn it on (Pro). Eyebrow keeps a set of numbers derived from each scan of your face — never a photo — and never records video. It also keeps the Mac password you give it, so it can type it at the lock screen. Both are encrypted with a key held in this Mac's Keychain, which only Touch ID or your Mac password can release. They are never synced to iCloud and never leave your Mac. Face recognition runs on your Mac."],
+  ["Claude Code sessions", "Off until you turn it on (Pro). Eyebrow adds its hooks to Claude Code's settings in the folder you choose, then reads the session events Claude Code writes there to show them in the notch. The events stay on your Mac and are deleted after a few minutes. Turning the feature off removes the hooks."],
+  ["Notes", "A note you write in the Notes widget is saved to Apple Notes on your Mac. Eyebrow remembers the titles of your last few notes so it can reopen them."],
   ["Settings", "Your preferences, stored in the app's own settings on your Mac."],
   ["Pro", "Whether you own Eyebrow Pro. The app checks this with the App Store through Apple's StoreKit; Eyebrow never sees your name, card or Apple Account details, and keeps no record of the purchase beyond the entitlement Apple returns."],
 ];
@@ -83,7 +92,9 @@ const local = [
 const permissions = [
   ["Calendar and Reminders", "To show your events and reminders."],
   ["Microphone and Speech Recognition", "For on-device transcription."],
-  ["Accessibility", "To mute, turn the camera off and leave from the notch during a call."],
+  ["Accessibility", "To mute, turn the camera off and leave from the notch during a call, and, if you turn on Face Unlock, to type your password into the lock screen."],
+  ["Camera", "For the mirror preview in the notch and, if you turn on Face Unlock, to recognise your face when your Mac is locked. Video is never recorded or sent anywhere."],
+  ["Automation", "To control Music and Spotify, list and switch tabs in Safari, Chrome and Brave, and save the notes you write to Apple Notes."],
   ["Screenshots folder", "The one folder you choose, so new screenshots can be picked up from it. Eyebrow does not record your screen."],
   ["Notifications", "To alert you when a focus timer ends."],
   ["Location", "To fetch weather for where you are."],
@@ -121,17 +132,22 @@ export default function PrivacyPage() {
                 your calendar or your screen.
               </p>
               <p>
-                Three optional features contact a third party, because they
+                Four optional features contact a third party, because they
                 cannot work otherwise: <strong>Weather</strong>,{" "}
-                <strong>Lyrics</strong> and <strong>sports scores</strong> in
-                Live Widgets. Each is listed in full below, and each can be
-                switched off.
+                <strong>Lyrics</strong>, and <strong>sports scores</strong> and{" "}
+                <strong>crypto prices</strong> in Live Widgets. Each is listed
+                in full below, and each can be switched off.
               </p>
               <p>
                 Eyebrow Pro changes none of that. The purchase is handled by
                 Apple, and the optional <strong>iCloud sync</strong> it adds
                 stores your Shelf and clipboard in your own iCloud account,
                 where we cannot read them. It is off until you turn it on.
+              </p>
+              <p>
+                <strong>Face Unlock</strong>, if you turn it on, keeps your
+                face data and Mac password encrypted on your Mac only. They are
+                never uploaded and never synced to iCloud.
               </p>
             </div>
           </div>
@@ -222,6 +238,11 @@ export default function PrivacyPage() {
             7, 30 or 365 days — and older items are removed automatically. You
             can clear the history at any time. Shelf items stay until you
             remove them, and screenshots are discarded once you dismiss them.
+          </p>
+          <p>
+            Settings › Face Unlock › Delete Face Data and Password removes
+            every scanned face and your saved password from the Keychain at
+            once, and turns Face Unlock off.
           </p>
           <p>
             Because everything is local, deleting Eyebrow deletes your data

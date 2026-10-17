@@ -14,7 +14,7 @@ export function Features() {
         <Reveal className="section-head">
           <span className="eyebrow-label">Everything it does</span>
           <h2 className="section-title">
-            Twenty-one things
+            Twenty-three things
             <br />
             <span className="section-title__muted">
               you were opening an app for.
@@ -58,8 +58,7 @@ export function Tabs() {
                 <span>
                   Vertical tabs, with Pro: a scroll wheel down the side of the
                   notch, with a click for every tab, and as many tabs as you
-                  like.{" "}
-                  <span className="soon">Coming soon</span>
+                  like.
                 </span>
               </li>
               <li>
@@ -118,7 +117,7 @@ export function Widgets() {
         <Reveal className="section-head">
           <span className="eyebrow-label">Widgets</span>
           <h2 className="section-title">
-            Seventeen widgets,
+            Eighteen widgets,
             <br />
             <span className="section-title__muted">three sizes.</span>
           </h2>
