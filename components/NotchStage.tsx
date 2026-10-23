@@ -340,7 +340,13 @@ export default function NotchStage() {
   const open = Boolean(current.tab);
 
   return (
-    <section className="stage" id="how" aria-label="What Eyebrow does, as you scroll">
+    <section
+      className="stage"
+      id="how"
+      data-notch="How it works"
+      data-n="01"
+      aria-label="What Eyebrow does, as you scroll"
+    >
       <div className="stage__pin">
         <div className="stage__frame">
           <div className="stage__screen">
