@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Icon from "./Icon";
 import Reveal from "./Reveal";
 import { features } from "@/lib/features";
 
@@ -14,16 +15,13 @@ function countFor(group: string) {
 }
 
 /**
- * The features as an index: one ruled row each, numbered in the order the
- * app lists them, behind a row of area filters. The number stays with the
- * feature when the list is narrowed, so "No. 14" means the same thing in
- * every view.
+ * The feature cards behind a row of tag chips. Picking a chip narrows the
+ * grid to that area; the cards re-enter with the usual staggered reveal.
  */
 export default function FeatureGrid() {
   const [group, setGroup] = useState(ALL);
-  const shown = features
-    .map((f, i) => ({ ...f, n: i + 1 }))
-    .filter((f) => group === ALL || f.group === group);
+  const shown =
+    group === ALL ? features : features.filter((f) => f.group === group);
 
   return (
     <>
@@ -42,25 +40,29 @@ export default function FeatureGrid() {
         ))}
       </div>
 
-      {/* keyed on the group so every row re-mounts and re-reveals */}
-      <ol className="index" key={group}>
+      {/* keyed on the group so every card re-mounts and re-reveals */}
+      <div className="grid grid--3" key={group}>
         {shown.map((f, i) => (
-          <Reveal key={f.title} as="li" delay={Math.min(i, 8) * 30}>
-            <span className="index__n num">{String(f.n).padStart(2, "0")}</span>
-            <h3 className="index__title">{f.title}</h3>
-            <p className="index__body">{f.body}</p>
-            <span className="index__tags">
-              <span>{f.group}</span>
-              {f.pro && <span className="index__pro">Pro</span>}
-              {f.soon && (
-                <span className="soon">
-                  {f.soon === "update" ? "Update soon" : "Coming soon"}
-                </span>
-              )}
-            </span>
+          <Reveal key={f.title} as="article" delay={(i % 3) * 60}>
+            <div className="card">
+              <span className="card__icon">
+                <Icon name={f.icon} size={26} />
+              </span>
+              <span className="card__group">
+                {f.group}
+                {f.pro && <span className="card__pro">Pro</span>}
+                {f.soon && (
+                  <span className="soon">
+                    {f.soon === "update" ? "Update coming soon" : "Coming soon"}
+                  </span>
+                )}
+              </span>
+              <h3 className="card__title">{f.title}</h3>
+              <p className="card__body">{f.body}</p>
+            </div>
           </Reveal>
         ))}
-      </ol>
+      </div>
 
       <p className="filter__status" role="status" aria-live="polite">
         {group === ALL

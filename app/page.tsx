@@ -1,6 +1,7 @@
 import Hero from "@/components/Hero";
 import NotchStage from "@/components/NotchStage";
-import { Features, Tabs, Widgets, Privacy, Pricing, Faq } from "@/components/Sections";
+import Showcase from "@/components/Showcase";
+import { Privacy, Pricing, Faq } from "@/components/Sections";
 import { faqs } from "@/lib/features";
 import { site } from "@/lib/site";
 
@@ -26,6 +27,8 @@ const jsonLd = {
   ],
 };
 
+/* The tour plays in one screen, the rest of the app fits in one bento,
+   and the full lists live on /features. */
 export default function Home() {
   return (
     <>
@@ -35,9 +38,7 @@ export default function Home() {
       />
       <Hero />
       <NotchStage />
-      <Features />
-      <Tabs />
-      <Widgets />
+      <Showcase />
       <Privacy />
       <Pricing />
       <Faq />

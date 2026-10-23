@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Glyph, OpenNotch, Ring, type NotchTab } from "./NotchWidgets";
+import Reveal from "./Reveal";
 
 type Act = {
   id: string;
@@ -280,10 +281,63 @@ function ActContent({ act }: { act: Act }) {
   }
 }
 
+/**
+ * The display pins while you scroll, and the scroll plays the acts: each
+ * takes a third of a screen (--act-step in globals.css), so all seventeen
+ * pass in a few screens rather than one each. Labels jump to their act.
+ */
 export default function NotchStage() {
   const [active, setActive] = useState(0);
-  const actRefs = useRef<(HTMLElement | null)[]>([]);
+  const [still, setStill] = useState(false);
+  const trackRef = useRef<HTMLDivElement | null>(null);
   const tickRow = useRef<HTMLOListElement | null>(null);
+
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setStill(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+
+  // How far through the track the window is decides the act; read once a
+  // frame at most, however fast the scroll events come.
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let frame = 0;
+    const read = () => {
+      frame = 0;
+      const span = track.offsetHeight - window.innerHeight;
+      if (span <= 0) return;
+      const progress = -track.getBoundingClientRect().top / span;
+      const index = Math.floor(Math.min(Math.max(progress, 0), 0.9999) * acts.length);
+      setActive(index);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(read);
+    };
+    read();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  // A label scrolls the page to the middle of its act's stretch.
+  function jumpTo(index: number) {
+    const track = trackRef.current;
+    if (!track) return;
+    const span = track.offsetHeight - window.innerHeight;
+    const top = track.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({
+      top: top + ((index + 0.5) / acts.length) * span,
+      behavior: still ? "auto" : "smooth",
+    });
+  }
 
   // The label row fades out at an end only where labels are hidden past it.
   useEffect(() => {
@@ -308,114 +362,104 @@ export default function NotchStage() {
     const row = tickRow.current;
     const tick = row?.children[active] as HTMLElement | undefined;
     if (!row || !tick || row.scrollWidth <= row.clientWidth + 1) return;
-    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     row.scrollTo({
       left: tick.offsetLeft - (row.clientWidth - tick.offsetWidth) / 2,
       behavior: still ? "auto" : "smooth",
     });
-  }, [active]);
-
-  useEffect(() => {
-    const nodes = actRefs.current.filter(Boolean) as HTMLElement[];
-    if (!nodes.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            const index = Number(entry.target.getAttribute("data-index"));
-            setActive(index);
-          }
-        }
-      },
-      // whichever act is crossing the middle of the viewport wins
-      { rootMargin: "-50% 0px -50% 0px", threshold: 0 },
-    );
-
-    nodes.forEach((n) => observer.observe(n));
-    return () => observer.disconnect();
-  }, []);
+  }, [active, still]);
 
   const current = acts[active];
   const open = Boolean(current.tab);
 
   return (
-    <section
-      className="stage"
-      id="how"
-      data-notch="How it works"
-      data-n="01"
-      aria-label="What Eyebrow does, as you scroll"
-    >
-      <div className="stage__pin">
-        <div className="stage__frame">
-          <div className="stage__screen">
-            <div className="stage__menubar" aria-hidden="true">
-              <span className="stage__menus">
-                <b>Finder</b>
-                <span>File</span>
-              </span>
-              <span className="stage__status">
-                <i className="stage__cell" />
-                <span className="num">Sun 11 Oct 8:36</span>
-              </span>
-            </div>
-            <div className="notch-shell" data-open={open}>
-              <div className="notch" data-act={current.id} data-open={open}>
-                <div className="notch__glow" aria-hidden="true" />
-                <div className="notch__inner" key={current.id}>
-                  <ActContent act={current} />
-                </div>
-              </div>
-              {current.id === "claude" && (
-                /* what else is running waits its turn in small notches, one
-                   each side: the song next on the right, the download left */
-                <>
-                  <div className="notch2" aria-hidden="true">
-                    <span className="notch2__art" />
-                  </div>
-                  <div className="notch2 notch2--left" aria-hidden="true">
-                    <Ring side={18} lw={2} p={0.68} tint="accent" />
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="stage__ticks" aria-hidden="true">
-          <ol className="stage__ticklist" ref={tickRow}>
-            {acts.map((a, i) => (
-              <li key={a.id} data-on={i === active}>
-                <span>{a.label}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
+    <section className="section stage" id="how" aria-labelledby="how-title">
+      <div className="shell">
+        <Reveal className="section-head">
+          <span className="eyebrow-label">How it works</span>
+          <h2 className="section-title" id="how-title">
+            It stays quiet.
+            <br />
+            <span className="section-title__muted">
+              Until it has something to say.
+            </span>
+          </h2>
+        </Reveal>
       </div>
 
-      <div className="stage__acts">
-        {acts.map((a, i) => (
-          <article
-            key={a.id}
-            className="act"
-            id={`act-${i + 1}`}
-            data-index={i}
-            ref={(el) => {
-              actRefs.current[i] = el;
-            }}
-          >
-            <div className="act__copy" data-on={i === active}>
-              <span className="act__step num">
-                {String(i + 1).padStart(2, "0")}
-                {a.pro && <span className="act__pro">Pro</span>}
-                {a.soon && <span className="soon">Coming soon</span>}
-              </span>
-              <h3 className="act__title">{a.title}.</h3>
-              <p className="act__body">{a.body}</p>
+      <div
+        className="stage__track"
+        ref={trackRef}
+        style={{ "--acts": acts.length } as React.CSSProperties}
+      >
+        <div className="stage__pin">
+          <div className="stage__frame" aria-hidden="true">
+            <div className="stage__screen">
+              <div className="stage__menubar">
+                <span className="stage__menus">
+                  <b>Finder</b>
+                  <span>File</span>
+                </span>
+                <span className="stage__status">
+                  <i className="stage__cell" />
+                  <span className="num">Sun 11 Oct 8:36</span>
+                </span>
+              </div>
+              <div className="notch-shell" data-open={open}>
+                <div className="notch" data-act={current.id} data-open={open}>
+                  <div className="notch__glow" />
+                  <div className="notch__inner" key={current.id}>
+                    <ActContent act={current} />
+                  </div>
+                </div>
+                {current.id === "claude" && (
+                  /* what else is running waits its turn in small notches, one
+                     each side: the song next on the right, the download left */
+                  <>
+                    <div className="notch2">
+                      <span className="notch2__art" />
+                    </div>
+                    <div className="notch2 notch2--left">
+                      <Ring side={18} lw={2} p={0.68} tint="accent" />
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
-          </article>
-        ))}
+          </div>
+
+          <div className="stage__controls">
+            <div className="stage__ticks">
+              <ol
+                className="stage__ticklist"
+                ref={tickRow}
+                aria-label="Jump to a moment"
+              >
+                {acts.map((a, i) => (
+                  <li key={a.id} data-on={i === active}>
+                    <button
+                      type="button"
+                      aria-current={i === active ? "step" : undefined}
+                      onClick={() => jumpTo(i)}
+                    >
+                      {a.label}
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+
+          <div className="act__copy" key={current.id}>
+            <span className="act__step num">
+              {String(active + 1).padStart(2, "0")}
+              <span className="act__of">/ {acts.length}</span>
+              {current.pro && <span className="act__pro">Pro</span>}
+              {current.soon && <span className="soon">Coming soon</span>}
+            </span>
+            <h3 className="act__title">{current.title}.</h3>
+            <p className="act__body">{current.body}</p>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -1,17 +1,24 @@
 import Link from "next/link";
+import Image from "next/image";
 import { site } from "@/lib/site";
 import Icon from "./Icon";
-import DownloadButton from "./DownloadButton";
 
 export default function Footer() {
   return (
     <footer className="footer">
       <div className="shell footer__inner">
-        <div className="footer__lead">
-          <p className="footer__line">
-            Put the notch <em>to work.</em>
-          </p>
-          <DownloadButton />
+        <div className="footer__brand">
+          <Image
+            src="/icon-256.png"
+            alt=""
+            width={28}
+            height={28}
+            className="nav__mark"
+          />
+          <div>
+            <p className="footer__name">{site.name}</p>
+            <p className="footer__tag">{site.tagline}</p>
+          </div>
         </div>
 
         <nav className="footer__cols" aria-label="Footer">
@@ -19,8 +26,8 @@ export default function Footer() {
             <h2>Product</h2>
             <ul>
               <li><Link href="/#how">How it works</Link></li>
-              <li><Link href="/#features">Features</Link></li>
-              <li><Link href="/#widgets">Widgets</Link></li>
+              <li><Link href="/features">Features</Link></li>
+              <li><Link href="/features#widgets">Widgets</Link></li>
               <li><Link href="/#pricing">Pricing</Link></li>
               <li><Link href="/compare">Compare</Link></li>
             </ul>
@@ -47,13 +54,6 @@ export default function Footer() {
             </ul>
           </div>
         </nav>
-      </div>
-
-      {/* the name, set large and cut off by the bottom of the page, with
-          the notch hanging into it from above */}
-      <div className="footer__mark" aria-hidden="true">
-        <span className="footer__notch" />
-        <span className="footer__word">{site.name}</span>
       </div>
 
       <div className="shell footer__base">

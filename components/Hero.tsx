@@ -1,65 +1,61 @@
 import DownloadButton from "./DownloadButton";
 import { site, appStoreReady } from "@/lib/site";
+import Icon from "./Icon";
 import Magnetic from "./Magnetic";
 
 export default function Hero() {
   return (
     <section className="hero" aria-labelledby="hero-title">
-      <div className="shell">
-        <p className="hero__kicker">
-          <span>A notch app for macOS</span>
-          <span className="hero__new">
-            New in 4.0 — Face Unlock, the Live tab, Teleprompter and Notes
-          </span>
-        </p>
+      <div className="hero__glow" aria-hidden="true" />
+
+      <div className="shell hero__inner">
+        <span className="hero__badge">
+          <Icon name="sparkle" size={14} />
+          New in 4.0: Face Unlock, the Live tab, Teleprompter and Notes
+        </span>
 
         <h1 id="hero-title" className="hero__title">
-          Your notch,
-          <br />
-          finally doing <em>something.</em>
+          <span className="hero__wordmark">{site.name}</span>
         </h1>
 
-        <div className="hero__foot">
-          <p className="hero__lede">
-            {site.name} turns the dead black bar at the top of your Mac into a
-            live control centre — now playing, system HUDs, a drag-and-drop
-            shelf, clipboard history, screenshots, call controls and eighteen
-            widgets. It stays out of the way until it&nbsp;has something to
-            say.
-          </p>
+        <p className="hero__tagline">{site.tagline}</p>
 
-          <div className="hero__act">
-            <div className="hero__actions">
-              <Magnetic>
-                <DownloadButton />
-              </Magnetic>
-              <a className="textlink" href="#how">
-                Watch it work ↓
-              </a>
-            </div>
-            <dl className="hero__facts">
-              <div>
-                <dt>Price</dt>
-                <dd>Free · Pro is one-time</dd>
-              </div>
-              <div>
-                <dt>Needs</dt>
-                <dd>
-                  {site.minMacOS} or later
-                  {appStoreReady ? "" : " · listing goes live shortly"}
-                </dd>
-              </div>
-              <div>
-                <dt>Account</dt>
-                <dd>None. No tracking.</dd>
-              </div>
-              <div>
-                <dt>No notch?</dt>
-                <dd>Works without one, too</dd>
-              </div>
-            </dl>
-          </div>
+        <p className="hero__lede">
+          Eyebrow turns the dead black bar at the top of your Mac into a live
+          control centre — now playing, system HUDs, a drag-and-drop shelf,
+          clipboard history, screenshots, call controls and eighteen widgets.
+          It stays out of the way until it&nbsp;has something to say.
+        </p>
+
+        <div className="hero__actions">
+          <Magnetic>
+            <DownloadButton />
+          </Magnetic>
+          <a className="textlink" href="#how">
+            See what it does ›
+          </a>
         </div>
+
+        <p className="btn-note">
+          {appStoreReady
+            ? `${site.minMacOS} or later · Apple silicon and Intel`
+            : `${site.minMacOS} or later · Apple silicon and Intel · App Store listing goes live shortly`}
+        </p>
+
+        <ul className="hero__facts">
+          <li>
+            <Icon name="lock" size={15} />
+            No account, no tracking
+          </li>
+          <li>
+            <Icon name="display" size={15} />
+            Works without a notch, too
+          </li>
+          <li>
+            <Icon name="gear" size={15} />
+            Every feature is optional
+          </li>
+        </ul>
       </div>
     </section>
   );
