@@ -118,6 +118,14 @@ export const features: Feature[] = [
   },
   {
     group: "Day",
+    icon: "bell",
+    title: "Meeting reminder",
+    body: "A minute before a meeting starts, the notch opens by itself with the title, the time and a live countdown. Join the call, press OK, or snooze it for 1 or 5 minutes or until it starts. It stays open until you answer, and it can remind you at the start or up to 10 minutes before, for every event or only ones with a call or other people.",
+    pro: true,
+    soon: "new",
+  },
+  {
+    group: "Day",
     icon: "cloud",
     title: "Weather",
     body: "Current conditions and temperature in the notch, in Celsius or Fahrenheit. Uses your approximate location to fetch a forecast from Open-Meteo.",
@@ -211,7 +219,7 @@ export type Plan = {
  * Free vs Pro. Pro never takes anything away from Free — it raises three
  * ceilings (clipboard history, widget pages, tabs) and adds what did not
  * exist before (Face Unlock, vertical tabs, live activities and the Live
- * tab with Claude Code sessions, the floating shelf and Shelf file tools, custom
+ * tab with Claude Code sessions, the floating shelf and Shelf file tools, the meeting reminder, custom
  * HUD colours and themes, iCloud sync, icon packs with a custom Widgets tab
  * icon).
  */
@@ -221,7 +229,7 @@ export const plans: Plan[] = [
     name: "Free",
     summary: "Every feature on this page not marked Pro, with no trial and no time limit.",
     items: [
-      "Twenty of the twenty-three features, all eighteen widgets",
+      "Twenty of the twenty-four features, all eighteen widgets",
       "Up to four tabs, across the top",
       "Claude Code status in the closed notch (Codex coming soon)",
       "Clipboard history — your last 500 items",
@@ -243,6 +251,7 @@ export const plans: Plan[] = [
       "App icon packs and a custom Widgets tab icon",
       "Floating shelf: shake a file while dragging to keep it on the Shelf (coming soon)",
       "Shelf tools: compress and combine PDFs, compress videos, make GIFs (coming soon)",
+      "Meeting reminder: the notch opens before a meeting, with Join, OK and snooze (coming soon)",
       "Face Unlock",
       "Live activities: everything that's running waits in small notches either side, one click to swap",
       "The Live tab: a page for every running activity and each Claude Code session, with quick messages and permission answers (Codex sessions coming soon)",
@@ -254,7 +263,7 @@ export const plans: Plan[] = [
 export const faqs = [
   {
     q: "Is Eyebrow really free?",
-    a: "Yes. Every feature on this page not marked Pro ships in the free app (those marked Coming soon arrive in the next update), with no trial, no time limit and no ads. Pro is a single one-time purchase that raises three ceilings — clipboard history, widget pages and tabs — and adds Face Unlock, vertical tabs, live activities, the Live tab with Claude Code sessions, custom HUD colours and themes, iCloud sync, and app icon packs with a custom Widgets tab icon. The next update adds a floating shelf and PDF and video tools for the Shelf. Nothing you get for free is ever moved behind it.",
+    a: "Yes. Every feature on this page not marked Pro ships in the free app (those marked Coming soon arrive in the next update), with no trial, no time limit and no ads. Pro is a single one-time purchase that raises three ceilings — clipboard history, widget pages and tabs — and adds Face Unlock, vertical tabs, live activities, the Live tab with Claude Code sessions, custom HUD colours and themes, iCloud sync, and app icon packs with a custom Widgets tab icon. The next update adds a floating shelf, PDF and video tools for the Shelf, and a meeting reminder that opens the notch when a meeting is about to start. Nothing you get for free is ever moved behind it.",
   },
   {
     q: "Is Pro a subscription?",

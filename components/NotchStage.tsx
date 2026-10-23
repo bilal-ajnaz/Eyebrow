@@ -104,6 +104,15 @@ const acts: Act[] = [
     pro: true,
   },
   {
+    id: "reminder",
+    label: "Meetings",
+    title: "It's nearly time for a meeting",
+    body: "A minute before it starts, the notch opens by itself with a live countdown. Join the call in one click, press OK, or snooze it. It waits for your answer instead of vanishing while you're away.",
+    tab: "reminder",
+    pro: true,
+    soon: true,
+  },
+  {
     id: "call",
     label: "Calls",
     title: "A meeting begins",

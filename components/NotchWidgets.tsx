@@ -121,6 +121,8 @@ const glyphs: Record<string, React.ReactNode> = {
   spark: <path d="M16.89 12.0L14.88 12.48L14.81 12.52L14.85 12.58L21.75 14.03L21.64 14.36L20.62 14.84L14.93 13.48L14.74 13.47L14.71 13.53L15.66 14.49L19.49 18.01L19.58 18.53L19.3 18.87L18.95 18.77L17.16 17.44L15.28 15.81L14.72 15.42L14.67 15.48L14.73 15.63L17.06 19.16L17.17 20.03L17.02 20.35L16.53 20.52L15.96 20.41L14.79 18.81L13.42 16.73L12.68 15.42L12.52 15.29L12.45 15.39L12.0 20.13L11.87 21.55L11.61 21.85L10.94 22.06L10.47 21.69L10.29 21.24L11.43 14.64L11.29 14.71L8.24 18.84L6.81 20.38L6.45 20.55L5.81 20.21L5.87 19.7L6.12 19.33L10.19 14.18L10.25 13.91L4.78 17.44L3.87 17.54L3.46 17.18L3.48 16.58L3.7 16.32L5.23 15.27L9.23 13.02L9.4 12.78L9.33 12.65L2.42 12.38L1.74 12.27L1.56 12.0L1.29 11.67L1.3 11.53L1.4 11.31L1.7 11.1L6.68 11.42L9.1 11.66L9.39 11.66L9.44 11.58L9.26 11.35L5.03 8.52L3.28 7.26L2.97 6.84L2.87 6.01L3.38 5.44L4.25 5.5L9.17 9.2L9.3 9.13L9.3 9.03L8.06 6.77L6.18 3.54L6.05 3.01L6.02 2.52L6.64 1.71L6.98 1.6L7.84 1.7L8.16 1.98L9.54 5.06L11.26 8.37L11.6 9.4L11.72 9.38L11.83 7.65L12.0 6.45L12.31 3.04L12.59 2.35L13.24 1.91L13.74 2.12L14.16 2.66L13.1 8.82L13.25 8.82L13.42 8.65L15.65 5.8L17.09 4.24L17.57 3.89L18.43 3.91L19.04 4.84L18.77 5.85L16.1 9.31L15.36 10.59L15.57 10.67L17.64 10.22L20.95 9.64L21.61 9.96L21.68 10.34L21.44 10.97L21.29 11.02Z" />,
   terminal: <><rect {...stroke} strokeWidth="1.8" x="2.8" y="4.2" width="18.4" height="15.6" rx="3" /><path {...stroke} strokeWidth="1.9" d="m7 9.6 2.8 2.4L7 14.4M12.4 14.6h4.4" /></>,
   live: <><circle cx="12" cy="12" r="2.6" /><path {...stroke} strokeWidth="1.9" d="M8.3 8.3a5.2 5.2 0 0 0 0 7.4M15.7 8.3a5.2 5.2 0 0 1 0 7.4M5.5 5.5a9.2 9.2 0 0 0 0 13M18.5 5.5a9.2 9.2 0 0 1 0 13" /></>,
+  alarm: <><circle {...stroke} strokeWidth="2" cx="12" cy="13" r="7.4" /><path {...stroke} strokeWidth="2" d="M12 9.2V13l2.6 1.8M3.6 6.2l3-2.6M20.4 6.2l-3-2.6" /></>,
+  chevronDown: <path {...stroke} strokeWidth="2.2" d="m6.5 9.5 5.5 5.5 5.5-5.5" />,
   bubble: <path {...stroke} strokeWidth="1.8" d="M5.6 4.5h12.8A2.1 2.1 0 0 1 20.5 6.6v8.3a2.1 2.1 0 0 1-2.1 2.1H11l-4.4 3.3V17H5.6a2.1 2.1 0 0 1-2.1-2.1V6.6a2.1 2.1 0 0 1 2.1-2.1Z" />,
   lock: <><rect x="5" y="10.5" width="14" height="10" rx="2.6" /><path {...stroke} strokeWidth="2.2" d="M8.2 10.5V8a3.8 3.8 0 0 1 7.6 0v2.5" /></>,
   lockOpen: <><rect x="5" y="10.5" width="14" height="10" rx="2.6" /><path {...stroke} strokeWidth="2.2" d="M8.2 10.5V8a3.8 3.8 0 0 1 7.3-1.5" /></>,
@@ -912,7 +914,7 @@ export function WidgetTile({
 
 /* --- the open notch: header row, then the tab under it ------------------ */
 
-export type NotchTab = "home" | "shelf" | "widgets" | "approve" | "live" | "prompter" | "note" | "vertical";
+export type NotchTab = "home" | "shelf" | "widgets" | "approve" | "reminder" | "live" | "prompter" | "note" | "vertical";
 
 const tabs: { id: string; icon: string; s: number }[] = [
   { id: "home", icon: "house", s: 17 },
@@ -936,6 +938,8 @@ const labels: Record<NotchTab, string> = {
     "The open notch on its Widgets tab, turned into a note: a meeting note being typed on the left, and on the right a New Note card listing recently saved notes, with a Save to Notes button.",
   vertical:
     "The open notch with vertical tabs: a column of tab icons down the left, turning like a scroll wheel from Home to Shelf to Widgets, with that tab's page beside it.",
+  reminder:
+    "The open notch reminding you of a meeting: Design Review, 9:00 to 10:00 AM on Google Meet, starting in 58 seconds, with Join and OK buttons and snooze for 1 minute, 5 minutes or until it starts.",
   approve:
     "The open notch asking: Allow Claude to run a command? The command is rm -rf node_modules && npm install, with Deny and Allow buttons and a countdown.",
 };
@@ -1076,6 +1080,55 @@ function ApproveTab() {
           <span className="nb-ask__later">Answer in Terminal</span>
           <span className="nb-ask__btn">Deny</span>
           <span className="nb-ask__btn nb-ask__btn--yes">Allow</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* --- A meeting about to start (Pro) --------------------------------------
+   MeetingReminderView.swift: the reminder takes the open notch over until
+   it's joined, dismissed or snoozed. The countdown runs like the app's. */
+
+function ReminderTab() {
+  const [left, setLeft] = useState(58);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setLeft((s) => (s > 1 ? s - 1 : 58)), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="nb__body nb-remind">
+      <div className="nb-card nb-remind__card">
+        <div className="nb-remind__info">
+          <span className="nb-remind__kicker">
+            <Glyph n="alarm" s={11} />
+            <span className="num">Starts in {left} second{left === 1 ? "" : "s"}</span>
+          </span>
+          <span className="nb-remind__title">
+            <i className="nb-remind__bar" />
+            Design Review
+          </span>
+          <span className="nb-remind__time num">9:00 – 10:00 AM</span>
+          <span className="nb-remind__where">Google Meet</span>
+          <span className="nb-remind__tools">
+            <span className="nb-remind__tool"><Glyph n="bubble" s={12} /></span>
+            <span className="nb-remind__tool"><Glyph n="calendar" s={12} /></span>
+          </span>
+        </div>
+        <div className="nb-remind__actions">
+          <span className="nb-remind__row">
+            <span className="nb-remind__btn nb-remind__btn--yes"><Glyph n="video" s={13} />Join</span>
+            <span className="nb-remind__more"><Glyph n="chevronDown" s={11} /></span>
+          </span>
+          <span className="nb-remind__btn">OK</span>
+          <span className="nb-remind__label">Snooze</span>
+          <span className="nb-remind__row">
+            <span className="nb-remind__chip">1 min</span>
+            <span className="nb-remind__chip">5 min</span>
+            <span className="nb-remind__chip">At start</span>
+          </span>
         </div>
       </div>
     </div>
@@ -1299,7 +1352,7 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
       <div className="nb__head">
         <div className="nb__tabs">
           {tab !== "vertical" && tabs.map((t) => (
-            <span key={t.id} className="nb__tab" data-on={t.id === (tab === "approve" ? "home" : tab === "note" ? "widgets" : tab)}>
+            <span key={t.id} className="nb__tab" data-on={t.id === (tab === "approve" || tab === "reminder" ? "home" : tab === "note" ? "widgets" : tab)}>
               <Glyph n={t.icon} s={t.s} />
             </span>
           ))}
@@ -1324,6 +1377,7 @@ export function OpenNotch({ tab }: { tab: NotchTab }) {
       {tab === "shelf" && <ShelfTab />}
       {tab === "widgets" && <WidgetsTab />}
       {tab === "approve" && <ApproveTab />}
+      {tab === "reminder" && <ReminderTab />}
       {tab === "live" && <LiveTab />}
       {tab === "prompter" && <PrompterTab />}
       {tab === "note" && <NoteTab />}
