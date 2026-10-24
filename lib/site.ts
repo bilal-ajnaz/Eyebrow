@@ -3,7 +3,7 @@ export const site = {
   tagline: "Your notch, finally doing something.",
   description:
     "Eyebrow turns the notch on your Mac into a live control centre — now playing, HUDs, a drag-and-drop shelf, clipboard history, screenshots, call controls and widgets. No account, no tracking. Free, with a one-time Pro upgrade.",
-  url: "https://eyebrow.app",
+  url: "https://eyebrow-notch.vercel.app",
   supportEmail: "bilalibnajnaz@gmail.com",
   minMacOS: "macOS 15 Sequoia",
   /**
