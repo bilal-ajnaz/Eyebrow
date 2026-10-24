@@ -33,8 +33,7 @@ export default function FeaturesPage() {
           <p className="section-lede">
             Turn on what you want, ignore the rest. Everything here not
             marked Pro is in the free app, and nothing here phones home. Pro
-            raises a few ceilings and adds a few extras. Anything marked
-            Coming soon arrives in the next update.
+            raises a few ceilings and adds a few extras.
           </p>
           <nav className="filter" aria-label="On this page">
             {jumps.map((j) => (

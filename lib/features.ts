@@ -55,7 +55,6 @@ export const features: Feature[] = [
     icon: "sun",
     title: "Stay Awake",
     body: "Keep your Mac awake for 30 minutes, 1, 2 or 4 hours, or until you turn it off. Start it from a widget or the menu bar.",
-    soon: "new",
   },
   {
     group: "Files",
@@ -69,7 +68,6 @@ export const features: Feature[] = [
     title: "Floating shelf and file tools",
     body: "Shake a file while you drag it and a small shelf appears beside the pointer, so it's on the Shelf without a trip to the notch. Shelf files get tools too: compress a PDF with its text still selectable, combine PDFs and images into one PDF, compress a video to HEVC up to 1080p, or turn its first 12 seconds into a GIF.",
     pro: true,
-    soon: "new",
   },
   {
     group: "Files",
@@ -82,7 +80,6 @@ export const features: Feature[] = [
     icon: "download",
     title: "Download progress",
     body: "Safari, Chrome, Firefox, Arc and Brave downloads show live progress in the notch — progress bar or percentage, with the source app's icon and the time left (\"2 min left\"). When the file lands, a green tick shows in the closed notch.",
-    soon: "update",
   },
   {
     group: "Files",
@@ -107,14 +104,12 @@ export const features: Feature[] = [
     icon: "timer",
     title: "Timers and focus sessions",
     body: "Start a timer in the notch and watch it count down in the closed state. No extra window, no extra app. Set it on a minutes ruler like Control Center's, and it remembers the length you like. Turn on Pomodoro mode and it cycles focus, a 5-minute break, and a 15-minute break after every fourth session.",
-    soon: "update",
   },
   {
     group: "Day",
     icon: "calendar",
     title: "Calendar and Reminders",
     body: "Upcoming events with auto-scroll to what's next, all-day events hidden if you like, and reminders you can tick off in place. Events with a Zoom, Google Meet, Teams, Webex or FaceTime link get a Join button, so the call opens straight from the notch. A countdown to your next meeting shows beside the closed notch (from 10 minutes before, or 2, 5, 15 or 30) and turns to Now when it starts.",
-    soon: "update",
   },
   {
     group: "Day",
@@ -122,7 +117,6 @@ export const features: Feature[] = [
     title: "Meeting reminder",
     body: "A minute before a meeting starts, the notch opens by itself with the title, the time and a live countdown. Join the call, press OK, or snooze it for 1 or 5 minutes or until it starts. It stays open until you answer, and it can remind you at the start or up to 10 minutes before, for every event or only ones with a call or other people.",
     pro: true,
-    soon: "new",
   },
   {
     group: "Day",
@@ -153,7 +147,6 @@ export const features: Feature[] = [
     icon: "sparkle",
     title: "Claude Code and Codex in the notch",
     body: "Claude's mark turns beside the notch while a session works, and goes amber when it needs your permission. With Pro, each Claude Code session also gets a page in the Live tab, a box to message it, and Allow and Deny right in the notch. Turn on Codex in Settings and its sessions show beside the notch too, to watch rather than answer: Codex's questions are still answered in the terminal. With Pro, each Codex session gets a Live tab page showing its activity.",
-    soon: "update",
   },
   {
     group: "System",
@@ -183,8 +176,8 @@ export const widgets: Widget[] = [
   { name: "Reminders", body: "Pending reminders", icon: "check" },
   { name: "System Stats", body: "CPU and memory usage", icon: "cpu" },
   { name: "Time & Weather", body: "Time, date and weather together", icon: "sun" },
-  { name: "Timer / Focus", body: "Focus timer, with a Pomodoro mode", icon: "timer", soon: "update" },
-  { name: "Stay Awake", body: "Keep the Mac awake for a while", icon: "sun", soon: "new" },
+  { name: "Timer / Focus", body: "Focus timer, with a Pomodoro mode", icon: "timer" },
+  { name: "Stay Awake", body: "Keep the Mac awake for a while", icon: "sun" },
   { name: "Teleprompter", body: "Your script, scrolling under the camera", icon: "text" },
   { name: "Notes", body: "Write a note that saves to Notes", icon: "notes" },
   { name: "Clipboard", body: "Clipboard history by type", icon: "clipboard" },
@@ -231,7 +224,7 @@ export const plans: Plan[] = [
     items: [
       "Twenty of the twenty-four features, all eighteen widgets",
       "Up to four tabs, across the top",
-      "Claude Code status in the closed notch (Codex coming soon)",
+      "Claude Code and Codex status in the closed notch",
       "Clipboard history — your last 500 items",
       "One page of widgets",
       "HUD replacement in the default style",
@@ -249,12 +242,12 @@ export const plans: Plan[] = [
       "Custom HUD colours and themes",
       "iCloud sync for your Shelf and clipboard across Macs",
       "App icon packs and a custom Widgets tab icon",
-      "Floating shelf: shake a file while dragging to keep it on the Shelf (coming soon)",
-      "Shelf tools: compress and combine PDFs, compress videos, make GIFs (coming soon)",
-      "Meeting reminder: the notch opens before a meeting, with Join, OK and snooze (coming soon)",
+      "Floating shelf: shake a file while dragging to keep it on the Shelf",
+      "Shelf tools: compress and combine PDFs, compress videos, make GIFs",
+      "Meeting reminder: the notch opens before a meeting, with Join, OK and snooze",
       "Face Unlock",
       "Live activities: everything that's running waits in small notches either side, one click to swap",
-      "The Live tab: a page for every running activity and each Claude Code session, with quick messages and permission answers (Codex sessions coming soon)",
+      "The Live tab: a page for every running activity and each Claude Code and Codex session, with quick messages and permission answers for Claude Code",
       "Up to six tabs across the top, or vertical tabs down the side with as many as you like",
     ],
   },
@@ -263,7 +256,7 @@ export const plans: Plan[] = [
 export const faqs = [
   {
     q: "Is Eyebrow really free?",
-    a: "Yes. Every feature on this page not marked Pro ships in the free app (those marked Coming soon arrive in the next update), with no trial, no time limit and no ads. Pro is a single one-time purchase that raises three ceilings — clipboard history, widget pages and tabs — and adds Face Unlock, vertical tabs, live activities, the Live tab with Claude Code sessions, custom HUD colours and themes, iCloud sync, and app icon packs with a custom Widgets tab icon. The next update adds a floating shelf, PDF and video tools for the Shelf, and a meeting reminder that opens the notch when a meeting is about to start. Nothing you get for free is ever moved behind it.",
+    a: "Yes. Every feature on this page not marked Pro ships in the free app, with no trial, no time limit and no ads. Pro is a single one-time purchase that raises three ceilings — clipboard history, widget pages and tabs — and adds Face Unlock, vertical tabs, live activities, the Live tab with Claude Code sessions, custom HUD colours and themes, iCloud sync, app icon packs with a custom Widgets tab icon, a floating shelf, PDF and video tools for the Shelf, and a meeting reminder that opens the notch when a meeting is about to start. Nothing you get for free is ever moved behind it.",
   },
   {
     q: "Is Pro a subscription?",

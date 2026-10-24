@@ -28,8 +28,7 @@ export function Features({ bare = false }: { bare?: boolean }) {
               Turn on what you want, ignore the rest. Everything here not
               marked Pro is in the free app, and nothing
               here phones home. Pro
-              raises a few ceilings and adds a few extras. Anything marked
-              Coming soon arrives in the next update.
+              raises a few ceilings and adds a few extras.
             </p>
           </Reveal>
         )}
