@@ -90,12 +90,12 @@ export const eyebrow: App = {
     cal: { mark: "yes", note: "With one-click Join" },
     wx: "yes",
     batt: { mark: "yes", note: "Bluetooth devices too" },
-    timer: { mark: "yes", note: "Pomodoro mode in the next update" },
+    timer: { mark: "yes", note: "With Pomodoro mode" },
     widgets: { mark: "yes", note: "18 widgets, three sizes" },
     calls: { mark: "yes", note: "Zoom, Meet, Teams" },
     stt: { mark: "yes", note: "On-device" },
     tabs: { mark: "yes", note: "Safari, Chrome, Brave" },
-    ai: { mark: "yes", note: "Usage widget, and live Claude Code sessions; Codex sessions in the next update" },
+    ai: { mark: "yes", note: "Usage widget, and live Claude Code and Codex sessions" },
   },
 };
 

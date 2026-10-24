@@ -81,7 +81,7 @@ export const features: Feature[] = [
     group: "Files",
     icon: "download",
     title: "Download progress",
-    body: "Safari, Chrome, Firefox, Arc and Brave downloads show live progress in the notch — progress bar or percentage, with the source app's icon. Coming next: the time left (\"2 min left\"), and a green tick in the closed notch when the file lands.",
+    body: "Safari, Chrome, Firefox, Arc and Brave downloads show live progress in the notch — progress bar or percentage, with the source app's icon and the time left (\"2 min left\"). When the file lands, a green tick shows in the closed notch.",
     soon: "update",
   },
   {
@@ -106,14 +106,14 @@ export const features: Feature[] = [
     group: "Focus",
     icon: "timer",
     title: "Timers and focus sessions",
-    body: "Start a timer in the notch and watch it count down in the closed state. No extra window, no extra app. Coming next: set it on a minutes ruler like Control Center's, with a click for every minute, and it remembers the length you like — plus a Pomodoro mode that cycles focus, a 5-minute break, and a 15-minute break after every fourth session.",
+    body: "Start a timer in the notch and watch it count down in the closed state. No extra window, no extra app. Set it on a minutes ruler like Control Center's, and it remembers the length you like. Turn on Pomodoro mode and it cycles focus, a 5-minute break, and a 15-minute break after every fourth session.",
     soon: "update",
   },
   {
     group: "Day",
     icon: "calendar",
     title: "Calendar and Reminders",
-    body: "Upcoming events with auto-scroll to what's next, all-day events hidden if you like, and reminders you can tick off in place. Events with a Zoom, Google Meet or Teams link get a Join button, so the call opens straight from the notch. Coming next: a countdown to your next meeting beside the closed notch (from 10 minutes before, or 2, 5, 15 or 30), which turns to Now when it starts — and Join for Webex and FaceTime too.",
+    body: "Upcoming events with auto-scroll to what's next, all-day events hidden if you like, and reminders you can tick off in place. Events with a Zoom, Google Meet, Teams, Webex or FaceTime link get a Join button, so the call opens straight from the notch. A countdown to your next meeting shows beside the closed notch (from 10 minutes before, or 2, 5, 15 or 30) and turns to Now when it starts.",
     soon: "update",
   },
   {
@@ -151,8 +151,8 @@ export const features: Feature[] = [
   {
     group: "AI",
     icon: "sparkle",
-    title: "Claude Code in the notch",
-    body: "Claude's mark turns beside the notch while a session works, and goes amber when it needs your permission. With Pro, each Claude Code session also gets a page in the Live tab, a box to message it, and Allow and Deny right in the notch. Coming next: Codex sessions beside it, to watch rather than answer, each with a page showing its activity.",
+    title: "Claude Code and Codex in the notch",
+    body: "Claude's mark turns beside the notch while a session works, and goes amber when it needs your permission. With Pro, each Claude Code session also gets a page in the Live tab, a box to message it, and Allow and Deny right in the notch. Turn on Codex in Settings and its sessions show beside the notch too, to watch rather than answer: Codex's questions are still answered in the terminal. With Pro, each Codex session gets a Live tab page showing its activity.",
     soon: "update",
   },
   {
