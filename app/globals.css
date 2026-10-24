@@ -4131,6 +4131,8 @@ select.field__input { appearance: none; cursor: pointer; }
   .cmp-pick__price { font-size: var(--text-12); }
 }
 .cmp-mono--img { border-radius: 23%; box-shadow: 0 4px 12px oklch(0 0 0 / 0.3); }
+/* other apps' icons come in their own shapes and padding, so shadow the artwork, not the box */
+.cmp-mono--logo { border-radius: 0; box-shadow: none; object-fit: contain; background: none; filter: drop-shadow(0 3px 8px oklch(0 0 0 / 0.3)); }
 
 .cmp-modes {
   display: flex;

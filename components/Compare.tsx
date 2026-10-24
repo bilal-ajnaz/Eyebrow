@@ -64,14 +64,21 @@ function CellView({ cell, compact = false }: { cell: Cell; compact?: boolean }) 
   );
 }
 
-/** The app's mark: initials on a tinted tile, not the vendor's own artwork. */
+/** The app's own icon, or initials on a tinted tile when we don't have one. */
 function Monogram({ app, size }: { app: App; size?: number }) {
   // without a size the tile takes it from CSS, so the picker can shrink it on phones
   const sized = (size ? { "--size": `${size}px` } : {}) as React.CSSProperties;
-  if (app.id === "eyebrow") {
+  if (app.icon) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src="/icon-256.png" alt="" width={size ?? 52} height={size ?? 52} className="cmp-mono cmp-mono--img" style={sized} />
+      <img
+        src={app.icon}
+        alt=""
+        width={size ?? 52}
+        height={size ?? 52}
+        className={`cmp-mono cmp-mono--img${app.id === "eyebrow" ? "" : " cmp-mono--logo"}`}
+        style={sized}
+      />
     );
   }
   return (

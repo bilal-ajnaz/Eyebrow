@@ -21,9 +21,11 @@ export type Cell = {
 export type App = {
   id: string;
   name: string;
-  /** two letters for the tile; we don't reuse other developers' icons */
+  /** the app's icon in public/, fetched from its own site, GitHub repo or App Store listing */
+  icon?: string;
+  /** two letters for the fallback tile when there's no icon */
   initials: string;
-  /** the tile's colour, an OKLCH hue */
+  /** the fallback tile's colour, an OKLCH hue */
   hue: number;
   price: string;
   model: string;
@@ -67,6 +69,7 @@ export const rows: { id: string; label: string; group: (typeof groups)[number] }
 export const eyebrow: App = {
   id: "eyebrow",
   name: "Eyebrow",
+  icon: "/icon-256.png",
   initials: "Ey",
   hue: 200,
   price: "Free",
@@ -103,6 +106,7 @@ export const apps: App[] = [
   {
     id: "notchnook",
     name: "NotchNook",
+    icon: "/compare/notchnook.png",
     initials: "NN",
     hue: 300,
     price: "$25",
@@ -141,6 +145,7 @@ export const apps: App[] = [
   {
     id: "alcove",
     name: "Alcove",
+    icon: "/compare/alcove.png",
     initials: "Al",
     hue: 320,
     price: "$13.99",
@@ -179,6 +184,7 @@ export const apps: App[] = [
   {
     id: "boring",
     name: "The Boring Notch",
+    icon: "/compare/boring.png",
     initials: "BN",
     hue: 25,
     price: "Free",
@@ -216,6 +222,7 @@ export const apps: App[] = [
   {
     id: "atoll",
     name: "Atoll",
+    icon: "/compare/atoll.png",
     initials: "At",
     hue: 185,
     price: "Free",
@@ -253,6 +260,7 @@ export const apps: App[] = [
   {
     id: "dynamiclake",
     name: "DynamicLake Pro",
+    icon: "/compare/dynamiclake.png",
     initials: "DL",
     hue: 280,
     price: "$13.99",
@@ -291,6 +299,7 @@ export const apps: App[] = [
   {
     id: "seam",
     name: "Seam",
+    icon: "/compare/seam.png",
     initials: "Se",
     hue: 55,
     price: "$29",
@@ -329,6 +338,7 @@ export const apps: App[] = [
   {
     id: "droppy",
     name: "Droppy",
+    icon: "/compare/droppy.png",
     initials: "Dr",
     hue: 235,
     price: "$9.99",
@@ -366,6 +376,7 @@ export const apps: App[] = [
   {
     id: "canopy",
     name: "Canopy",
+    icon: "/compare/canopy.png",
     initials: "Ca",
     hue: 140,
     price: "Paid",
@@ -403,6 +414,7 @@ export const apps: App[] = [
   {
     id: "perch",
     name: "Perch",
+    icon: "/compare/perch.png",
     initials: "Pe",
     hue: 340,
     price: "Free + Pro",
@@ -440,6 +452,7 @@ export const apps: App[] = [
   {
     id: "mewnotch",
     name: "MewNotch",
+    icon: "/compare/mewnotch.png",
     initials: "MN",
     hue: 220,
     price: "Free",
@@ -477,6 +490,7 @@ export const apps: App[] = [
   {
     id: "notchdrop",
     name: "NotchDrop",
+    icon: "/compare/notchdrop.png",
     initials: "ND",
     hue: 250,
     price: "Free",
