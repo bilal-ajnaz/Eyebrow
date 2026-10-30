@@ -35,11 +35,17 @@ const IH = 483;
 const ROW = { x: 103.5, y: 32, step: 76 };
 const COL = { x: 101.5, y: 265.5, step: 59.6 };
 const LIVE = { row: { x: 867, y: 32 }, col: { x: 101.5, y: 203.5 } };
-const tabIcons = ["home", "shelf", "clipboard", "widgets"] as const;
+/* The four free tabs, then more that only appear once the tabs are down the side,
+   where the column scrolls to show there's room for as many as you like. */
+const tabIcons = ["home", "shelf", "clipboard", "widgets", "audio", "weather", "call"] as const;
+const ROW_TABS = 4;
+// The part of the column inside the notch, in capture px; icons fade out at its ends.
+const COL_TOP = 178;
+const COL_BOTTOM = 468;
 const tabBases = ["home", "shelf", "clipboard", "widgets"] as const;
 
 /* Stretches of scroll, in window heights. */
-const SEG = { intro: 0.9, wheel: (N - 1) * 0.34, hold: 0.25, move: 0.6, tabs: 0.9, turn: 0.5, rest: 0.15 };
+const SEG = { intro: 0.9, wheel: (N - 1) * 0.34, hold: 0.25, move: 0.6, tabs: 0.9, turn: 0.5, climb: 0.7, rest: 0.15 };
 const AT = (() => {
   let t = 0;
   const at = {} as Record<keyof typeof SEG, number>;
@@ -142,6 +148,8 @@ export default function NotchStory() {
     const p = detent(seg(t, "wheel") * (N - 1));
     const k = detent(seg(t, "tabs") * 3);
     const turn = ease(seg(t, "turn"));
+    // Once the tabs are down the side, the next scroll turns the column like a wheel.
+    const climb = ease(seg(t, "climb")) * (tabIcons.length - ROW_TABS);
 
     // The notch: hero slot → feature slot → tabs slot.
     const { hero, feat, tabs } = slots.current;
@@ -198,13 +206,16 @@ export default function NotchStory() {
     const pivot = { x: lerp(ROW.x, COL.x, turn), y: lerp(ROW.y, COL.y, turn) };
     const step = lerp(ROW.step, COL.step, turn);
     const ang = (turn * Math.PI) / 2;
-    const at = (i: number) => ({ x: pivot.x + Math.cos(ang) * step * i, y: pivot.y + Math.sin(ang) * step * i });
+    const at = (i: number) => ({ x: pivot.x + Math.cos(ang) * step * i, y: pivot.y + Math.sin(ang) * step * i - climb * COL.step });
+    // Down the side, icons fade at the column's ends instead of spilling out of the notch.
+    const edge = (y: number) => lerp(1, clamp((y - COL_TOP) / 34) * clamp((COL_BOTTOM - y) / 34), turn);
     const iconSize = 48 * unit;
     icons.current.forEach((el, i) => {
       if (!el) return;
       const q = at(i);
+      const shown = i < ROW_TABS ? 1 : clamp((turn - 0.5) * 2);
       el.style.transform = px(q.x, q.y, iconSize);
-      el.style.opacity = String(0.62 + 0.36 * clamp(1 - Math.abs(i - sel)));
+      el.style.opacity = String((0.62 + 0.36 * clamp(1 - Math.abs(i - sel))) * shown * edge(q.y));
     });
     if (pill.current) {
       const q = at(sel);
@@ -213,13 +224,15 @@ export default function NotchStory() {
       pill.current.style.width = `${w}px`;
       pill.current.style.height = `${h}px`;
       pill.current.style.transform = `translate3d(${q.x * unit - w / 2}px, ${q.y * unit - h / 2}px, 0)`;
+      pill.current.style.opacity = String(edge(q.y));
     }
     if (live.current) {
       const size = 56 * unit;
       const fade = Math.abs(turn - 0.5) * 2;
       const q = turn < 0.5 ? LIVE.row : LIVE.col;
-      live.current.style.transform = px(q.x, q.y + (turn < 0.5 ? -turn : 1 - turn) * 40, size);
-      live.current.style.opacity = String(fade);
+      const y = q.y + (turn < 0.5 ? -turn : 1 - turn) * 40 - (turn < 0.5 ? 0 : climb * COL.step);
+      live.current.style.transform = px(q.x, y, size);
+      live.current.style.opacity = String(fade * (turn < 0.5 ? 1 : edge(y)));
     }
 
     const next: View = {

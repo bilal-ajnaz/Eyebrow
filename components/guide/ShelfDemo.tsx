@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { createPortal } from "react-dom";
 import Notch from "./Notch";
 
@@ -11,12 +11,12 @@ type Spot = { on: "screen" | "page"; x: number; y: number; r: number };
 /* Where each file starts, in % of the screen: strewn around the notch the way
    a desktop gets. A refresh puts them back here. */
 const files: { id: string; name: string; kind: Kind; shelf?: boolean; at: Spot }[] = [
-  { id: "plan", name: "Launch Plan.pdf", kind: "doc", shelf: true, at: { on: "screen", x: 14, y: 70, r: -4 } },
-  { id: "art", name: "Hero Artwork.png", kind: "image", at: { on: "screen", x: 9, y: 26, r: -9 } },
-  { id: "notes", name: "Release Notes.txt", kind: "text", at: { on: "screen", x: 89, y: 30, r: 7 } },
-  { id: "deck", name: "Pitch Deck.key", kind: "deck", at: { on: "screen", x: 24, y: 76, r: 5 } },
-  { id: "budget", name: "Budget.xlsx", kind: "sheet", at: { on: "screen", x: 77, y: 78, r: -6 } },
-  { id: "press", name: "Press Kit.pdf", kind: "doc", at: { on: "screen", x: 53, y: 84, r: 3 } },
+  { id: "plan", name: "Launch Plan.pdf", kind: "doc", shelf: true, at: { on: "screen", x: 20, y: 64, r: -4 } },
+  { id: "art", name: "Hero Artwork.png", kind: "image", at: { on: "screen", x: 17, y: 30, r: -9 } },
+  { id: "notes", name: "Release Notes.txt", kind: "text", at: { on: "screen", x: 83, y: 26, r: 7 } },
+  { id: "deck", name: "Pitch Deck.key", kind: "deck", at: { on: "screen", x: 33, y: 60, r: 5 } },
+  { id: "budget", name: "Budget.xlsx", kind: "sheet", at: { on: "screen", x: 72, y: 58, r: -6 } },
+  { id: "press", name: "Press Kit.pdf", kind: "doc", at: { on: "screen", x: 52, y: 64, r: 3 } },
 ];
 
 /* On a phone the screen is upright and the notch fills its top, so the pile sits below it. */
@@ -47,7 +47,11 @@ const tilt = () => Math.round(Math.random() * 12 - 6);
 export default function ShelfDemo() {
   const [onShelf, setOnShelf] = useState<Id[]>(files.filter((f) => f.shelf).map((f) => f.id));
   const [spots, setSpots] = useState<Record<Id, Spot>>(() => Object.fromEntries(files.map((f) => [f.id, f.at])));
-  const [drag, setDrag] = useState<{ id: Id; x: number; y: number; dx: number; dy: number; w: number; h: number; moved: boolean } | null>(null);
+  // The drag lives in a ref and moves the ghost directly, so it keeps up with the pointer
+  // without re-rendering the demo on every move; state changes only when it lifts or lands.
+  const drag = useRef<{ id: Id; dx: number; dy: number; w: number; h: number; moved: boolean } | null>(null);
+  const ghost = useRef<HTMLDivElement>(null);
+  const [lifted, setLifted] = useState<Id | null>(null);
   const [over, setOver] = useState<Zone | null>(null);
   const [said, setSaid] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -84,27 +88,41 @@ export default function ShelfDemo() {
     e.currentTarget.setPointerCapture(e.pointerId);
     const r = e.currentTarget.getBoundingClientRect();
     start.current = { x: e.clientX, y: e.clientY };
-    setDrag({ id, x: e.clientX, y: e.clientY, dx: e.clientX - r.left, dy: e.clientY - r.top, w: r.width, h: r.height, moved: false });
+    drag.current = { id, dx: e.clientX - r.left, dy: e.clientY - r.top, w: r.width, h: r.height, moved: false };
+  };
+
+  const pointer = useRef({ x: 0, y: 0 });
+  const place = (x: number, y: number) => {
+    pointer.current = { x, y };
+    const d = drag.current;
+    if (ghost.current && d) ghost.current.style.transform = `translate3d(${x - d.dx}px, ${y - d.dy}px, 0) rotate(-4deg) scale(1.06)`;
   };
 
   const moveDrag = (e: ReactPointerEvent<HTMLButtonElement>) => {
-    if (!drag) return;
-    const moved = drag.moved || Math.hypot(e.clientX - start.current.x, e.clientY - start.current.y) > 5;
-    setDrag({ ...drag, x: e.clientX, y: e.clientY, moved });
-    if (moved) setOver(zoneAt(e.clientX, e.clientY));
+    const d = drag.current;
+    if (!d) return;
+    if (!d.moved && Math.hypot(e.clientX - start.current.x, e.clientY - start.current.y) > 5) {
+      d.moved = true;
+      setLifted(d.id);
+    }
+    if (!d.moved) return;
+    place(e.clientX, e.clientY);
+    const z = zoneAt(e.clientX, e.clientY);
+    setOver((o) => (o === z ? o : z));
   };
 
   const up = (e: ReactPointerEvent<HTMLButtonElement>) => {
-    if (!drag) return;
-    const { id } = drag;
-    if (!drag.moved) {
+    const d = moveDone();
+    if (!d) return;
+    const { id } = d;
+    if (!d.moved) {
       if (onShelf.includes(id)) lay(id, spots[id]);
       else toShelf(id);
     } else {
       const z = zoneAt(e.clientX, e.clientY);
       // Where the file's centre was let go.
-      const cx = e.clientX - drag.dx + drag.w / 2;
-      const cy = e.clientY - drag.dy + drag.h / 2;
+      const cx = e.clientX - d.dx + d.w / 2;
+      const cy = e.clientY - d.dy + d.h / 2;
       if (z === "airdrop") setSaid(`AirDrop opens with ${name(id)}, ready to send to a nearby device.`);
       else if (z === "shelf") toShelf(id);
       else if (z === "screen" && screen.current) {
@@ -115,13 +133,23 @@ export default function ShelfDemo() {
         lay(id, { on: "page", x: clamp(cx + window.scrollX, 56, width - 56), y: Math.max(40, cy + window.scrollY), r: tilt() });
       }
     }
-    setDrag(null);
-    setOver(null);
   };
 
-  const cancel = () => {
-    setDrag(null);
+  // The ghost mounts when the file lifts; put it under the pointer before it paints.
+  useLayoutEffect(() => {
+    if (lifted) place(pointer.current.x, pointer.current.y);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lifted]);
+
+  const moveDone = () => {
+    const d = drag.current;
+    drag.current = null;
+    setLifted(null);
     setOver(null);
+    return d;
+  };
+  const cancel = () => {
+    moveDone();
   };
 
   const item = (f: (typeof files)[number], where: "shelf" | "screen" | "page") => {
@@ -130,9 +158,8 @@ export default function ShelfDemo() {
       where === "screen" ? ({ left: `${spot.x}%`, top: `${spot.y}%`, "--r": `${spot.r}deg` } as CSSProperties)
       : where === "page" ? ({ left: `${spot.x}px`, top: `${spot.y}px`, "--r": `${spot.r}deg` } as CSSProperties)
       : undefined;
-    const lifted = drag?.id === f.id && drag.moved;
     return (
-      <li key={f.id} className={where === "shelf" ? undefined : "sh-spot"} style={style} data-lifted={lifted}>
+      <li key={f.id} className={where === "shelf" ? undefined : "sh-spot"} style={style} data-lifted={lifted === f.id}>
         <button
           type="button"
           className="sh-file"
@@ -159,7 +186,7 @@ export default function ShelfDemo() {
   const shelved = files.filter((f) => onShelf.includes(f.id));
   const onScreen = files.filter((f) => !onShelf.includes(f.id) && spots[f.id].on === "screen");
   const onPage = files.filter((f) => !onShelf.includes(f.id) && spots[f.id].on === "page");
-  const dragged = drag?.moved ? files.find((f) => f.id === drag.id) : null;
+  const dragged = lifted ? files.find((f) => f.id === lifted) : null;
 
   return (
     <div className="demo sh">
@@ -183,8 +210,8 @@ export default function ShelfDemo() {
       {/* Files dropped outside the screen lie on the page itself, where they were let go. */}
       {mounted && onPage.length > 0 && createPortal(<ul className="sh-loose" aria-label="Files on the page">{onPage.map((f) => item(f, "page"))}</ul>, document.body)}
 
-      {dragged && drag && (
-        <div className="sh-ghost" aria-hidden="true" style={{ left: drag.x - drag.dx, top: drag.y - drag.dy }}>
+      {dragged && (
+        <div ref={ghost} className="sh-ghost" aria-hidden="true">
           <Thumb kind={dragged.kind} />
           <span className="sh-file__name">{dragged.name}</span>
         </div>

@@ -18,6 +18,8 @@ const demos = [
   {
     id: "try-shelf",
     title: "Shelf",
+    // Full width, so the notch can be shown at the size it really is on your screen.
+    wide: true,
     body: "Drag files onto the notch to hold them while you work, then drag them out wherever they’re going. AirDrop sits on the left of the Shelf.",
     steps: ["Drag a file up into the Shelf.", "Drag it back out and drop it anywhere, even off the screen and onto this page.", "Drop one on AirDrop."],
     note: "In the app you drag real files from Finder and other apps, and AirDrop sends them to your devices.",
@@ -84,9 +86,9 @@ export default function FeaturesPage() {
       </section>
 
       <div id="try" className="try">
-        {demos.map(({ id, title, body, steps, note, Demo }, i) => (
+        {demos.map(({ id, title, body, steps, note, wide, Demo }, i) => (
           <section key={id} id={id} className="try__item" aria-labelledby={`${id}-title`}>
-            <div className="wrap try__grid">
+            <div className={`wrap try__grid${wide ? " try__grid--wide" : ""}`}>
               <div className="try__text">
                 <p className="try__num num">0{i + 1}</p>
                 <h2 id={`${id}-title`}>{title}</h2>

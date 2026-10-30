@@ -6,6 +6,12 @@
 .try__item { padding-block: var(--section-gap-s); border-top: var(--rule-hair) solid var(--color-rule); }
 .try__item:first-child { border-top: 0; }
 .try__grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--space-2xl) var(--space-3xl); align-items: start; }
+/* A wide demo: the words in two columns over it, the demo across the whole container. */
+.try__grid--wide { grid-template-columns: minmax(0, 1fr); }
+.try__grid--wide .try__text { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--space-3xl); align-items: start; }
+.try__grid--wide .try__text > .try__num, .try__grid--wide .try__text > h2, .try__grid--wide .try__text > p:not(.try__note) { grid-column: 1; }
+.try__grid--wide .try__steps { grid-column: 2; grid-row: 1 / span 2; margin-top: 0; }
+.try__grid--wide .try__text > p.try__note { grid-column: 2; grid-row: 3; }
 .try__num { font: 600 var(--text-sm)/1 var(--font-body); color: var(--color-accent); }
 .try__text h2 { margin-top: var(--space-sm); font-size: var(--text-section); font-weight: 600; line-height: 1.02; letter-spacing: var(--tracking-display); }
 .try__text > p:not(.try__num) { margin-top: var(--space-md); font-size: var(--text-lead); color: var(--color-ink-2); }
@@ -47,12 +53,13 @@
 
 /* ---------- Shelf ---------- */
 /* A screen: the notch hangs from its top edge, the files lie about on the wallpaper. */
-.sh-screen { position: relative; aspect-ratio: 16 / 10; border-top: var(--bezel) solid var(--color-bezel); border-radius: 0 0 var(--radius-card) var(--radius-card); background: radial-gradient(120% 90% at 20% 110%, #7a3a5a, transparent 60%), linear-gradient(135deg, #1d3557, #3a2f6b 60%, #5a3466); overflow: hidden; box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.6); container-type: inline-size; transition: box-shadow var(--dur-short) var(--ease-out); }
+.sh-screen { position: relative; aspect-ratio: 16 / 9; min-height: 30rem; border-top: var(--bezel) solid var(--color-bezel); border-radius: 0 0 var(--radius-card) var(--radius-card); background: radial-gradient(120% 90% at 20% 110%, #7a3a5a, transparent 60%), linear-gradient(135deg, #1d3557, #3a2f6b 60%, #5a3466); overflow: hidden; box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.6); container-type: inline-size; transition: box-shadow var(--dur-short) var(--ease-out); }
 .sh-screen[data-over="true"] { box-shadow: inset 0 0 0 2px rgb(125 227 196 / 0.6), 0 30px 60px -30px rgb(0 0 0 / 0.6); }
-.sh-notch { position: absolute; z-index: 2; left: 50%; top: 0; width: min(68%, 560px); transform: translateX(-50%); }
+/* The open notch at its real size: 640 px across, as in the captures at 1×. */
+.sh-notch { position: absolute; z-index: 2; left: 50%; top: 0; width: min(640px, 100%); transform: translateX(-50%); }
 .sh-notch .nt { width: 100%; border-top: 0; padding-bottom: 14px; }
 .sh-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr); gap: 10px; }
-.sh-zone { display: grid; place-items: center; min-height: 128px; border: 2px dashed rgb(255 255 255 / 0.22); border-radius: 20px; transition: border-color var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out); }
+.sh-zone { display: grid; place-items: center; min-height: 166px; border: 2px dashed rgb(255 255 255 / 0.22); border-radius: 20px; transition: border-color var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out); }
 .sh-zone[data-over="true"] { border-color: #7de3c4; background: rgb(125 227 196 / 0.1); }
 .sh-air { align-content: center; gap: 6px; color: rgb(255 255 255 / 0.72); }
 .sh-air__icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: rgb(255 255 255 / 0.08); }
@@ -64,7 +71,7 @@
 .sh-loose { position: absolute; left: 0; top: 0; z-index: var(--z-dropdown); width: 0; height: 0; margin: 0; padding: 0; list-style: none; }
 .sh-empty { color: rgb(255 255 255 / 0.48); font-size: 13px; }
 .sh-desk { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
-.sh-spot { position: absolute; z-index: 1; transform: translate(-50%, -50%) rotate(var(--r)); transition: left var(--dur-long) var(--ease-out), top var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out); }
+.sh-spot { position: absolute; z-index: 1; transform: translate(-50%, -50%) rotate(var(--r)); }
 .sh-spot:hover { z-index: 3; }
 [data-lifted="true"] > .sh-file { opacity: 0.25; }
 .sh-file { display: grid; justify-items: center; gap: 5px; width: 96px; padding: 6px 4px; border: 0; border-radius: 12px; background: none; color: #fff; font: 600 12px/1.25 -apple-system, BlinkMacSystemFont, var(--font-body); text-shadow: 0 1px 3px rgb(0 0 0 / 0.6); cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; transition: background-color var(--dur-short) var(--ease-out), opacity var(--dur-short) var(--ease-out); }
@@ -84,7 +91,7 @@
 .sh-thumb--sheet { background: linear-gradient(#fff, #fff) padding-box, #fff; }
 .sh-thumb--sheet i { left: 6px; right: 6px; height: 2px; background: #34c759; }
 .sh-thumb--sheet i:nth-child(1) { right: 6px; background: #34c759; }
-.sh-ghost { position: fixed; z-index: var(--z-tooltip); display: grid; justify-items: center; gap: 5px; width: 96px; padding: 6px 4px; border-radius: 12px; background: rgb(20 26 36 / 0.85); color: #fff; font: 600 12px/1.25 -apple-system, BlinkMacSystemFont, var(--font-body); pointer-events: none; transform: rotate(-4deg) scale(1.06); box-shadow: 0 16px 30px rgb(0 0 0 / 0.4); }
+.sh-ghost { position: fixed; left: 0; top: 0; z-index: var(--z-tooltip); display: grid; justify-items: center; gap: 5px; width: 96px; padding: 6px 4px; border-radius: 12px; background: rgb(20 26 36 / 0.85); color: #fff; font: 600 12px/1.25 -apple-system, BlinkMacSystemFont, var(--font-body); pointer-events: none; will-change: transform; box-shadow: 0 16px 30px rgb(0 0 0 / 0.4); }
 
 /* ---------- Clipboard ---------- */
 .cb-filters { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -264,6 +271,8 @@
 /* ---------- smaller screens ---------- */
 @media (max-width: 60rem) {
   .try__grid { grid-template-columns: minmax(0, 1fr); }
+  .try__grid--wide .try__text { display: block; }
+  .try__grid--wide .try__steps { margin-top: var(--space-xl); }
 }
 @media (max-width: 40rem) {
   .nt { padding-inline: 12px; border-radius: 0 0 24px 24px; }
