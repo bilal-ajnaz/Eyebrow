@@ -2,6 +2,7 @@ import "./site.css";
 import Link from "next/link";
 import { baseMetadata, baseViewport } from "@/lib/metadata";
 import { site } from "@/lib/site";
+import { themeBootScript } from "@/lib/themes";
 
 export const metadata = baseMetadata;
 export const viewport = baseViewport;
@@ -11,8 +12,7 @@ export const viewport = baseViewport;
 const links = [
   { href: "/features", label: "Features" },
   { href: "/compare", label: "Compare" },
-  { href: "/#price", label: "Price" },
-  { href: "/support#faq", label: "FAQ" },
+  { href: "/#price", label: "Pricing" },
   { href: "/support", label: "Support" },
 ];
 export default function HomeLayout({
@@ -23,12 +23,8 @@ export default function HomeLayout({
   return (
     <html lang="en-GB" suppressHydrationWarning>
       <head>
-        {/* Before first paint, so the tab switcher never flashes every panel. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add("js")`,
-          }}
-        />
+        {/* Before first paint, so the stages never flash every panel and a chosen theme never flashes Default. */}
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="" />
         <link
           rel="stylesheet"
