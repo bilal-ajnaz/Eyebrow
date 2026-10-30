@@ -1,3 +1,11 @@
+/* Hallmark · shape: Hanging edges · genre: modern-minimal · theme: custom · job: try · idea: "Everything on the page hangs from a black top edge, the way the notch hangs from your screen." · vibe: "austere slate, black hardware, the notch talking"
+ * paper: oklch(0.33 0.045 252) · accent: oklch(0.84 0.16 158) · display: Clash Grotesk · body: Switzer · hero: the real open notch slides down out of a black bar, the head left and the download right under it · nav: a black bar like a full-screen Mac menu bar, wordmark left, download right, the notch hanging from its middle · footer: one row, wordmark and five links over a hairline · imagery: screenshots 23 (the app's own renders, Eyebrow Design System/screenshots) · signature: the real open notch dropping out of the page's top edge
+ * axes: mid/grotesk-sans/cool · posture: restrained · surface: absolute · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H5 E4 S5 R4 V5 · weakest: E, eight small captures in one grid risk reading as thumbnails; each hangs from its own bezel at native size so it reads as a screen edge, not a tile */
+/* Hallmark · answered F18 · the idle and closed notches show at their true size, 36px tall, because their smallness is the claim */
+/* Hallmark · waive 77 · the close is one line and one action, once on the page · the download band hangs under the lyrics capture and needs nothing else beside the App Store button */
+/* Hallmark · waive 44c · a custom hero that stops short of the fold on purpose · the idle notch of the next section hangs into view at the fold so the page reads as one screen edge continuing */
+/* Hallmark · waive 7b · --color-bezel is near-absolute black on the bar and the edges only · the notch captures are true black PNGs and the edge they hang from must match or a seam shows */
 /* The home page: "Hanging edges", from the Hallmark design in ../Eyebrow-Landing.
    Everything hangs from a black top edge, the way the notch hangs from the screen.
    Its own root layout loads only this file; the rest of the site keeps globals.css. */
