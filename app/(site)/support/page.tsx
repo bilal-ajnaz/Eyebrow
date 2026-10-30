@@ -2,11 +2,23 @@ import type { Metadata } from "next";
 import SupportForm from "@/components/SupportForm";
 import Icon from "@/components/Icon";
 import Reveal from "@/components/Reveal";
+import { Faq } from "@/components/Sections";
+import { faqs } from "@/lib/features";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Support",
   description: `Get help with ${site.name} — report a bug, request a feature, or ask a question. Messages reach a real person.`,
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
 };
 
 const before = [
@@ -30,6 +42,10 @@ const before = [
 export default function SupportPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <section className="page-head">
         <div className="shell">
           <span className="eyebrow-label">Support</span>
@@ -98,6 +114,8 @@ export default function SupportPage() {
           </div>
         </div>
       </section>
+
+      <Faq />
     </>
   );
 }

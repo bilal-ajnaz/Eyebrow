@@ -1,0 +1,209 @@
+/* The home page: "Hanging edges", from the Hallmark design in ../Eyebrow-Landing.
+   Everything hangs from a black top edge, the way the notch hangs from the screen.
+   Its own root layout loads only this file; the rest of the site keeps globals.css. */
+
+:root {
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
+  --text-xs: 0.8125rem; --text-sm: 0.9375rem; --text-md: 1.0625rem; --text-lg: 1.25rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
+  --text-display-s: clamp(2.5rem, 3.4vw + 1rem, 4.5rem); --text-display: clamp(2.5rem, 5.4vw + 1rem, 6.5rem);
+  --text-section: clamp(2.5rem, 2.6vw + 1rem, 3.75rem); --text-title: clamp(1.25rem, 0.5vw + 1rem, 1.5rem); --text-lead: clamp(1.125rem, 0.35vw + 1rem, 1.3125rem);
+  --text-figure: clamp(4.5rem, 10vw, 9rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms; --dur-drop: 560ms;
+  --color-error: oklch(70% 0.17 27); --color-success: oklch(80% 0.15 155);
+  --container: 1280px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px; --section-gap-l: 176px;
+  --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
+
+  /* Slate from the app's own canvas, ice ink from its highlights, mint from the icon. */
+  --color-paper: oklch(0.33 0.045 252); --color-paper-2: oklch(0.285 0.045 252); --color-paper-3: oklch(0.37 0.042 252);
+  --color-ink: oklch(0.96 0.02 262); --color-ink-2: oklch(0.89 0.025 262); --color-muted: oklch(0.81 0.03 258);
+  --color-rule: oklch(0.48 0.04 252);
+  --color-accent: oklch(0.84 0.16 158); --color-accent-ink: oklch(0.26 0.05 252); --color-focus: oklch(0.84 0.17 158);
+  /* The hardware: the notch captures are true black, so the edge they hang from is too. */
+  --color-bezel: oklch(0.02 0.005 255);
+  --color-button: var(--color-ink); --color-button-hover: oklch(0.99 0.012 262); --color-button-ink: oklch(0.26 0.06 255);
+
+  --font-display: "Clash Grotesk", "Switzer", ui-sans-serif, sans-serif;
+  --font-body: "Switzer", ui-sans-serif, sans-serif;
+  --font-outlier: var(--font-display);
+
+  --radius-card: 14px; --radius-pill: 999px; --rule-hair: 1px; --shadow-card: none;
+  --bezel: 6px; --bar: 56px;
+  --tracking-display: -0.03em;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html { scrollbar-color: var(--color-muted) var(--color-paper); scroll-padding-top: var(--space-3xl); }
+body { margin: 0; background: var(--color-paper); color: var(--color-ink); font-family: var(--font-body); font-size: var(--text-md); line-height: 1.55; -webkit-font-smoothing: antialiased; caret-color: var(--color-accent); }
+::selection { background: color-mix(in oklab, var(--color-accent) 22%, transparent); color: var(--color-ink); }
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.16em; }
+h1, h2, h3 { margin: 0; font-family: var(--font-display); font-synthesis: none; overflow-wrap: break-word; min-width: 0; text-wrap: balance; }
+p { margin: 0; text-wrap: pretty; }
+p:not([class]) { max-width: 65ch; }
+img, video { max-width: 100%; height: auto; display: block; }
+svg { display: block; }
+[hidden] { display: none !important; }
+button, input, select, textarea { font: inherit; }
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); box-sizing: border-box; }
+.num, .figure, td.num { font-variant-numeric: tabular-nums; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.shot { position: relative; overflow: hidden; background: linear-gradient(160deg, var(--color-paper-2, var(--color-paper)), var(--color-paper-3, var(--color-paper))); }
+.shot > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+@media (max-width: 60rem) { :root { --gutter: 24px; --section-gap-s: 80px; --section-gap: 96px; --section-gap-l: 120px; } }
+@media (max-width: 40rem) { :root { --gutter: 16px; --section-gap-s: 56px; --section-gap: 72px; --section-gap-l: 96px; --gap-columns: 16px; } }
+@media (prefers-reduced-motion: reduce) { *:not(.keep-motion), *:not(.keep-motion)::before, *:not(.keep-motion)::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
+
+/* ---------- shared ---------- */
+body { font-size: var(--text-md); }
+.wrap { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap-columns); }
+
+.skip { position: absolute; left: var(--space-md); top: calc(-1 * var(--space-3xl)); z-index: var(--z-toast); padding: var(--space-xs) var(--space-md); background: var(--color-ink); color: var(--color-button-ink); border-radius: var(--radius-pill); }
+.skip:focus-visible { top: var(--space-md); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); min-height: 52px; padding: 0 var(--space-lg); border: 1px solid var(--color-button); border-radius: var(--radius-pill); background: var(--color-button); color: var(--color-button-ink); font: 600 var(--text-md)/1 var(--font-body); white-space: nowrap; text-decoration: none; cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
+.btn:hover { background: var(--color-button-hover); }
+.btn:active { transform: scale(0.97); }
+.btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; transform: none; }
+.btn--quiet { min-height: 44px; background: transparent; color: var(--color-ink); border-color: var(--color-rule); font-weight: 400; }
+.btn--quiet:hover { background: var(--color-paper-2); border-color: var(--color-muted); }
+
+.textlink { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-rule); text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: text-decoration-color var(--dur-short) var(--ease-out); }
+.textlink:hover { text-decoration-color: var(--color-accent); }
+.textlink:active { color: var(--color-ink-2); }
+.textlink:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; border-radius: 2px; }
+
+/* A capture: the app's own render, flush under the edge it hangs from. */
+.shot { width: min(100%, var(--w)); aspect-ratio: var(--ar); margin-inline: auto; }
+.shot { background: none; }
+.shot > img { object-fit: contain; object-position: 50% 0; }
+
+/* The edge every picture hangs from. */
+.edge { margin: 0; border-top: var(--bezel) solid var(--color-bezel); }
+.edge > figcaption { margin-top: var(--space-md); font-size: var(--text-sm); color: var(--color-muted); text-align: center; }
+
+.section-head h2 { font-size: var(--text-section); font-weight: 600; line-height: 1.02; letter-spacing: var(--tracking-display); max-width: 18ch; }
+.section-head p { margin-top: var(--space-md); font-size: var(--text-lead); color: var(--color-ink-2); max-width: 44ch; }
+
+/* ---------- the bar ---------- */
+.bar { position: relative; z-index: var(--z-raised); height: var(--bar); background: var(--color-bezel); color: var(--color-ink); }
+.bar__in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); height: 100%; }
+.mark { display: inline-flex; align-items: center; gap: var(--space-xs); color: var(--color-ink); text-decoration: none; border-radius: var(--radius-card); }
+.mark img { width: 28px; height: 28px; border-radius: 7px; }
+.mark span { font: 600 var(--text-lg)/1 var(--font-display); letter-spacing: -0.01em; }
+.mark:hover span { color: var(--color-ink-2); }
+.mark:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+.bar__end { display: flex; align-items: center; gap: var(--space-lg); }
+.bar__link { font-size: var(--text-sm); color: var(--color-ink-2); text-decoration: none; white-space: nowrap; border-radius: 2px; transition: color var(--dur-short) var(--ease-out); }
+.bar__link:hover { color: var(--color-ink); }
+.bar__link:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+
+/* ---------- hero ---------- */
+.hero { padding-bottom: 0; }
+.hero__notch { position: relative; z-index: var(--z-base); padding-inline: var(--gutter); animation: drop var(--dur-drop) var(--ease-out) both; }
+.hero__body { margin-top: var(--space-xl); align-items: end; row-gap: var(--space-xl); }
+.hero h1 { grid-column: 1 / span 8; font-size: var(--text-display); font-weight: 600; line-height: 0.98; letter-spacing: var(--tracking-display); max-width: 20ch; }
+.hero__side { grid-column: 9 / -1; padding-bottom: var(--space-2xs); }
+.hero__side p { font-size: var(--text-lead); color: var(--color-ink-2); max-width: 30ch; }
+.hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md) var(--space-lg); margin-top: var(--space-lg); }
+.hero__note { margin-top: var(--space-md); font-size: var(--text-sm); color: var(--color-muted); }
+
+@keyframes drop { from { transform: translateY(-100%); } to { transform: none; } }
+
+/* ---------- then something happens ---------- */
+.moments { padding-top: var(--section-gap-s); }
+.moments__head { margin-top: var(--space-3xl); }
+.moments__head h2 { font-size: var(--text-display-s); max-width: 20ch; }
+.moments__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-2xl) var(--gap-columns); margin: var(--space-2xl) 0 0; padding: 0; list-style: none; }
+.moments__grid .edge { display: grid; grid-template-rows: 72px auto; height: 100%; }
+
+/* ---------- it opens ---------- */
+.open { padding-top: var(--section-gap-l); }
+.open__grid { align-items: center; }
+.open .section-head { grid-column: 1 / span 4; }
+.tabs { display: none; margin-top: var(--space-xl); flex-direction: column; gap: var(--space-2xs); }
+.js .tabs { display: flex; }
+.tab { display: flex; align-items: center; min-height: 48px; padding: 0 var(--space-md); border: 0; border-radius: var(--radius-card); background: transparent; color: var(--color-muted); font: 400 var(--text-lg)/1.2 var(--font-body); text-align: left; cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
+.tab:hover { color: var(--color-ink); background: var(--color-paper-3); }
+.tab:active { background: var(--color-paper-2); }
+.tab[aria-selected="true"] { color: var(--color-ink); background: var(--color-paper-2); }
+.tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.tab:disabled { opacity: 0.55; cursor: not-allowed; }
+.open__panels { grid-column: 6 / -1; display: grid; gap: var(--space-3xl); }
+.js .open__panels { gap: 0; }
+.panel .edge > figcaption { max-width: 46ch; margin-inline: auto; font-size: var(--text-md); color: var(--color-ink-2); }
+.panel figcaption b { display: block; margin-bottom: var(--space-2xs); color: var(--color-ink); font-weight: 600; }
+
+/* ---------- Claude Code ---------- */
+.claude { padding-top: var(--section-gap); }
+.claude__grid { align-items: center; row-gap: var(--space-2xl); }
+.claude__fig { grid-column: 1 / span 7; padding-bottom: var(--space-2xs); }
+.claude__pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-columns); margin-top: var(--space-2xl); }
+.claude__pair > div { border-top: var(--rule-hair) solid var(--color-rule); }
+.claude__pair p { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); text-align: center; }
+.claude .section-head { grid-column: 9 / -1; }
+
+/* ---------- themes ---------- */
+.themes { padding-top: var(--section-gap-l); }
+.rail { display: grid; grid-auto-flow: column; grid-auto-columns: 30rem; gap: var(--gap-columns); margin: var(--space-2xl) 0 0; padding: 0 0 var(--space-md); padding-inline: max(var(--gutter), calc(50vw - var(--container) / 2 + var(--gutter))); list-style: none; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: max(var(--gutter), calc(50vw - var(--container) / 2 + var(--gutter))); overscroll-behavior-x: contain; scrollbar-color: var(--color-rule) transparent; }
+.rail > li { scroll-snap-align: start; }
+.rail:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+
+/* ---------- price ---------- */
+.price { margin-top: var(--section-gap); padding-bottom: var(--section-gap-s); background: var(--color-paper-2); }
+.price__edge { margin-bottom: var(--space-3xl); }
+.price h2 { font-size: var(--text-figure); font-weight: 600; line-height: 0.95; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.price__lede { margin-top: var(--space-lg); font-size: var(--text-lead); color: var(--color-ink-2); max-width: 46ch; }
+.price__lists { margin-top: var(--space-3xl); row-gap: var(--space-xl); }
+.price__lists > div { grid-column: span 4; }
+.price__lists h3 { font: 600 var(--text-title)/1.2 var(--font-body); }
+.price__lists ul { margin: var(--space-md) 0 0; padding: 0; list-style: none; border-top: var(--rule-hair) solid var(--color-rule); }
+.price__lists li { padding: var(--space-sm) 0; border-bottom: var(--rule-hair) solid var(--color-rule); color: var(--color-ink-2); }
+.facts { grid-column: 9 / -1; margin: 0; display: grid; gap: var(--space-lg); }
+.facts dt { font: 600 var(--text-title)/1.2 var(--font-body); }
+.facts dd { margin: var(--space-2xs) 0 0; color: var(--color-ink-2); }
+
+/* ---------- close ---------- */
+.close { padding-block: var(--section-gap-l) var(--section-gap); }
+.close__grid { margin-top: var(--space-2xl); align-items: end; row-gap: var(--space-xl); }
+.close h2 { grid-column: 1 / span 7; font-size: var(--text-display-s); font-weight: 600; line-height: 1.02; letter-spacing: var(--tracking-display); max-width: 14ch; }
+.close__act { grid-column: 9 / -1; }
+
+/* ---------- footer ---------- */
+.foot { border-top: var(--rule-hair) solid var(--color-rule); padding-block: var(--space-2xl); }
+.foot__in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-lg) var(--space-xl); }
+.foot nav ul { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); margin: 0; padding: 0; list-style: none; }
+.foot nav a { color: var(--color-ink-2); text-decoration: none; white-space: nowrap; border-radius: 2px; transition: color var(--dur-short) var(--ease-out); }
+.foot nav a:hover { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); }
+.foot nav a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.foot__small { width: 100%; font-size: var(--text-sm); color: var(--color-muted); }
+
+/* ---------- smaller screens ---------- */
+@media (max-width: 75rem) {
+  .bar__link { display: none; }
+}
+@media (max-width: 60rem) {
+  .hero h1, .hero__side, .open .section-head, .open__panels, .claude__fig, .claude .section-head, .price__lists > div, .facts, .close h2, .close__act { grid-column: 1 / -1; }
+  .moments__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tabs { flex-direction: row; flex-wrap: wrap; }
+  .tab { flex-shrink: 0; white-space: nowrap; font-size: var(--text-md); }
+  .open__panels { margin-top: var(--space-xl); }
+}
+@media (max-width: 40rem) {
+  .moments__grid { gap: var(--space-xl) var(--space-md); }
+  .moments__grid .edge { grid-template-rows: 40px auto; }
+  .rail { grid-auto-columns: 85%; }
+  .hero__actions .btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__notch { animation: none; }
+  .btn, .tab, .textlink, .bar__link, .foot nav a { transition: none; }
+  .btn:active { transform: none; }
+}
+
+/* With JavaScript, only the chosen view shows (OpenTabs sets data-on). */
+.js .panel[data-on="false"] { display: none; }

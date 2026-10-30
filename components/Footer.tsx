@@ -25,10 +25,10 @@ export default function Footer() {
           <div>
             <h2>Product</h2>
             <ul>
-              <li><Link href="/#how">How it works</Link></li>
+              <li><Link href="/#open">How it works</Link></li>
               <li><Link href="/features">Features</Link></li>
               <li><Link href="/features#widgets">Widgets</Link></li>
-              <li><Link href="/#pricing">Pricing</Link></li>
+              <li><Link href="/#price">Pricing</Link></li>
               <li><Link href="/compare">Compare</Link></li>
             </ul>
           </div>
@@ -37,7 +37,7 @@ export default function Footer() {
             <ul>
               <li><Link href="/support">Support</Link></li>
               <li><Link href="/privacy">Privacy policy</Link></li>
-              <li><Link href="/#faq">FAQ</Link></li>
+              <li><Link href="/support#faq">FAQ</Link></li>
               <li><Link href="/support#bug">Report a bug</Link></li>
               <li><Link href="/support#feature">Request a feature</Link></li>
             </ul>

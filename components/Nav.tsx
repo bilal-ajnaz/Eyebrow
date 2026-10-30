@@ -7,11 +7,11 @@ import { usePathname } from "next/navigation";
 import DownloadButton from "./DownloadButton";
 
 const links = [
-  { href: "/#how", label: "How it works" },
+  { href: "/#open", label: "How it works" },
   { href: "/features", label: "Features" },
-  { href: "/#pricing", label: "Pricing" },
+  { href: "/#price", label: "Pricing" },
   { href: "/compare", label: "Compare" },
-  { href: "/#faq", label: "FAQ" },
+  { href: "/support#faq", label: "FAQ" },
   { href: "/support", label: "Support" },
 ];
 

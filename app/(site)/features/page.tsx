@@ -63,7 +63,7 @@ export default function FeaturesPage() {
             </p>
             <div className="price__actions">
               <DownloadButton />
-              <Link className="btn btn--ghost" href="/#pricing">
+              <Link className="btn btn--ghost" href="/#price">
                 See what Pro adds
               </Link>
             </div>
