@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Icon from "@/components/Icon";
+import "./privacy.css";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -33,43 +33,43 @@ const outbound = [
   },
   {
     service: "ESPN",
-    sent: "Nothing about you — a request for public scoreboard data",
+    sent: "Nothing about you: a request for public scoreboard data",
     when: "While sports in Live Widgets is switched on",
     off: "Settings › Widgets › Live Widgets",
   },
   {
     service: "CoinGecko",
-    sent: "Nothing about you — a request for the current Bitcoin and Ethereum prices",
+    sent: "Nothing about you: a request for the current Bitcoin and Ethereum prices",
     when: "While crypto prices in Live Widgets is switched on (off by default)",
     off: "Settings › Widgets › Live Widgets",
   },
   {
     service: "Your media app's artwork host",
-    sent: "Nothing about you — a request for the artwork image your media app points at",
+    sent: "Nothing about you: a request for the artwork image your media app points at",
     when: "While playing something whose artwork is a remote URL",
     off: "Applies only to sources that supply remote artwork",
   },
   {
     service: "LottieFiles",
-    sent: "Nothing about you — a request for a default animation file",
+    sent: "Nothing about you: a request for a default animation file",
     when: "When a visualiser has no local animation file",
     off: "Choose a visualiser with a local file",
   },
   {
     service: "GitHub Pages",
-    sent: "Nothing about you — a request for the update feed",
+    sent: "Nothing about you: a request for the update feed",
     when: "On update checks",
     off: "Settings › General › automatic update checks",
   },
   {
     service: "Apple App Store (StoreKit)",
-    sent: "Nothing about you from Eyebrow — macOS asks Apple whether this Apple Account owns Eyebrow Pro. Payment, if any, happens entirely with Apple",
+    sent: "Nothing about you from Eyebrow: macOS asks Apple whether this Apple Account owns Eyebrow Pro. Payment, if any, happens entirely with Apple",
     when: "At launch, and when you buy or restore Pro",
     off: "Cannot be switched off; it carries no personal data from the app",
   },
   {
     service: "Apple iCloud (CloudKit)",
-    sent: "Your clipboard history and Shelf items, to the private iCloud database of your own Apple Account — not to us",
+    sent: "Your clipboard history and Shelf items, to the private iCloud database of your own Apple Account, not to us",
     when: "While iCloud sync is switched on (Pro, off by default)",
     off: "Settings › Pro › iCloud sync, or sign out of iCloud",
   },
@@ -82,7 +82,7 @@ const local = [
   ["Calendar and Reminders", "Read from macOS to display your day. Never copied anywhere else."],
   ["Transcription", "Speech is transcribed by Apple's on-device recogniser. Audio never leaves your Mac and is not written to disk."],
   ["Browser tabs", "Read from the browsers you allow, shown in the notch, never stored or transmitted."],
-  ["Face Unlock", "Off until you turn it on (Pro). Eyebrow keeps a set of numbers derived from each scan of your face — never a photo — and never records video. It also keeps the Mac password you give it, so it can type it at the lock screen. Both are encrypted with a key held in this Mac's Keychain, which only Touch ID or your Mac password can release. They are never synced to iCloud and never leave your Mac. Face recognition runs on your Mac."],
+  ["Face Unlock", "Off until you turn it on (Pro). Eyebrow keeps a set of numbers derived from each scan of your face, never a photo, and never records video. It also keeps the Mac password you give it, so it can type it at the lock screen. Both are encrypted with a key held in this Mac's Keychain, which only Touch ID or your Mac password can release. They are never synced to iCloud and never leave your Mac. Face recognition runs on your Mac."],
   ["Claude Code sessions", "Off until you turn it on (Pro). Eyebrow adds its hooks to Claude Code's settings in the folder you choose, then reads the session events Claude Code writes there to show them in the notch. The events stay on your Mac and are deleted after a few minutes. Turning the feature off removes the hooks."],
   ["Notes", "A note you write in the Notes widget is saved to Apple Notes on your Mac. Eyebrow remembers the titles of your last few notes so it can reopen them."],
   ["Settings", "Your preferences, stored in the app's own settings on your Mac."],
@@ -105,25 +105,20 @@ export default function PrivacyPage() {
   return (
     <>
       <section className="page-head">
-        <div className="shell">
-          <span className="eyebrow-label">Legal</span>
-          <h1 className="page-head__title">Privacy Policy</h1>
-          <p className="section-lede">
+        <div className="wrap">
+          <h1>Privacy Policy</h1>
+          <p>
             Written to be read, not to protect us. It says exactly what Eyebrow
-            stores, what it sends, and when.
+            stores, what it sends, and when. Effective {EFFECTIVE}.
           </p>
-          <p className="page-head__meta num">Effective {EFFECTIVE}</p>
         </div>
       </section>
 
-      <section className="section prose-section">
-        <div className="shell prose">
-          <div className="callout">
-            <span className="callout__icon">
-              <Icon name="lock" size={20} />
-            </span>
+      <section className="policy">
+        <div className="wrap policy__body">
+          <div className="policy__short">
             <div>
-              <h2 className="callout__title">The short version</h2>
+              <h2>The short version</h2>
               <p>
                 Eyebrow has no account, no sign-in, no analytics, no
                 advertising and no tracking. We do not run a server that
@@ -168,7 +163,7 @@ export default function PrivacyPage() {
             are then also kept in your own private iCloud database, encrypted
             by Apple and readable only by your devices.
           </p>
-          <dl className="deflist">
+          <dl className="policy__list">
             {local.map(([term, body]) => (
               <div key={term}>
                 <dt>{term}</dt>
@@ -181,12 +176,12 @@ export default function PrivacyPage() {
           <p>
             These are every outbound request Eyebrow can make. Where a row says
             &ldquo;nothing about you&rdquo;, the request carries no personal
-            data — though, as with any web request, the service receives your
+            data, though as with any web request the service receives your
             IP address. We receive none of it.
           </p>
 
-          <div className="table-scroll">
-            <table className="table">
+          <div className="policy__wide">
+            <table className="policy__table">
               <thead>
                 <tr>
                   <th scope="col">Service</th>
@@ -199,9 +194,9 @@ export default function PrivacyPage() {
                 {outbound.map((row) => (
                   <tr key={row.service}>
                     <th scope="row">{row.service}</th>
-                    <td>{row.sent}</td>
-                    <td>{row.when}</td>
-                    <td>{row.off}</td>
+                    <td data-label="What is sent">{row.sent}</td>
+                    <td data-label="When">{row.when}</td>
+                    <td data-label="How to stop it">{row.off}</td>
                   </tr>
                 ))}
               </tbody>
@@ -223,7 +218,7 @@ export default function PrivacyPage() {
             Privacy &amp; Security at any time. Revoking a permission disables
             the feature that used it and nothing else.
           </p>
-          <dl className="deflist">
+          <dl className="policy__list">
             {permissions.map(([term, body]) => (
               <div key={term}>
                 <dt>{term}</dt>
@@ -234,8 +229,8 @@ export default function PrivacyPage() {
 
           <h2>Keeping and deleting your data</h2>
           <p>
-            Clipboard history is kept for the period you choose in Settings —
-            7, 30 or 365 days — and older items are removed automatically. You
+            Clipboard history is kept for the period you choose in Settings
+            (7, 30 or 365 days), and older items are removed automatically. You
             can clear the history at any time. Shelf items stay until you
             remove them, and screenshots are discarded once you dismiss them.
           </p>
@@ -273,9 +268,9 @@ export default function PrivacyPage() {
           <p>
             Questions about any of this, including anything you think is
             inaccurate, go to{" "}
-            <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>. A
+            <a className="textlink" href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>. A
             person reads it. You can also use the{" "}
-            <Link href="/support">support page</Link>.
+            <Link className="textlink" href="/support">support page</Link>.
           </p>
         </div>
       </section>

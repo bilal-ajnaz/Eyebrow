@@ -42,7 +42,7 @@ export const features: Feature[] = [
     group: "System",
     icon: "battery",
     title: "Battery and power",
-    body: "Charge state, percentage and power-source changes in the closed notch — plus the battery level of connected Bluetooth devices.",
+    body: "Charge state, percentage and power-source changes in the closed notch, plus the battery level of connected Bluetooth devices.",
   },
   {
     group: "System",
@@ -79,13 +79,13 @@ export const features: Feature[] = [
     group: "Files",
     icon: "download",
     title: "Download progress",
-    body: "Safari, Chrome, Firefox, Arc and Brave downloads show live progress in the notch — progress bar or percentage, with the source app's icon and the time left (\"2 min left\"). When the file lands, a green tick shows in the closed notch.",
+    body: "Safari, Chrome, Firefox, Arc and Brave downloads show live progress in the notch, as a bar or a percentage, with the source app's icon and the time left (\"2 min left\"). When the file lands, a green tick shows in the closed notch.",
   },
   {
     group: "Files",
     icon: "camera",
     title: "Screenshot interception",
-    body: "⇧⌘3 and ⇧⌘4 land in the notch instead of littering your desktop. Copy, annotate, run OCR, or save — then it's gone.",
+    body: "⇧⌘3 and ⇧⌘4 land in the notch instead of littering your desktop. Copy, annotate, run OCR, or save. Then it's gone.",
   },
   {
     group: "Calls",
@@ -225,7 +225,7 @@ export const plans: Plan[] = [
       "Twenty of the twenty-four features, all eighteen widgets",
       "Up to four tabs, across the top",
       "Claude Code and Codex status in the closed notch",
-      "Clipboard history — your last 500 items",
+      "Clipboard history: your last 500 items",
       "One page of widgets",
       "HUD replacement in the default style",
       "No account, no ads, no watermark",
@@ -256,7 +256,7 @@ export const plans: Plan[] = [
 export const faqs = [
   {
     q: "Is Eyebrow really free?",
-    a: "Yes. Every feature on this page not marked Pro ships in the free app, with no trial, no time limit and no ads. Pro is a single one-time purchase that raises three ceilings — clipboard history, widget pages and tabs — and adds Face Unlock, vertical tabs, live activities, the Live tab with Claude Code sessions, custom HUD colours and themes, iCloud sync, app icon packs with a custom Widgets tab icon, a floating shelf, PDF and video tools for the Shelf, and a meeting reminder that opens the notch when a meeting is about to start. Nothing you get for free is ever moved behind it.",
+    a: "Yes. Every feature on this page not marked Pro ships in the free app, with no trial, no time limit and no ads. Pro is a single one-time purchase that raises three ceilings: clipboard history, widget pages and tabs. It also adds Face Unlock, vertical tabs, live activities, the Live tab with Claude Code sessions, custom HUD colours and themes, iCloud sync, app icon packs with a custom Widgets tab icon, a floating shelf, PDF and video tools for the Shelf, and a meeting reminder that opens the notch when a meeting is about to start. Nothing you get for free is ever moved behind it.",
   },
   {
     q: "Is Pro a subscription?",
@@ -264,11 +264,11 @@ export const faqs = [
   },
   {
     q: "Does my data leave my Mac?",
-    a: "Almost none of it. There is no account, no telemetry and no server of ours to send anything to. Your clipboard, shelf, screenshots and calendar stay local, and transcription runs on Apple's on-device recogniser. Three optional features do reach out, because they can't work otherwise: Weather sends your approximate coordinates to Open-Meteo, Lyrics sends the track title and artist to LRCLIB, and sports scores come from ESPN. With Pro, iCloud sync — off until you turn it on — keeps your Shelf and clipboard in your own private iCloud, which we cannot read. The privacy policy lists every request in full.",
+    a: "Almost none of it. There is no account, no telemetry and no server of ours to send anything to. Your clipboard, shelf, screenshots and calendar stay local, and transcription runs on Apple's on-device recogniser. Three optional features do reach out, because they can't work otherwise: Weather sends your approximate coordinates to Open-Meteo, Lyrics sends the track title and artist to LRCLIB, and sports scores come from ESPN. With Pro, iCloud sync (off until you turn it on) keeps your Shelf and clipboard in your own private iCloud, which we cannot read. The privacy policy lists every request in full.",
   },
   {
     q: "Do I need a Mac with a notch?",
-    a: "No. On a Mac without a notch, Eyebrow draws its own at the top of the screen and you can size it to match your menu bar — or set a custom height.",
+    a: "No. On a Mac without a notch, Eyebrow draws its own at the top of the screen and you can size it to match your menu bar, or set a custom height.",
   },
   {
     q: "What does it need to run?",
@@ -284,7 +284,7 @@ export const faqs = [
   },
   {
     q: "Can I use it across several displays?",
-    a: "Yes — show it on all displays at once, pin it to one you choose, or let it follow the display you're working on.",
+    a: "Yes. Show it on all displays at once, pin it to one you choose, or let it follow the display you're working on.",
   },
   {
     q: "How do I get help or report a bug?",

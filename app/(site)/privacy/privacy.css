@@ -1,0 +1,39 @@
+/* Hallmark · page: privacy · shares site.css: shape Hanging edges, theme custom, axes mid/grotesk-sans/cool, paper oklch(0.33 0.045 252), accent oklch(0.84 0.16 158), display Clash Grotesk, body Switzer · v2.0.0 */
+/* Hallmark · waive 78 · the policy is a Long Document whose heads are inline section labels · a reader scans it for one clause, so heads stay at title size inside the prose column */
+/* /privacy: one prose column, with the outbound table allowed the full width. */
+
+.policy { padding-block: var(--space-2xl) var(--section-gap); }
+.policy__body > * { max-width: 65ch; }
+.policy__body > .policy__wide { max-width: none; }
+.policy__body h2 { text-wrap: balance; margin-top: var(--space-3xl); font-size: var(--text-2xl); font-weight: 600; line-height: 1.15; letter-spacing: -0.015em; scroll-margin-top: var(--space-xl); }
+.policy__body > p { margin-top: var(--space-md); color: var(--color-ink-2); }
+.policy__body strong { color: var(--color-ink); font-weight: 600; }
+
+/* The short version hangs from the same black edge as the captures. */
+.policy__short { padding: var(--space-xl); border-top: var(--bezel) solid var(--color-bezel); border-radius: 0 0 var(--radius-card) var(--radius-card); background: var(--color-paper-2); }
+.policy__short h2 { margin: 0; font-size: var(--text-title); }
+.policy__short p { margin-top: var(--space-md); color: var(--color-ink-2); }
+
+.policy__list { margin: var(--space-xl) 0 0; border-top: var(--rule-hair) solid var(--color-rule); }
+.policy__list > div { display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: var(--space-2xs) var(--space-lg); padding-block: var(--space-md); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.policy__list dt { font-weight: 600; }
+.policy__list dd { margin: 0; color: var(--color-ink-2); }
+
+.policy__wide { margin-top: var(--space-xl); }
+.policy__table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+.policy__table th, .policy__table td { padding: var(--space-sm) var(--space-md) var(--space-sm) 0; text-align: left; vertical-align: top; border-bottom: var(--rule-hair) solid var(--color-rule); }
+.policy__table thead th { font-weight: 600; color: var(--color-muted); border-bottom-color: var(--color-muted); }
+.policy__table tbody th { font-weight: 600; color: var(--color-ink); width: 18%; }
+.policy__table td { color: var(--color-ink-2); }
+
+@media (max-width: 40rem) {
+  .policy__short { padding: var(--space-lg); }
+  .policy__list > div { grid-template-columns: minmax(0, 1fr); }
+  /* Each service becomes its own block, labelled from the column it came from. */
+  .policy__table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .policy__table, .policy__table tbody, .policy__table tr, .policy__table th, .policy__table td { display: block; width: 100%; }
+  .policy__table tr { padding-block: var(--space-md); border-bottom: var(--rule-hair) solid var(--color-rule); }
+  .policy__table tbody th, .policy__table td { padding: 0; border: 0; width: 100%; }
+  .policy__table td { margin-top: var(--space-xs); }
+  .policy__table td::before { content: attr(data-label); display: block; font-weight: 600; color: var(--color-muted); }
+}

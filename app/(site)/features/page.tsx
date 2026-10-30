@@ -1,7 +1,5 @@
+import "./features.css";
 import type { Metadata } from "next";
-import Link from "next/link";
-import DownloadButton from "@/components/DownloadButton";
-import Reveal from "@/components/Reveal";
 import { Features, Tabs, Widgets } from "@/components/Sections";
 import { features, widgets, tabs } from "@/lib/features";
 import { site } from "@/lib/site";
@@ -20,54 +18,45 @@ const jumps = [
 export default function FeaturesPage() {
   return (
     <>
-      <section className="page-head">
-        <div className="shell section-head">
-          <span className="eyebrow-label">Features</span>
-          <h1 className="page-head__title">
-            Twenty-four things
-            <br />
-            <span className="section-title__muted">
-              you were opening an app for.
-            </span>
-          </h1>
-          <p className="section-lede">
-            Turn on what you want, ignore the rest. Everything here not
-            marked Pro is in the free app, and nothing here phones home. Pro
-            raises a few ceilings and adds a few extras.
+      <section className="page-head" aria-labelledby="features-title">
+        <div className="wrap">
+          <h1 id="features-title">Twenty-four things you were opening an app for.</h1>
+          <p>
+            Turn on what you want, ignore the rest. Everything here not marked
+            Pro is in the free app, and nothing here phones home. Pro raises a
+            few ceilings and adds a few extras.
           </p>
-          <nav className="filter" aria-label="On this page">
-            {jumps.map((j) => (
-              <a key={j.href} className="filter__chip" href={j.href}>
-                {j.label}
-                <span className="filter__count num">{j.count}</span>
-              </a>
-            ))}
+          <nav className="feat-jumps" aria-label="On this page">
+            <ul>
+              {jumps.map((j) => (
+                <li key={j.href}>
+                  <a className="feat-jump" href={j.href}>
+                    {j.label}
+                    <span className="num">{j.count}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </nav>
         </div>
       </section>
 
-      <Features bare />
+      <Features />
       <Widgets />
       <Tabs />
 
-      <section className="section">
-        <div className="shell">
-          <Reveal className="price">
-            <span className="eyebrow-label">Eyebrow</span>
-            <h2 className="section-title price__title">
+      <section className="feat-close wrap" aria-labelledby="feat-close-title">
+        <div className="grid feat-close__grid">
+          <div className="feat-close__head">
+            <h2 id="feat-close-title">
               Free to use. Pro is {site.pro.price || "one purchase"}, once.
             </h2>
-            <p className="section-lede price__lede">
-              No subscription and no account. Turn on what you want and
-              ignore the rest.
-            </p>
-            <div className="price__actions">
-              <DownloadButton />
-              <Link className="btn btn--ghost" href="/#price">
-                See what Pro adds
-              </Link>
-            </div>
-          </Reveal>
+            <p>No subscription and no account.</p>
+          </div>
+          <div className="feat-close__act">
+            <a className="btn" href={site.appStoreUrl}>Download on the Mac App Store</a>
+            <a className="textlink" href="/#price">See what Pro adds</a>
+          </div>
         </div>
       </section>
     </>

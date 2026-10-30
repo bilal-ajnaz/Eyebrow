@@ -53,10 +53,9 @@ function CellView({ cell, compact = false }: { cell: Cell; compact?: boolean }) 
   return (
     <div className="cmp-cell" title={compact ? cell.note : undefined}>
       <MarkGlyph mark={cell.mark} />
-      {!compact && (cell.note || cell.pro || cell.soon) && (
+      {!compact && (cell.note || cell.pro) && (
         <span className="cmp-cell__note">
-          {cell.pro && <span className="card__pro">Pro</span>}
-          {cell.soon && <span className="soon">Coming soon</span>}
+          {cell.pro && <span className="cmp-pro">Pro</span>}
           {cell.note}
         </span>
       )}
@@ -104,7 +103,7 @@ export default function Compare() {
 
   // what Eyebrow ships that the picked app doesn't, as a one-line verdict
   const edge = rows.filter(
-    (r) => cellOf(eyebrow, r.id).mark === "yes" && !cellOf(eyebrow, r.id).soon && cellOf(other, r.id).mark === "no",
+    (r) => cellOf(eyebrow, r.id).mark === "yes" && cellOf(other, r.id).mark === "no",
   ).length;
 
   return (
@@ -125,10 +124,10 @@ export default function Compare() {
         ))}
       </div>
 
-      <div className="cmp-modes">
+      <div className="cmp-modes" role="group" aria-label="How to compare">
         <button
           type="button"
-          className="filter__chip"
+          className="cmp-mode"
           aria-pressed={!all}
           onClick={() => setAll(false)}
         >
@@ -136,7 +135,7 @@ export default function Compare() {
         </button>
         <button
           type="button"
-          className="filter__chip"
+          className="cmp-mode"
           aria-pressed={all}
           onClick={() => setAll(true)}
         >

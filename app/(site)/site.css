@@ -8,7 +8,7 @@
 /* Hallmark · waive 7b · --color-bezel is near-absolute black on the bar and the edges only · the notch captures are true black PNGs and the edge they hang from must match or a seam shows */
 /* The home page: "Hanging edges", from the Hallmark design in ../Eyebrow-Landing.
    Everything hangs from a black top edge, the way the notch hangs from the screen.
-   Its own root layout loads only this file; the rest of the site keeps globals.css. */
+   Every page loads this file from the shared layout; inner pages add their own sheet beside page.tsx. */
 
 :root {
   --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
@@ -29,6 +29,12 @@
   --color-accent: oklch(0.84 0.16 158); --color-accent-ink: oklch(0.26 0.05 252); --color-focus: oklch(0.84 0.17 158);
   /* The hardware: the notch captures are true black, so the edge they hang from is too. */
   --color-bezel: oklch(0.02 0.005 255);
+  /* Colour on the slate. The wash is the light just under the bezel; each open view tints the
+     band behind it with the colour its own capture carries; the close sits on deep mint. */
+  --color-wash: oklch(0.25 0.07 262);
+  --tint-home: oklch(0.31 0.09 18); --tint-shelf: oklch(0.29 0.1 268); --tint-clipboard: oklch(0.31 0.08 160);
+  --tint-screenshot: oklch(0.31 0.085 335); --tint-notes: oklch(0.33 0.08 75);
+  --color-close: oklch(0.3 0.06 165);
   --color-button: var(--color-ink); --color-button-hover: oklch(0.99 0.012 262); --color-button-ink: oklch(0.26 0.06 255);
 
   --font-display: "Clash Grotesk", "Switzer", ui-sans-serif, sans-serif;
@@ -94,23 +100,29 @@ body { font-size: var(--text-md); }
 .edge > figcaption { margin-top: var(--space-md); font-size: var(--text-sm); color: var(--color-muted); text-align: center; }
 
 .section-head h2 { font-size: var(--text-section); font-weight: 600; line-height: 1.02; letter-spacing: var(--tracking-display); max-width: 18ch; }
-.section-head p { margin-top: var(--space-md); font-size: var(--text-lead); color: var(--color-ink-2); max-width: 44ch; }
+.section-head p { margin-top: var(--space-md); font-size: var(--text-lead); color: var(--color-ink-2); max-width: 46ch; }
+
+/* An inner page's opening: the light under the bezel, then the slate. */
+.page-head { padding-block: var(--section-gap-s) var(--space-3xl); background: linear-gradient(var(--color-wash), var(--color-paper)); }
+.page-head h1 { font-size: var(--text-display-s); font-weight: 600; line-height: 1; letter-spacing: var(--tracking-display); max-width: 16ch; }
+.page-head p { margin-top: var(--space-lg); font-size: var(--text-lead); color: var(--color-ink-2); max-width: 52ch; }
 
 /* ---------- the bar ---------- */
-.bar { position: relative; z-index: var(--z-raised); height: var(--bar); background: var(--color-bezel); color: var(--color-ink); }
-.bar__in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); height: 100%; }
+.bar { position: relative; z-index: var(--z-raised); background: var(--color-bezel); color: var(--color-ink); }
+.bar__in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); min-height: var(--bar); }
+.bar__nav { margin-left: auto; }
+.bar__nav ul { display: flex; gap: var(--space-lg); margin: 0; padding: 0; list-style: none; }
 .mark { display: inline-flex; align-items: center; gap: var(--space-xs); color: var(--color-ink); text-decoration: none; border-radius: var(--radius-card); }
 .mark img { width: 28px; height: 28px; border-radius: 7px; }
 .mark span { font: 600 var(--text-lg)/1 var(--font-display); letter-spacing: -0.01em; }
 .mark:hover span { color: var(--color-ink-2); }
 .mark:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
-.bar__end { display: flex; align-items: center; gap: var(--space-lg); }
 .bar__link { font-size: var(--text-sm); color: var(--color-ink-2); text-decoration: none; white-space: nowrap; border-radius: 2px; transition: color var(--dur-short) var(--ease-out); }
 .bar__link:hover { color: var(--color-ink); }
 .bar__link:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
 
 /* ---------- hero ---------- */
-.hero { padding-bottom: 0; }
+.hero { padding-bottom: 0; background: linear-gradient(var(--color-wash), var(--color-paper)); }
 .hero__notch { position: relative; z-index: var(--z-base); padding-inline: var(--gutter); animation: drop var(--dur-drop) var(--ease-out) both; }
 .hero__body { margin-top: var(--space-xl); align-items: end; row-gap: var(--space-xl); }
 .hero h1 { grid-column: 1 / span 8; font-size: var(--text-display); font-weight: 600; line-height: 0.98; letter-spacing: var(--tracking-display); max-width: 20ch; }
@@ -129,19 +141,33 @@ body { font-size: var(--text-md); }
 .moments__grid .edge { display: grid; grid-template-rows: 72px auto; height: 100%; }
 
 /* ---------- it opens ---------- */
-.open { padding-top: var(--section-gap-l); }
+/* A full-width band tinted to the view on show, fading into the slate at both ends. */
+.open { position: relative; margin-top: var(--section-gap); padding-block: var(--section-gap-s); background-color: var(--tint, var(--color-paper)); background-image: linear-gradient(var(--color-paper), transparent 240px), linear-gradient(to top, var(--color-paper), transparent 240px); transition: background-color var(--dur-long) var(--ease-out); }
+.open[data-view="home"] { --tint: var(--tint-home); }
+.open[data-view="shelf"] { --tint: var(--tint-shelf); }
+.open[data-view="clipboard"] { --tint: var(--tint-clipboard); }
+.open[data-view="screenshot"] { --tint: var(--tint-screenshot); }
+.open[data-view="notes"] { --tint: var(--tint-notes); }
+/* Pinned: one window-high stage held while the section scrolls past, a stretch of scroll per view. */
+.open[data-pinned="true"] { height: calc(100svh + var(--steps) * 60svh); padding-block: 0; }
+.open[data-pinned="true"] .open__stage { position: sticky; top: 0; height: 100svh; display: flex; align-items: center; }
+.open[data-pinned="true"] .open__stage > .wrap { flex: 1; }
+.open__steps { position: absolute; inset-inline: 0; top: 50svh; height: calc(var(--steps) * 60svh); display: grid; pointer-events: none; }
 .open__grid { align-items: center; }
 .open .section-head { grid-column: 1 / span 4; }
 .tabs { display: none; margin-top: var(--space-xl); flex-direction: column; gap: var(--space-2xs); }
 .js .tabs { display: flex; }
 .tab { display: flex; align-items: center; min-height: 48px; padding: 0 var(--space-md); border: 0; border-radius: var(--radius-card); background: transparent; color: var(--color-muted); font: 400 var(--text-lg)/1.2 var(--font-body); text-align: left; cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
-.tab:hover { color: var(--color-ink); background: var(--color-paper-3); }
-.tab:active { background: var(--color-paper-2); }
-.tab[aria-selected="true"] { color: var(--color-ink); background: var(--color-paper-2); }
+.tab:hover { color: var(--color-ink); background: color-mix(in oklab, var(--color-ink) 8%, transparent); }
+.tab:active { background: color-mix(in oklab, var(--color-bezel) 30%, transparent); }
+.tab[aria-selected="true"] { color: var(--color-ink); background: color-mix(in oklab, var(--color-bezel) 38%, transparent); }
 .tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 .tab:disabled { opacity: 0.55; cursor: not-allowed; }
 .open__panels { grid-column: 6 / -1; display: grid; gap: var(--space-3xl); }
+/* With JavaScript the panels share one cell and the notch's contents cross-fade, the frame staying put. */
 .js .open__panels { gap: 0; }
+.js .panel { grid-area: 1 / 1; transition: opacity var(--dur-short) var(--ease-out), visibility 0s linear 0s; }
+.js .panel[data-on="false"] { opacity: 0; visibility: hidden; transition: opacity var(--dur-short) var(--ease-out), visibility 0s linear var(--dur-short); }
 .panel .edge > figcaption { max-width: 46ch; margin-inline: auto; font-size: var(--text-md); color: var(--color-ink-2); }
 .panel figcaption b { display: block; margin-bottom: var(--space-2xs); color: var(--color-ink); font-weight: 600; }
 
@@ -175,7 +201,7 @@ body { font-size: var(--text-md); }
 .facts dd { margin: var(--space-2xs) 0 0; color: var(--color-ink-2); }
 
 /* ---------- close ---------- */
-.close { padding-block: var(--section-gap-l) var(--section-gap); }
+.close { padding-block: var(--section-gap-l) var(--section-gap); background: linear-gradient(var(--color-paper-2), var(--color-close)); }
 .close__grid { margin-top: var(--space-2xl); align-items: end; row-gap: var(--space-xl); }
 .close h2 { grid-column: 1 / span 7; font-size: var(--text-display-s); font-weight: 600; line-height: 1.02; letter-spacing: var(--tracking-display); max-width: 14ch; }
 .close__act { grid-column: 9 / -1; }
@@ -190,8 +216,10 @@ body { font-size: var(--text-md); }
 .foot__small { width: 100%; font-size: var(--text-sm); color: var(--color-muted); }
 
 /* ---------- smaller screens ---------- */
-@media (max-width: 75rem) {
-  .bar__link { display: none; }
+@media (max-width: 60rem) {
+  .bar__in { flex-wrap: wrap; column-gap: var(--space-md); row-gap: 0; }
+  .bar__nav { order: 3; width: 100%; margin: 0 calc(-1 * var(--gutter)); padding-inline: var(--gutter); overflow-x: auto; scrollbar-width: none; }
+  .bar__nav ul { min-height: 44px; align-items: center; padding-bottom: var(--space-2xs); }
 }
 @media (max-width: 60rem) {
   .hero h1, .hero__side, .open .section-head, .open__panels, .claude__fig, .claude .section-head, .price__lists > div, .facts, .close h2, .close__act { grid-column: 1 / -1; }
@@ -209,9 +237,6 @@ body { font-size: var(--text-md); }
 
 @media (prefers-reduced-motion: reduce) {
   .hero__notch { animation: none; }
-  .btn, .tab, .textlink, .bar__link, .foot nav a { transition: none; }
+  .btn, .tab, .textlink, .bar__link, .foot nav a, .open, .js .panel, .js .panel[data-on="false"] { transition: none; }
   .btn:active { transform: none; }
 }
-
-/* With JavaScript, only the chosen view shows (OpenTabs sets data-on). */
-.js .panel[data-on="false"] { display: none; }

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Icon from "./Icon";
-import Reveal from "./Reveal";
 import { features } from "@/lib/features";
 
 const ALL = "All";
@@ -15,8 +14,8 @@ function countFor(group: string) {
 }
 
 /**
- * The feature cards behind a row of tag chips. Picking a chip narrows the
- * grid to that area; the cards re-enter with the usual staggered reveal.
+ * The features under a row of area filters. Picking one narrows the list to
+ * that area; the status line under it says so to screen readers.
  */
 export default function FeatureGrid() {
   const [group, setGroup] = useState(ALL);
@@ -25,46 +24,38 @@ export default function FeatureGrid() {
 
   return (
     <>
-      <div className="filter" role="group" aria-label="Filter features by area">
+      <div className="feat-filter" role="group" aria-label="Filter features by area">
         {groups.map((g) => (
           <button
             key={g}
             type="button"
-            className="filter__chip"
+            className="feat-filter__btn"
             aria-pressed={group === g}
             onClick={() => setGroup(g)}
           >
             {g}
-            <span className="filter__count num">{countFor(g)}</span>
+            <span className="num">{countFor(g)}</span>
           </button>
         ))}
       </div>
 
-      {/* keyed on the group so every card re-mounts and re-reveals */}
-      <div className="grid grid--3" key={group}>
-        {shown.map((f, i) => (
-          <Reveal key={f.title} as="article" delay={(i % 3) * 60}>
-            <div className="card">
-              <span className="card__icon">
-                <Icon name={f.icon} size={26} />
-              </span>
-              <span className="card__group">
-                {f.group}
-                {f.pro && <span className="card__pro">Pro</span>}
-                {f.soon && (
-                  <span className="soon">
-                    {f.soon === "update" ? "Update coming soon" : "Coming soon"}
-                  </span>
-                )}
-              </span>
-              <h3 className="card__title">{f.title}</h3>
-              <p className="card__body">{f.body}</p>
-            </div>
-          </Reveal>
+      <ul className="feat-list">
+        {shown.map((f) => (
+          <li key={f.title}>
+            <article>
+              <p className="feat-list__meta">
+                <Icon name={f.icon} size={20} />
+                <span>{f.group}</span>
+                {f.pro && <span className="feat-list__pro">Pro</span>}
+              </p>
+              <h3>{f.title}</h3>
+              <p className="feat-list__body">{f.body}</p>
+            </article>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <p className="filter__status" role="status" aria-live="polite">
+      <p className="visually-hidden" role="status" aria-live="polite">
         {group === ALL
           ? `Showing all ${features.length} features`
           : `Showing ${shown.length} ${group} features`}

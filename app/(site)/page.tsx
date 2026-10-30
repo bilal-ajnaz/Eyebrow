@@ -83,16 +83,14 @@ export default function Home() {
         </ul>
       </section>
 
-      <section className="open wrap" id="open" aria-labelledby="open-title">
-        <OpenTabs
-          intro={
-            <>
-              <h2 id="open-title">Point at the notch and it opens.</h2>
-              <p>Move away and it closes again.</p>
-            </>
-          }
-        />
-      </section>
+      <OpenTabs
+        intro={
+          <>
+            <h2 id="open-title">Point at the notch and it opens.</h2>
+            <p>Move away and it closes again.</p>
+          </>
+        }
+      />
 
       <section className="claude wrap" aria-labelledby="claude-title">
         <div className="grid claude__grid">
@@ -172,15 +170,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="close wrap" aria-labelledby="close-title">
-        <figure className="edge">
-          <Shot src="open-home-lyrics.png" w={640} width={1280} height={483} alt="Home with the current lyric under Golden Hour Drive by Nova Lane" />
-        </figure>
-        <div className="grid close__grid">
-          <h2 id="close-title">Free on the Mac App Store.</h2>
-          <div className="close__act">
-            <a className="btn" href={site.appStoreUrl}>Download on the Mac App Store</a>
-            <p className="hero__note">{site.minMacOS} or later. Apple silicon and Intel, notch or not.</p>
+      <section className="close" aria-labelledby="close-title">
+        <div className="wrap">
+          <figure className="edge">
+            <Shot src="open-home-lyrics.png" w={640} width={1280} height={483} alt="Home with the current lyric under Golden Hour Drive by Nova Lane" />
+          </figure>
+          <div className="grid close__grid">
+            <h2 id="close-title">Free on the Mac App Store.</h2>
+            <div className="close__act">
+              <a className="btn" href={site.appStoreUrl}>Download on the Mac App Store</a>
+              <p className="hero__note">{site.minMacOS} or later. Apple silicon and Intel, notch or not.</p>
+            </div>
           </div>
         </div>
       </section>
