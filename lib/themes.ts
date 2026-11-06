@@ -8,7 +8,7 @@ export const themes = [
   { id: "midnight", name: "Midnight", src: "theme-midnight.png", w: 1280, h: 483, paper: "oklch(0.2 0.06 285)", alt: "Home in the Midnight theme, violet and rounded" },
   { id: "liquid-glass", name: "Liquid Glass", src: "theme-liquid-glass.png", w: 1280, h: 483, paper: "oklch(0.3 0.07 240)", alt: "Home in the Liquid Glass theme, translucent tiles" },
   { id: "mono", name: "B&W", src: "theme-mono.png", w: 1280, h: 483, paper: "oklch(0.16 0 0)", alt: "Home in the black-and-white theme" },
-  { id: "compact", name: "Compact", src: "theme-compact.png", w: 1166, h: 447, paper: "oklch(0.3 0.04 252)", alt: "Home in the Compact theme, a smaller open notch" },
+  { id: "compact", name: "Compact", src: "theme-compact.png", w: 1166, h: 455, paper: "oklch(0.3 0.04 252)", alt: "Home in the Compact theme, a smaller open notch" },
 ] as const;
 
 export type ThemeId = (typeof themes)[number]["id"];
