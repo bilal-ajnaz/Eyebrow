@@ -1,5 +1,6 @@
 import Icon from "./Icon";
 import FeatureGrid from "./FeatureGrid";
+import Mac from "./landing/Mac";
 import Shot from "./landing/Shot";
 import { widgets, tabs } from "@/lib/features";
 
@@ -64,13 +65,15 @@ export function Tabs() {
 
         <div className="feat-tabs__side">
           <figure className="edge">
-            <Shot
-              src="open-home.png"
-              w={640}
-              width={1280}
-              height={483}
-              alt="The open notch on Home, with its row of tab icons along the top"
-            />
+            <Mac>
+              <Shot
+                src="open-home.png"
+                w={640}
+                width={1280}
+                height={483}
+                alt="The open notch on Home, with its row of tab icons along the top"
+              />
+            </Mac>
           </figure>
           <ul className="feat-tablist" aria-label="Tabs you can put in the notch">
             {tabs.map((t) => (

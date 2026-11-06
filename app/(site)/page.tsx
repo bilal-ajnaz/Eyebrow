@@ -1,4 +1,5 @@
 import NotchStory from "@/components/landing/NotchStory";
+import Mac from "@/components/landing/Mac";
 import Shot from "@/components/landing/Shot";
 import ThemeRail from "@/components/landing/ThemeRail";
 import { site } from "@/lib/site";
@@ -28,7 +29,9 @@ export default function Home() {
       <section className="price" id="price" aria-labelledby="price-title">
         <div className="wrap">
           <figure className="edge price__edge">
-            <Shot src="closed-stacked-activities.png" w={372} width={744} height={72} alt="Music in the notch, with a timer and a download in small notches either side" />
+            <Mac top notch={0.42}>
+              <Shot src="closed-stacked-activities.png" w={372} width={744} height={72} alt="Music in the notch, with a timer and a download in small notches either side" />
+            </Mac>
             <figcaption>With Pro, a timer and a download stack beside the music.</figcaption>
           </figure>
           <h2 id="price-title">{site.pro.price}, once.</h2>
@@ -63,8 +66,10 @@ export default function Home() {
 
       <section className="close" aria-labelledby="close-title">
         <div className="wrap">
-          <figure className="edge">
-            <Shot src="open-home-lyrics.png" w={640} width={1280} height={483} alt="Home with the current lyric under Golden Hour Drive by Nova Lane" />
+          <figure className="edge close__mac">
+            <Mac>
+              <Shot src="open-home-lyrics.png" w={640} width={1280} height={483} alt="Home with the current lyric under Golden Hour Drive by Nova Lane" />
+            </Mac>
           </figure>
           <div className="grid close__grid">
             <h2 id="close-title">Free on the Mac App Store.</h2>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Mac from "./Mac";
 import Shot from "./Shot";
 import { themes, THEME_KEY, type ThemeId } from "@/lib/themes";
 
@@ -138,7 +139,9 @@ export default function ThemeRail() {
           >
             <button type="button" className="themes__card" aria-current={i === near ? "true" : undefined} onClick={() => bring(i)}>
               <span className="edge themes__shot">
-                <Shot src={t.src} w={480} width={t.w} height={t.h} alt={t.alt} />
+                <Mac top notch={0.8}>
+                  <Shot src={t.src} w={480} width={t.w} height={t.h} alt={t.alt} />
+                </Mac>
               </span>
               <span className="themes__name">{t.name}</span>
             </button>

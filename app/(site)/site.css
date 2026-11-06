@@ -137,9 +137,31 @@ body { font-size: var(--text-md); }
 .shot { background: none; }
 .shot > img { object-fit: contain; object-position: 50% 0; }
 
-/* The edge every picture hangs from. */
-.edge { margin: 0; border-top: var(--bezel) solid var(--color-bezel); }
+/* A captioned capture. */
+.edge { margin: 0; }
 .edge > figcaption { margin-top: var(--space-md); font-size: var(--text-sm); color: var(--color-muted); text-align: center; }
+
+/* ---------- the Mac every capture lives in ---------- */
+/* Sizes are in cqw of the Mac, so the bezel, menu bar and base keep their proportions at any width. */
+.mac { --lid: oklch(0.13 0.004 260); container-type: inline-size; width: 100%; }
+.mac__lid { margin-inline: 5.5%; padding: 1.5cqw 1.5cqw 2cqw; border-radius: 3cqw 3cqw 1.2cqw 1.2cqw; background: var(--lid); box-shadow: inset 0 0 0 0.18cqw oklch(0.36 0.006 260), 0 3cqw 6cqw -2cqw oklch(0 0 0 / 0.55); }
+.mac__screen { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 1.1cqw 1.1cqw 0 0; background: var(--color-bezel); }
+/* The wallpaper: two pools of colour, taking the current feature's hue where the page sets one. */
+.mac__screen::before { content: ""; position: absolute; inset: 0; background: radial-gradient(90% 80% at 12% 105%, oklch(0.62 0.13 var(--h1, 165) / 0.95), transparent 70%), radial-gradient(85% 90% at 95% 95%, oklch(0.52 0.14 var(--h2, 255) / 0.9), transparent 72%), linear-gradient(170deg, oklch(0.24 0.05 255), oklch(0.36 0.08 235)); transition: background 300ms var(--ease-out); }
+:root[data-theme="mono"] .mac__screen::before { filter: grayscale(1); }
+.mac__menubar { position: absolute; inset: 0 0 auto; z-index: 1; display: flex; align-items: center; justify-content: space-between; height: 3.3cqw; padding-inline: 2cqw; background: oklch(0.2 0.03 255 / 0.45); color: oklch(0.97 0.01 255 / 0.92); font: 500 1.45cqw/1 var(--font-body); white-space: nowrap; }
+.mac__menus, .mac__status { display: flex; align-items: center; gap: 1.6cqw; }
+.mac__menubar svg { width: 1.7cqw; height: 1.7cqw; }
+.mac__menubar b { font-weight: 700; }
+.mac__notch { position: absolute; z-index: 2; top: 0; left: calc((1 - var(--notch)) * 50%); width: calc(var(--notch) * 100%); }
+.mac__notch .shot, .mac__notch > .story__slot { width: 100%; }
+/* The lower half of the laptop, with the dip you open the lid with. */
+.mac__base { position: relative; height: 2.4cqw; border-radius: 0 0 50% 50% / 0 0 100% 100%; background: linear-gradient(oklch(0.5 0.006 260), oklch(0.3 0.006 260) 45%, oklch(0.16 0.004 260)); }
+.mac__base::before { content: ""; position: absolute; left: 50%; top: 0; width: 16%; height: 40%; transform: translateX(-50%); border-radius: 0 0 1cqw 1cqw; background: oklch(0.24 0.005 260); }
+/* Just the top of the display, fading out. */
+.mac--top .mac__lid { padding-bottom: 0; border-radius: 3cqw 3cqw 0 0; mask-image: linear-gradient(#000 55%, transparent); box-shadow: inset 0 0 0 0.18cqw oklch(0.36 0.006 260); }
+.mac--top .mac__screen { aspect-ratio: auto; padding-bottom: 12cqw; }
+.mac--top .mac__notch { position: relative; }
 
 .section-head h2 { font-size: var(--text-section); font-weight: 600; line-height: 1.02; letter-spacing: var(--tracking-display); max-width: 18ch; }
 .section-head p { margin-top: var(--space-md); font-size: var(--text-lead); color: var(--color-ink-2); max-width: 46ch; }
@@ -189,36 +211,37 @@ body { font-size: var(--text-md); }
 @keyframes free-burst { 0% { opacity: 0; transform: rotate(calc(var(--i) * 45deg)) translateY(-0.9em) scaleY(0.4); } 40% { opacity: 1; } 100% { opacity: 0; transform: rotate(calc(var(--i) * 45deg)) translateY(-1.6em) scaleY(1); } }
 @keyframes drop { from { transform: translateY(-100%); } to { transform: none; } }
 
-/* Screen 2 */
-.story__featgrid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-xl) var(--gap-columns); align-items: center; }
-.story__feat .story__slot { margin-top: var(--space-xl); }
+/* Screen 2: the heading and a Mac side by side, the features in a straight strip across the page under them. */
+.story__featgrid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-xl) var(--gap-columns); align-items: center; }
+.story__head { display: grid; justify-items: start; gap: var(--space-lg); }
+.story__head .kicker { margin-bottom: calc(var(--space-sm) - var(--space-lg)); }
+.story__mac { justify-self: end; width: min(100%, calc((100svh - 22rem) * 1.5)); min-width: min(100%, 24rem); }
 .story__list { display: none; }
-.story__side { display: grid; gap: var(--space-lg); }
 .story__guide { display: inline-flex; align-items: center; gap: var(--space-xs); justify-self: start; min-height: 44px; color: var(--color-ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--color-rule); text-underline-offset: 0.22em; transition: text-decoration-color var(--dur-short) var(--ease-out); }
 .story__guide:hover { text-decoration-color: var(--color-accent); }
 .story__guide svg { color: var(--color-accent); transition: transform var(--dur-short) var(--ease-out); }
 .story__guide:hover svg { transform: translateX(3px); }
 .story__guide:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; border-radius: 2px; }
 
-/* The wheel: cards on a cylinder, each turned by its distance from the wheel's position,
-   so neighbours meet edge to edge all the way round. The card's height is the chord of 22°. */
-.drum { --r: 300px; --ch: calc(2 * var(--r) * 0.1908 - 8px); position: relative; height: min(68svh, 34rem); perspective: 1200px; overflow: hidden; outline: none; mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent); }
-.drum:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; border-radius: var(--radius-card); mask-image: none; }
-.drum__axis { position: absolute; inset: 0; transform-style: preserve-3d; transform: translateZ(calc(-1 * var(--r))); }
-.drum__card { position: absolute; left: 0; right: 0; top: 50%; display: flex; flex-direction: column; justify-content: center; height: var(--ch); margin-top: calc(var(--ch) / -2); padding: 0 var(--space-lg); border: var(--rule-hair) solid color-mix(in oklab, var(--color-ink) 14%, transparent); border-radius: var(--radius-card); background: color-mix(in oklab, var(--color-bezel) 70%, transparent); color: var(--color-ink); text-align: left; cursor: pointer; backface-visibility: hidden; will-change: transform, opacity; transition: border-color var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out); }
-.drum__card b { display: block; font: 600 var(--text-title)/1.2 var(--font-body); }
-.drum__card span { margin-top: var(--space-2xs); font-size: var(--text-sm); line-height: 1.45; color: var(--color-ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.drum__card[aria-selected="true"] { border-color: var(--color-accent); background: color-mix(in oklab, var(--color-bezel) 88%, transparent); }
-.drum__card:hover { border-color: color-mix(in oklab, var(--color-ink) 34%, transparent); }
-.drum__card[aria-selected="true"]:hover { border-color: var(--color-accent); }
+/* The strip: one straight row of cards that slides sideways as the page scrolls, the current one in the middle. */
+.strip { --card: 19rem; position: relative; margin-top: var(--space-2xl); padding-block: var(--space-2xs); overflow: hidden; outline: none; mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent); }
+.strip:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; mask-image: none; }
+.strip__track { display: flex; gap: var(--space-md); width: max-content; margin-left: calc(50% - var(--card) / 2); will-change: transform; }
+.strip__card { display: flex; flex-direction: column; justify-content: center; width: var(--card); min-height: 7rem; padding: var(--space-md) var(--space-lg); border: var(--rule-hair) solid color-mix(in oklab, var(--color-ink) 14%, transparent); border-radius: var(--radius-card); background: color-mix(in oklab, var(--color-bezel) 70%, transparent); color: var(--color-ink); text-align: left; cursor: pointer; transition: border-color var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out); }
+.strip__card b { display: block; font: 600 var(--text-title)/1.2 var(--font-body); }
+.strip__card span { margin-top: var(--space-2xs); font-size: var(--text-sm); line-height: 1.45; color: var(--color-ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.strip__card[aria-selected="true"] { border-color: var(--color-accent); background: color-mix(in oklab, var(--color-bezel) 88%, transparent); }
+.strip__card:hover { border-color: color-mix(in oklab, var(--color-ink) 34%, transparent); }
+.strip__card[aria-selected="true"]:hover { border-color: var(--color-accent); }
+@media (max-width: 40rem) { .strip { --card: 15rem; } }
 
-/* The colour behind the wheel: two pools of the features' hues, drifting as it turns. */
+/* The colour behind the strip: two pools of the features' hues, drifting as it turns. */
 .story__bg { position: absolute; inset: 0; opacity: 0; pointer-events: none; background: radial-gradient(52% 62% at var(--bx, 20%) 32%, oklch(0.56 0.15 var(--h1, 18) / 0.5), transparent 72%), radial-gradient(58% 70% at 84% var(--by, 70%), oklch(0.5 0.14 var(--h2, 268) / 0.42), transparent 74%); }
 :root[data-theme="mono"] .story__bg { filter: grayscale(1); }
 
 /* Screen 3 */
-.story__tabgrid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl) var(--gap-columns); align-items: center; }
-.story__tabs .story__slot { justify-self: end; }
+.story__tabgrid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-xl) var(--gap-columns); align-items: center; }
+.story__tabs .story__mac { min-width: min(100%, 22rem); }
 .story__facts { display: grid; margin-top: var(--space-xl); }
 .story__fact { grid-area: 1 / 1; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-md); align-items: center; font-size: var(--text-sm); color: var(--color-ink-2); transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out); }
 .story__fact b { display: block; margin-bottom: var(--space-2xs); font: 600 var(--text-title)/1.2 var(--font-body); color: var(--color-ink); }
@@ -255,7 +278,8 @@ body { font-size: var(--text-md); }
   .story__hero { padding-bottom: var(--section-gap-s); }
   .story__feat, .story__tabs { padding-block: var(--section-gap-s); }
   .story__featgrid, .story__tabgrid { grid-template-columns: minmax(0, 1fr); }
-  .story__feat .story__slot, .story__side .drum { display: none; }
+  .story__feat .story__mac, .strip { display: none; }
+  .story__tabs .story__mac { justify-self: stretch; }
   .story__list { display: grid; grid-auto-flow: column; grid-auto-columns: min(85%, 34rem); gap: var(--gap-columns); margin: var(--space-xl) calc(-1 * var(--gutter)) 0; padding: 0 var(--gutter) var(--space-md); list-style: none; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); scrollbar-width: none; }
   .story__list > li { scroll-snap-align: start; }
   .story__list figcaption { text-align: left; }
@@ -295,7 +319,7 @@ body { font-size: var(--text-md); }
 
 /* ---------- price ---------- */
 .price { margin-top: var(--section-gap); padding-bottom: var(--section-gap-s); background: var(--color-paper-2); }
-.price__edge { margin-bottom: var(--space-3xl); }
+.price__edge { max-width: 48rem; margin: 0 auto var(--space-3xl); }
 .price h2 { font-size: var(--text-figure); font-weight: 600; line-height: 0.95; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
 .price__lede { margin-top: var(--space-lg); font-size: var(--text-lead); color: var(--color-ink-2); max-width: 46ch; }
 .price__lists { margin-top: var(--space-3xl); row-gap: var(--space-xl); }
@@ -309,6 +333,7 @@ body { font-size: var(--text-md); }
 
 /* ---------- close ---------- */
 .close { padding-block: var(--section-gap-l) var(--section-gap); background: linear-gradient(var(--color-paper-2), var(--color-close)); }
+.close__mac { max-width: 60rem; margin-inline: auto; }
 .close__grid { margin-top: var(--space-2xl); align-items: end; row-gap: var(--space-xl); }
 .close h2 { grid-column: 1 / span 7; font-size: var(--text-display-s); font-weight: 600; line-height: 1.02; letter-spacing: var(--tracking-display); max-width: 14ch; }
 .close__act { grid-column: 9 / -1; }
@@ -331,16 +356,16 @@ body { font-size: var(--text-md); }
 @media (max-width: 60rem) {
   .price__lists > div, .facts, .close h2, .close__act { grid-column: 1 / -1; }
 }
-/* Narrow but tall (phones, tablets upright): the stage stacks, notch over wheel. */
+/* Narrow but tall (phones, tablets upright): the stage stacks, heading over Mac over strip. */
 @media (max-width: 60rem) and (min-height: 30rem) {
   .story__featgrid, .story__tabgrid { grid-template-columns: minmax(0, 1fr); align-content: center; row-gap: var(--space-md); }
   .story h2 { font-size: clamp(1.75rem, 5vw + 0.5rem, 2.75rem); }
-  .story__feat .story__slot { margin-top: var(--space-md); }
-  .story__side { gap: var(--space-xs); }
-  .drum { --r: 200px; height: min(40svh, 22rem); }
-  .drum__card { padding-inline: var(--space-md); }
-  .drum__card span { -webkit-line-clamp: 1; }
-  .story__tabs .story__slot { justify-self: start; grid-row: 2; }
+  .story__head { gap: var(--space-xs); }
+  .story__mac { justify-self: center; width: min(100%, calc((100svh - 26rem) * 1.5)); }
+  .strip { margin-top: var(--space-lg); }
+  .strip__card { min-height: 0; padding-inline: var(--space-md); }
+  .strip__card span { -webkit-line-clamp: 1; }
+  .story__tabs .story__mac { justify-self: center; grid-row: 2; }
   .story__facts { margin-top: var(--space-md); }
   .story__figure { font-size: clamp(3rem, 14vw, 5rem); }
 }
@@ -355,6 +380,6 @@ body { font-size: var(--text-md); }
 @media (prefers-reduced-motion: reduce) {
   .story__drop, .free__word, .free__burst i { animation: none; }
   .free__word { background-size: 100% 100%; }
-  .btn, .textlink, .bar__link, .foot nav a, .story__img, .story__tabsnotch, .story__fact, .drum__card, .themes, .themes__card { transition: none !important; }
+  .btn, .textlink, .bar__link, .foot nav a, .story__img, .story__tabsnotch, .story__fact, .strip__card, .mac__screen::before, .themes, .themes__card { transition: none !important; }
   .btn:active { transform: none; }
 }

@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
+import Mac from "./Mac";
 import Shot from "./Shot";
 import { site } from "@/lib/site";
 
 /* Screens 1 to 3 as one pinned stage with one notch in it. The notch hangs
-   under the bar in the hero, slides left for the feature wheel, then right for
-   the tabs, where its tab row turns into a column. Everything is driven by how
+   under the bar in the hero, slides into a Mac for the feature strip, then into
+   another Mac for the tabs, where its tab row turns into a column. Everything is driven by how
    far the page has scrolled through the section, so it moves with the scroll.
    Windows too short to pin show the three screens one after another. */
 
@@ -114,6 +115,8 @@ export default function NotchStory() {
   const bg = useRef<HTMLDivElement>(null);
   const layers = useRef<Record<"hero" | "feat" | "tabs", HTMLDivElement | null>>({ hero: null, feat: null, tabs: null });
   const cards = useRef<(HTMLButtonElement | null)[]>([]);
+  const track = useRef<HTMLDivElement>(null);
+  const stride = useRef(0);
   const icons = useRef<(HTMLImageElement | null)[]>([]);
   const live = useRef<HTMLImageElement>(null);
   const pill = useRef<HTMLSpanElement>(null);
@@ -130,6 +133,8 @@ export default function NotchStory() {
       slots.current[el.dataset.slot!] = offsetIn(el, st);
     }
     base.current = Math.max(...Object.values(slots.current).map((r) => r.w), 1);
+    const [c0, c1] = cards.current;
+    if (c0 && c1) stride.current = c1.offsetLeft - c0.offsetLeft;
     if (notch.current) {
       notch.current.style.width = `${base.current}px`;
       notch.current.dataset.ready = "";
@@ -177,24 +182,18 @@ export default function NotchStory() {
       el.style.pointerEvents = v > 0.5 ? "auto" : "none";
     }
     if (layers.current.hero) layers.current.hero.style.transform = `translate3d(0, ${(vis.hero - 1) * 48}px, 0)`;
-    const side = layers.current.feat?.querySelector<HTMLElement>(".story__side");
-    if (side) side.style.transform = `translate3d(${(1 - vis.feat) * 48}px, 0, 0)`;
-
-    // The drum: each card sits on a cylinder at its distance from the wheel's position.
+    // The strip: a straight row of cards sliding sideways, the current one in the middle.
+    if (track.current) track.current.style.transform = `translate3d(${(1 - vis.feat) * 48 - p * stride.current}px, 0, 0)`;
     cards.current.forEach((c, i) => {
       if (!c) return;
-      const d = i - p;
-      const a = d * 22;
-      c.style.transform = `rotateX(${-a}deg) translateZ(var(--r))`;
-      c.style.opacity = String(clamp(1 - Math.abs(a) / 84));
-      c.style.visibility = Math.abs(a) > 88 ? "hidden" : "visible";
+      c.style.opacity = String(1 - clamp(Math.abs(i - p) * 0.3, 0, 0.6));
     });
 
-    // The colour behind the wheel flows from one feature's hue into the next.
+    // The colour behind the strip, and the wallpaper in its Mac, flow from one feature's hue into the next.
+    st.style.setProperty("--h1", hueAt(p).toFixed(1));
+    st.style.setProperty("--h2", hueAt(Math.min(N - 1, p + 1.2)).toFixed(1));
     if (bg.current) {
       bg.current.style.opacity = String(vis.feat);
-      bg.current.style.setProperty("--h1", hueAt(p).toFixed(1));
-      bg.current.style.setProperty("--h2", hueAt(Math.min(N - 1, p + 1.2)).toFixed(1));
       bg.current.style.setProperty("--bx", `${20 + Math.sin(p * 0.9) * 14}%`);
       bg.current.style.setProperty("--by", `${70 + Math.cos(p * 0.7) * 16}%`);
     }
@@ -273,7 +272,11 @@ export default function NotchStory() {
     window.addEventListener("resize", onResize);
     // Fonts change the hero's height; measure again once they're in.
     document.fonts?.ready.then(onResize);
+    // And whenever anything on a screen changes size without the window doing so, so the notch still lands in its Mac.
+    const ro = new ResizeObserver(() => onResize());
+    stage.current?.querySelectorAll(".story__layer > *").forEach((el) => ro.observe(el));
     return () => {
+      ro.disconnect();
       media.removeEventListener("change", onResize);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
@@ -347,64 +350,65 @@ export default function NotchStory() {
             aria-labelledby="wheel-title"
           >
             <div className="wrap story__featgrid">
-              <div className="story__main">
-                <div className="story__head">
-                  <p className="kicker">Features</p>
-                  <h2 id="wheel-title">Everything, one notch.</h2>
-                </div>
-                <Slot id="feat">
-                  <Shot src="open-home-calendar.png" w={640} width={1280} height={468} alt="" />
-                </Slot>
-                {/* Too short a window to pin: the features as a row to swipe through. */}
-                <ul className="story__list" aria-label="Features">
-                  {items.map((v) => (
-                    <li key={v.id}>
-                      <figure className="edge">
-                        <Shot src={v.src} w={640} width={1280} height={468} alt={v.alt} />
-                        <figcaption>
-                          <b>{v.label}</b>
-                          {v.body}
-                        </figcaption>
-                      </figure>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="story__side">
-                <div
-                  className="drum"
-                  role="listbox"
-                  aria-label="Features"
-                  aria-activedescendant={featOn >= 0 && featOn < N ? `drum-${items[featOn].id}` : undefined}
-                  tabIndex={0}
-                  onKeyDown={onKey}
-                >
-                  <div className="drum__axis">
-                    {items.map((v, i) => (
-                      <button
-                        key={v.id}
-                        ref={(el) => {
-                          cards.current[i] = el;
-                        }}
-                        id={`drum-${v.id}`}
-                        type="button"
-                        role="option"
-                        aria-selected={i === featOn}
-                        tabIndex={-1}
-                        className="drum__card"
-                        style={{ transform: `rotateX(${-i * 22}deg) translateZ(var(--r))`, opacity: i < 4 ? 1 - (i * 22) / 84 : 0 }}
-                        onClick={() => go(i)}
-                      >
-                        <b>{v.label}</b>
-                        <span>{v.body}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+              <div className="story__head">
+                <p className="kicker">Features</p>
+                <h2 id="wheel-title">Everything, one notch.</h2>
                 <Link className="story__guide" href="/features">
                   Explore the complete feature guide
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m10.5 8.5 3.5 3.5-3.5 3.5" /></svg>
                 </Link>
+              </div>
+              <Mac className="story__mac">
+                <Slot id="feat">
+                  <Shot src="open-home-calendar.png" w={640} width={1280} height={468} alt="" />
+                </Slot>
+              </Mac>
+              {/* Too short a window to pin: the features as a row to swipe through. */}
+              <ul className="story__list" aria-label="Features">
+                {items.map((v) => (
+                  <li key={v.id}>
+                    <figure className="edge">
+                      <Mac top notch={0.78}>
+                        <Shot src={v.src} w={640} width={1280} height={468} alt={v.alt} />
+                      </Mac>
+                      <figcaption>
+                        <b>{v.label}</b>
+                        {v.body}
+                      </figcaption>
+                    </figure>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div
+              className="strip"
+              role="listbox"
+              aria-label="Features"
+              aria-orientation="horizontal"
+              aria-activedescendant={featOn >= 0 && featOn < N ? `strip-${items[featOn].id}` : undefined}
+              tabIndex={0}
+              onKeyDown={onKey}
+            >
+              <div ref={track} className="strip__track">
+                {items.map((v, i) => (
+                  <button
+                    key={v.id}
+                    ref={(el) => {
+                      cards.current[i] = el;
+                    }}
+                    id={`strip-${v.id}`}
+                    type="button"
+                    role="option"
+                    aria-selected={i === featOn}
+                    tabIndex={-1}
+                    className="strip__card"
+                    style={{ opacity: 1 - Math.min(i * 0.3, 0.6) }}
+                    onClick={() => go(i)}
+                  >
+                    <b>{v.label}</b>
+                    <span>{v.body}</span>
+                  </button>
+                ))}
               </div>
             </div>
           </div>
@@ -439,9 +443,11 @@ export default function NotchStory() {
                   </p>
                 </div>
               </div>
-              <Slot id="tabs">
-                <Shot src="open-vertical-tabs.png" w={640} width={1280} height={483} alt="The notch with its tabs moved into a column down the left side" />
-              </Slot>
+              <Mac className="story__mac">
+                <Slot id="tabs">
+                  <Shot src="open-vertical-tabs.png" w={640} width={1280} height={483} alt="The notch with its tabs moved into a column down the left side" />
+                </Slot>
+              </Mac>
             </div>
           </div>
 
