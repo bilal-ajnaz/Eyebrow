@@ -93,7 +93,7 @@ export function Widgets() {
   return (
     <section className="feat-widgets wrap" id="widgets" aria-labelledby="feat-widgets-title">
       <div className="section-head">
-        <h2 id="feat-widgets-title">Eighteen widgets, three sizes.</h2>
+        <h2 id="feat-widgets-title">Twenty-three widgets, three sizes.</h2>
         <p>
           Build the layout you actually use, or start from a preset (Minimal,
           Productivity, Media or Complete) and change it later.

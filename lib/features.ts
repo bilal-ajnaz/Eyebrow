@@ -47,8 +47,8 @@ export const features: Feature[] = [
   {
     group: "System",
     icon: "cpu",
-    title: "System stats",
-    body: "CPU and memory pressure at a glance, without another menu-bar icon fighting for space.",
+    title: "System Monitor",
+    body: "Eight live readings in one panel: CPU with a graph, GPU, memory, swap, free storage, network and disk speeds, and power, with the battery, how hot the Mac is running and Low Power mode. It only measures while it's on screen, so it costs nothing in the background, and Activity Monitor is a click away.",
   },
   {
     group: "System",
@@ -119,6 +119,18 @@ export const features: Feature[] = [
     pro: true,
   },
   {
+    group: "Tools",
+    icon: "notes",
+    title: "Notes with formatting",
+    body: "Bold, italic, underline, strikethrough, bullet lists, links and images, with the shortcuts you already know. Pin the notes you need to the top, and click one to copy it with its formatting. Every note stays on your Mac.",
+  },
+  {
+    group: "Tools",
+    icon: "eyedropper",
+    title: "Colour picker",
+    body: "Pick any colour on screen, then tune it on a shade square and hue slider, or type a hex. Contrast grades show how it reads on white and on black, HEX, RGB and HSL copy in one click, and your last 12 colours are a click away.",
+  },
+  {
     group: "Day",
     icon: "cloud",
     title: "Weather",
@@ -143,10 +155,16 @@ export const features: Feature[] = [
     body: "Jump between open Safari, Chrome and Brave tabs from the notch, without hunting through windows.",
   },
   {
-    group: "AI",
+    group: "Developer",
     icon: "sparkle",
     title: "Claude Code and Codex in the notch",
     body: "Claude's mark turns beside the notch while a session works, and goes amber when it needs your permission. With Pro, each Claude Code session also gets a page in the Live tab, a box to message it, and Allow and Deny right in the notch. Turn on Codex in Settings and its sessions show beside the notch too, to watch rather than answer: Codex's questions are still answered in the terminal. With Pro, each Codex session gets a Live tab page showing its activity.",
+  },
+  {
+    group: "Developer",
+    icon: "hammer",
+    title: "Builds",
+    body: "Did the pipeline pass? Connect GitHub or GitLab, including your own GitLab server, and the latest run of each of your most active repositories shows in the notch: running, passed or failed. A notification tells you when one goes red. Dev servers running on your Mac (Vite, Next.js, Rails, Django and more) are found by themselves and open in your browser with a click. Your tokens stay in the Keychain.",
   },
   {
     group: "System",
@@ -166,7 +184,7 @@ export const features: Feature[] = [
 
 export type Widget = { name: string; body: string; icon: string; soon?: "new" | "update" };
 
-/** WidgetKind — all nineteen, sizes S / M / L. */
+/** WidgetType.offered — all twenty-three, sizes S / M / L. */
 export const widgets: Widget[] = [
   { name: "Clock", body: "Current time and date", icon: "clock" },
   { name: "Weather", body: "Temperature and conditions", icon: "cloud" },
@@ -176,11 +194,15 @@ export const widgets: Widget[] = [
   { name: "Calendar", body: "Upcoming events, with one-click Join", icon: "calendar" },
   { name: "Reminders", body: "Pending reminders", icon: "check" },
   { name: "System Stats", body: "CPU and memory usage", icon: "cpu" },
+  { name: "System Monitor", body: "CPU, GPU, memory, disk, network and power", icon: "cpu" },
+  { name: "Builds", body: "GitHub, GitLab and local dev servers", icon: "hammer" },
+  { name: "Colour Picker", body: "Pick, tweak and copy any colour", icon: "eyedropper" },
+  { name: "Speed Test", body: "Download, upload and ping in one tap", icon: "download" },
   { name: "Time & Weather", body: "Time, date and weather together", icon: "sun" },
   { name: "Timer / Focus", body: "Focus timer, with a Pomodoro mode", icon: "timer" },
   { name: "Stay Awake", body: "Keep the Mac awake for a while", icon: "sun" },
   { name: "Teleprompter", body: "Your script, scrolling under the camera", icon: "text" },
-  { name: "Notes", body: "Write a note that saves to Notes", icon: "notes" },
+  { name: "Notes", body: "Formatted notes that stay on your Mac", icon: "notes" },
   { name: "Clipboard", body: "Clipboard history by type", icon: "clipboard" },
   { name: "Transcription", body: "On-device speech transcription", icon: "waveform" },
   { name: "AI Usage", body: "Claude / Codex session info", icon: "sparkle" },
@@ -223,7 +245,7 @@ export const plans: Plan[] = [
     name: "Free",
     summary: "Every feature on this page not marked Pro, with no trial and no time limit.",
     items: [
-      "Twenty of the twenty-four features, all eighteen widgets",
+      "Twenty-three of the twenty-seven features, all twenty-three widgets",
       "Up to four tabs, across the top",
       "Claude Code and Codex status in the closed notch",
       "Clipboard history: your last 500 items",
@@ -265,7 +287,7 @@ export const faqs = [
   },
   {
     q: "Does my data leave my Mac?",
-    a: "Almost none of it. There is no account, no telemetry and no server of ours to send anything to. Your clipboard, shelf, screenshots and calendar stay local, and transcription runs on Apple's on-device recogniser. Three optional features do reach out, because they can't work otherwise: Weather sends your approximate coordinates to Open-Meteo, Lyrics sends the track title and artist to LRCLIB, and sports scores come from ESPN. With Pro, iCloud sync (off until you turn it on) keeps your Shelf and clipboard in your own private iCloud, which we cannot read. The privacy policy lists every request in full.",
+    a: "Almost none of it. There is no account, no telemetry and no server of ours to send anything to. Your clipboard, shelf, screenshots, notes and calendar stay local, and transcription runs on Apple's on-device recogniser. A few optional features do reach out, because they can't work otherwise: Weather sends your approximate coordinates to Open-Meteo, Lyrics sends the track title and artist to LRCLIB, sports scores come from ESPN, Builds reads your CI runs from GitHub or GitLab with the token you give it, and Speed Test measures against Cloudflare. With Pro, iCloud sync (off until you turn it on) keeps your Shelf and clipboard in your own private iCloud, which we cannot read. The privacy policy lists every request in full.",
   },
   {
     q: "Do I need a Mac with a notch?",

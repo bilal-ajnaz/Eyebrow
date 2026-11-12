@@ -36,9 +36,9 @@ const demos = [
   {
     id: "try-widgets",
     title: "Widgets",
-    body: "Pages of widgets in small, medium and large: clock, calendar, reminders, battery, device batteries, weather, timers, Now Playing and more. The free app has one page; Pro has up to four.",
-    steps: ["Press the pencil, then drag a widget to move it.", "Pull a widget’s bottom-right corner to make it small, medium or large.", "Switch pages with the dots on the right."],
-    note: "The app has more widgets to choose from than the eleven here.",
+    body: "Pages of widgets in small, medium and large: clock, calendar, reminders, battery, device batteries, weather, timers, Now Playing, notes, a system monitor, your builds, a colour picker and more. The free app has one page; Pro has up to four.",
+    steps: ["Press the pencil, then drag a widget to move it.", "Pull a widget’s bottom-right corner to make it small, medium or large.", "Switch pages with the dots on the right. The third page has System Monitor, Builds and the colour picker: try the eyedropper, or click a hex to copy it."],
+    note: "The app has more widgets to choose from than the fourteen here. In the app, Notes, Builds, System Monitor and the colour picker open into the whole notch when you click them.",
     Demo: WidgetsDemo,
   },
   {

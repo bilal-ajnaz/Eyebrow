@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type 
 import Icon from "@/components/Icon";
 import Notch from "./Notch";
 
-type WId = "timeWeather" | "reminders" | "calendar" | "battery" | "clock" | "weather" | "music" | "timer" | "notes" | "stayAwake" | "batteries";
+type WId = "timeWeather" | "reminders" | "calendar" | "battery" | "clock" | "weather" | "music" | "timer" | "notes" | "stayAwake" | "batteries" | "system" | "builds" | "colour";
 type Size = "s" | "m" | "l";
 type Item = { id: WId; size: Size };
 
@@ -40,11 +40,21 @@ const startPages: { id: string; label: string; items: Item[] }[] = [
       { id: "batteries", size: "s" },
     ],
   },
+  {
+    id: "work",
+    label: "Work",
+    items: [
+      { id: "system", size: "l" },
+      { id: "builds", size: "l" },
+      { id: "colour", size: "l" },
+    ],
+  },
 ];
 
 const names: Record<WId, string> = {
   timeWeather: "Time & Weather", reminders: "Reminders", calendar: "Calendar", battery: "Battery", clock: "Clock",
   weather: "Weather", music: "Now Playing", timer: "Timer", notes: "Notes", stayAwake: "Stay Awake", batteries: "Batteries",
+  system: "System Monitor", builds: "Builds", colour: "Colour Picker",
 };
 type Device = { name: string; icon: string; level: number; charging?: boolean } | null;
 const devices: Device[] = [
@@ -53,6 +63,21 @@ const devices: Device[] = [
   { name: "Magic Mouse", icon: "mouse", level: 62, charging: true },
   null,
 ];
+type Note = { title: string; preview: string; pinned?: boolean };
+const startNotes: Note[] = [
+  { title: "Launch day checklist", preview: "• Record the walkthrough video", pinned: true },
+  { title: "Wi-Fi at the studio", preview: "Network: Studio-5G", pinned: true },
+  { title: "Standup", preview: "Shipped the colour picker. Next: Builds" },
+  { title: "Gift ideas", preview: "Noise-cancelling headphones" },
+  { title: "Books to read", preview: "The Design of Everyday Things" },
+];
+type Run = { repo: string; branch: string; status: "success" | "failure" | "running"; local?: boolean };
+const swatches = ["#FF6B4A", "#F5B45C", "#F7DD72", "#8CCB88", "#6CC8C0", "#5B9BDE", "#B78CF0", "#F28CB8"];
+const hexToRgb = (hex: string) => {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+};
+type EyeDropperCtor = new () => { open: () => Promise<{ sRGBHex: string }> };
 const sizeName: Record<Size, string> = { s: "small", m: "medium", l: "large" };
 
 type Placed = Item & { col: number; row: number };
@@ -96,7 +121,11 @@ export default function WidgetsDemo() {
   const [awake, setAwake] = useState(false);
   const [playing, setPlaying] = useState(true);
   const [done, setDone] = useState<number[]>([]);
-  const [note, setNote] = useState("Ideas for the launch video");
+  const [notes, setNotes] = useState(startNotes);
+  const [copied, setCopied] = useState<string | null>(null);
+  const [colour, setColour] = useState(swatches[0]);
+  const [recent, setRecent] = useState(swatches.slice(0, 6));
+  const [built, setBuilt] = useState(false);
   const [dragging, setDragging] = useState<WId | null>(null);
   const grid = useRef<HTMLUListElement>(null);
   const cells = useRef<Partial<Record<WId, HTMLLIElement | null>>>({});
@@ -109,6 +138,18 @@ export default function WidgetsDemo() {
     const t = window.setInterval(() => setNow(new Date()), 1000);
     return () => window.clearInterval(t);
   }, []);
+
+  // The run that's going when the page opens passes a little later.
+  useEffect(() => {
+    const t = window.setTimeout(() => setBuilt(true), 9000);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    if (!copied) return;
+    const t = window.setTimeout(() => setCopied(null), 1400);
+    return () => window.clearTimeout(t);
+  }, [copied]);
 
   useEffect(() => {
     if (!running) return;
@@ -249,6 +290,54 @@ export default function WidgetsDemo() {
   const reminders = ["Reply to the App Review team", "Send press kit to Ana", "Record the launch reel", "Book the studio"];
   const open = reminders.filter((_, i) => !done.includes(i));
 
+  const copy = (key: string, text: string) => {
+    navigator.clipboard?.writeText(text).catch(() => {});
+    setCopied(key);
+  };
+  const choose = (hex: string) => {
+    const h = hex.toUpperCase();
+    setColour(h);
+    setRecent((r) => [h, ...r.filter((x) => x !== h)].slice(0, 6));
+  };
+  // The real eyedropper where the browser has one; elsewhere the next sample colour stands in for the screen.
+  const pick = async () => {
+    const ED = (window as unknown as { EyeDropper?: EyeDropperCtor }).EyeDropper;
+    if (ED) {
+      try {
+        choose((await new ED().open()).sRGBHex);
+      } catch {}
+      return;
+    }
+    choose(swatches[(swatches.indexOf(colour) + 1) % swatches.length]);
+  };
+
+  // Live-looking readings: they drift with the clock, like the app's once-a-second samples.
+  const sec = d.getSeconds();
+  const cpu = 9 + ((sec * 37) % 17);
+  const gpu = (sec * 13) % 7;
+  const net = (((sec * 53) % 29) / 10 + 0.4).toFixed(1);
+  const disk = (((sec * 31) % 47) / 10 + 1.2).toFixed(1);
+  const readings = [
+    { k: "cpu", label: "CPU", value: `${cpu}%`, icon: "cpu" },
+    { k: "gpu", label: "GPU", value: `${gpu}%` },
+    { k: "mem", label: "Memory", value: "11.7 GB", icon: "memory" },
+    { k: "swap", label: "Swap", value: "2.0 GB" },
+    { k: "disk", label: "Storage", value: "155.8 GB free" },
+    { k: "net", label: "Network", value: `↓ ${net} MB/s`, icon: "globe" },
+    { k: "io", label: "Disk I/O", value: `R ${disk} MB/s` },
+    { k: "pwr", label: "Power", value: "90%", icon: "battery" },
+  ];
+
+  const runs: Run[] = [
+    { repo: "eyebrow-website", branch: "main", status: built ? "success" : "running" },
+    { repo: "billing-api", branch: "release/2.4", status: "failure" },
+    { repo: "design-tokens", branch: "main", status: "success" },
+    { repo: "localhost:5173", branch: "Vite", status: "success", local: true },
+  ];
+  const failing = runs.filter((r) => r.status === "failure").length;
+  const buildSummary = failing ? `${failing} failing` : runs.some((r) => r.status === "running") ? "Running" : "All green";
+  const rgb = hexToRgb(colour);
+
   const tile = (w: WId) => {
     switch (w) {
       case "timeWeather":
@@ -340,12 +429,89 @@ export default function WidgetsDemo() {
           </div>
         );
       case "notes":
+        // Pinned notes first; a click copies one, formatting and all.
         return (
           <div className="wd wd-notes">
-            <p className="wd-grad wd-title">Notes</p>
-            <label className="visually-hidden" htmlFor="wd-note">Note</label>
-            <textarea id="wd-note" value={note} onChange={(e) => setNote(e.target.value)} disabled={editing} rows={4} />
-            <p className="wd-sub wd-x-s">Saves to Notes</p>
+            <div className="wd-head">
+              <span className="wd-app wd-app--notes wd-only-s" aria-hidden="true"><Icon name="notes" size={15} /></span>
+              <p className="wd-grad wd-title wd-x-s">Notes</p>
+              <button type="button" className="wd-btn wd-btn--sm" onClick={() => setNotes((n) => [{ title: "New note", preview: "Bold, lists, links and images" }, ...n])} disabled={editing} aria-label="New note">
+                <Icon name="plus" size={13} />
+              </button>
+            </div>
+            <ul className="wd-notes__list wd-x-s">
+              {notes.map((n, i) => (
+                <li key={`${n.title}${i}`}>
+                  <button type="button" onClick={() => copy(`note${i}`, `${n.title}\n${n.preview}`)} disabled={editing}>
+                    <b>{n.pinned && <Icon name="pin" size={11} />}{n.title}</b>
+                    <span>{copied === `note${i}` ? "Copied" : n.preview}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <p className="wd-notes__count wd-sub">
+              <span className="wd-grad wd-title wd-only-s">Notes<br /></span>
+              {notes.length} notes
+            </p>
+          </div>
+        );
+      case "system":
+        return (
+          <div className="wd wd-sys">
+            <p className="wd-grad wd-title wd-sys__title">System</p>
+            <dl className="wd-sys__grid">
+              {readings.map((r) => (
+                <div key={r.k} data-k={r.k}>
+                  <dt>{r.icon && <span className="wd-sys__icon" aria-hidden="true"><Icon name={r.icon} size={12} /></span>}<span className="wd-sys__label">{r.label}</span></dt>
+                  <dd className="num">{r.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        );
+      case "builds":
+        return (
+          <div className="wd wd-bld">
+            <div className="wd-head">
+              <span className="wd-app wd-app--builds wd-only-s" aria-hidden="true"><Icon name="hammer" size={15} /></span>
+              <p className="wd-grad wd-title wd-x-s">Builds</p>
+              <span className="wd-sub wd-x-s">{buildSummary}</span>
+              <span className="wd-bld__badge wd-only-s" data-status={failing ? "failure" : "success"} aria-hidden="true"><Icon name={failing ? "close" : "check"} size={12} /></span>
+            </div>
+            <ul className="wd-bld__list wd-x-s">
+              {runs.map((r) => (
+                <li key={r.repo} data-status={r.status}>
+                  <i aria-hidden="true" />
+                  <b>{r.repo}</b>
+                  <span>{r.branch}</span>
+                  <span className="visually-hidden">{r.local ? "running locally" : r.status === "success" ? "passed" : r.status === "failure" ? "failed" : "running"}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="wd-only-s wd-bld__foot"><span className="wd-grad wd-title">Builds</span><br /><span className="wd-sub">{buildSummary}</span></p>
+          </div>
+        );
+      case "colour":
+        return (
+          <div className="wd wd-col">
+            <span className="wd-col__swatch" style={{ background: colour }} aria-hidden="true" />
+            <button type="button" className="wd-btn wd-btn--sm wd-col__pick" onClick={pick} disabled={editing} aria-label="Pick a colour from the screen">
+              <Icon name="eyedropper" size={14} />
+            </button>
+            <div className="wd-col__text">
+              <p className="wd-grad wd-title"><span className="wd-col__long">Colour picker</span><span className="wd-col__short">Colour</span></p>
+              <button type="button" className="wd-col__hex num" onClick={() => copy("hex", colour)} disabled={editing} aria-label={`Copy ${colour}`}>
+                {copied === "hex" ? "Copied" : colour}
+              </button>
+              <p className="wd-sub wd-col__rgb num">rgb({rgb.join(", ")})</p>
+            </div>
+            <ul className="wd-col__recent" aria-label="Recent colours">
+              {recent.map((c) => (
+                <li key={c}>
+                  <button type="button" style={{ background: c }} onClick={() => choose(c)} disabled={editing} aria-label={`Use ${c}`} />
+                </li>
+              ))}
+            </ul>
           </div>
         );
       case "batteries":

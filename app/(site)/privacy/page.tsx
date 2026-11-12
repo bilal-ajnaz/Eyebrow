@@ -6,10 +6,10 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "What Eyebrow stores on your Mac, the four optional features that contact a third party, and what we never collect. No account, no analytics, no ads.",
+    "What Eyebrow stores on your Mac, the optional features that contact a third party, and what we never collect. No account, no analytics, no ads.",
 };
 
-const EFFECTIVE = "15 October 2026";
+const EFFECTIVE = "12 November 2026";
 
 /** Every outbound request the app can make, and what triggers it. */
 const outbound = [
@@ -42,6 +42,24 @@ const outbound = [
     sent: "Nothing about you: a request for the current Bitcoin and Ethereum prices",
     when: "While crypto prices in Live Widgets is switched on (off by default)",
     off: "Settings › Widgets › Live Widgets",
+  },
+  {
+    service: "GitHub",
+    sent: "The access token you gave Builds, to list your most recently pushed repositories and read the latest Actions run of each",
+    when: "Every 2 minutes once you connect GitHub in Builds, and every 30 seconds while the Builds panel is open",
+    off: "Builds › accounts › Disconnect, or remove the widget",
+  },
+  {
+    service: "GitLab (gitlab.com or your own server)",
+    sent: "The access token you gave Builds, to list your most active projects and read the latest pipeline of each",
+    when: "Every 2 minutes once you connect GitLab in Builds, and every 30 seconds while the Builds panel is open",
+    off: "Builds › accounts › Disconnect, or remove the widget",
+  },
+  {
+    service: "Cloudflare (speed.cloudflare.com)",
+    sent: "Nothing about you: test data downloaded and uploaded to measure your connection",
+    when: "Only when you start a test in the Speed Test widget",
+    off: "Don't start a test, or remove the widget",
   },
   {
     service: "Your media app's artwork host",
@@ -84,7 +102,9 @@ const local = [
   ["Browser tabs", "Read from the browsers you allow, shown in the notch, never stored or transmitted."],
   ["Face Unlock", "Off until you turn it on (Pro). Eyebrow keeps a set of numbers derived from each scan of your face, never a photo, and never records video. It also keeps the Mac password you give it, so it can type it at the lock screen. Both are encrypted with a key held in this Mac's Keychain, which only Touch ID or your Mac password can release. They are never synced to iCloud and never leave your Mac. Face recognition runs on your Mac."],
   ["Claude Code sessions", "Off until you turn it on (Pro). Eyebrow adds its hooks to Claude Code's settings in the folder you choose, then reads the session events Claude Code writes there to show them in the notch. The events stay on your Mac and are deleted after a few minutes. Turning the feature off removes the hooks."],
-  ["Notes", "A note you write in the Notes widget is saved to Apple Notes on your Mac. Eyebrow remembers the titles of your last few notes so it can reopen them."],
+  ["Notes", "Notes you write in the Notes widget, with their formatting and any images you add, are saved as files in the app's own storage on your Mac. They are not synced and never sent anywhere."],
+  ["Builds", "The GitHub and GitLab access tokens you give Builds are kept in this Mac's Keychain and sent only to the service they belong to. To find dev servers, Eyebrow checks the usual development ports on this Mac only (localhost); nothing about them leaves your Mac."],
+  ["Colour picker", "The colour you're working on and your last 12 colours, kept in the app's settings. Picking from the screen uses macOS's own colour sampler, which reads only the pixel you click."],
   ["Settings", "Your preferences, stored in the app's own settings on your Mac."],
   ["Pro", "Whether you own Eyebrow Pro. The app checks this with the App Store through Apple's StoreKit; Eyebrow never sees your name, card or Apple Account details, and keeps no record of the purchase beyond the entitlement Apple returns."],
 ];
@@ -94,9 +114,9 @@ const permissions = [
   ["Microphone and Speech Recognition", "For on-device transcription."],
   ["Accessibility", "To mute, turn the camera off and leave from the notch during a call, and, if you turn on Face Unlock, to type your password into the lock screen."],
   ["Camera", "For the mirror preview in the notch and, if you turn on Face Unlock, to recognise your face when your Mac is locked. Video is never recorded or sent anywhere."],
-  ["Automation", "To control Music and Spotify, list and switch tabs in Safari, Chrome and Brave, and save the notes you write to Apple Notes."],
+  ["Automation", "To control Music and Spotify, and to list and switch tabs in Safari, Chrome and Brave."],
   ["Screenshots folder", "The one folder you choose, so new screenshots can be picked up from it. Eyebrow does not record your screen."],
-  ["Notifications", "To alert you when a focus timer ends."],
+  ["Notifications", "To alert you when a focus timer ends, and when a build you follow in Builds fails."],
   ["Location", "To fetch weather for where you are."],
   ["Bluetooth", "To read the battery level of connected devices."],
 ];
@@ -127,11 +147,13 @@ export default function PrivacyPage() {
                 your calendar or your screen.
               </p>
               <p>
-                Four optional features contact a third party, because they
+                Six optional features contact a third party, because they
                 cannot work otherwise: <strong>Weather</strong>,{" "}
-                <strong>Lyrics</strong>, and <strong>sports scores</strong> and{" "}
-                <strong>crypto prices</strong> in Live Widgets. Each is listed
-                in full below, and each can be switched off.
+                <strong>Lyrics</strong>, <strong>sports scores</strong> and{" "}
+                <strong>crypto prices</strong> in Live Widgets,{" "}
+                <strong>Builds</strong>, which reads your CI runs from GitHub or
+                GitLab with a token you give it, and <strong>Speed Test</strong>.
+                Each is listed in full below, and each can be switched off.
               </p>
               <p>
                 Eyebrow Pro changes none of that. The purchase is handled by
@@ -207,7 +229,9 @@ export default function PrivacyPage() {
             Each of these services has its own privacy policy, and their
             handling of a request is theirs, not ours. Open-Meteo receives no
             identifier alongside the coordinates, and Eyebrow sends no API key
-            or account with any of these requests.
+            or account with any of these requests, with one exception you opt
+            into: Builds sends the access token you gave it to GitHub or
+            GitLab, and to nowhere else.
           </p>
 
           <h2>Permissions, and why each is asked for</h2>
