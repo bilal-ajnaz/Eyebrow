@@ -52,10 +52,10 @@ const cutPath = (unit: number, cut: number) => {
   return `path("M0 0 H${f(w)} V${f(y - r)} H${f(w - s)} A${f(r)} ${f(r)} 0 0 1 ${f(w - s - r)} ${f(y)} H${f(s + r)} A${f(r)} ${f(r)} 0 0 1 ${f(s)} ${f(y - r)} H0 Z")`;
 };
 
-/* Between the hero and the features the notch doesn't slide across the page over
-   both headlines. It closes into a pill at the top of the screen, a drop of it
-   drips off and falls into the Mac, and the notch opens again from a pill there.
-   PW × PH is the closed pill, in capture px; the stretches are shares of the intro. */
+/* Between the screens the notch doesn't slide across the page over both headlines.
+   It closes into a pill at the top of its screen, a drop of it drips off and falls
+   into the next Mac, and the notch opens again from a pill there. PW × PH is the
+   closed pill, in capture px; the stretches are shares of each move. */
 const PW = 400;
 const PH = 64;
 const CLOSE = 0.3;
@@ -269,11 +269,15 @@ export default function NotchStory() {
     }
     // The bezel strip just above the Mac's screen stays clear, so the drop goes in behind the
     // edge and the pill it fills hangs square from it, like the notch does.
+    // The same above the pill it leaves, when that one is in a Mac too.
     const edge = gooEdge.current;
     if (edge) {
-      const w = B.w * 1.6;
-      const h = B.h * 0.75;
-      edge.setAttribute("d", `M-1e5 -1e5H1e5V1e5H-1e5Z M${(B.x - w / 2).toFixed(2)} ${(B.y - h).toFixed(2)}h${w.toFixed(2)}v${h.toFixed(2)}h${(-w).toFixed(2)}Z`);
+      const strip = (P: typeof A) => {
+        const w = P.w * 1.6;
+        const h = P.h * 0.75;
+        return ` M${(P.x - w / 2).toFixed(2)} ${(P.y - h).toFixed(2)}h${w.toFixed(2)}v${h.toFixed(2)}h${(-w).toFixed(2)}Z`;
+      };
+      edge.setAttribute("d", "M-1e5 -1e5H1e5V1e5H-1e5Z" + strip(A) + strip(B));
     }
     dot.setAttribute("rx", (r * sx).toFixed(2));
     dot.setAttribute("ry", (r * sy).toFixed(2));
@@ -304,25 +308,18 @@ export default function NotchStory() {
     const n = notch.current;
     if (hero && feat && tabs && n && drop.current) {
       const place = (r: Rect) => `translate3d(${r.x}px, ${r.y}px, 0) scale(${r.w / base.current})`;
-      let shut = 0;
-      let dripping = false;
-      if (t < AT.move) {
-        // With reduced motion there's no drop: it closes, and opens again in the Mac.
-        const close = still.current ? 0.5 : CLOSE;
-        const open = still.current ? 0.5 : OPEN;
-        const inB = intro >= (close + open) / 2;
-        n.style.transform = place(inB ? feat : hero);
-        shut = inB ? 1 - clamp((intro - open) / (1 - open)) : clamp(intro / close);
-        dripping = !still.current && intro > close - 0.004 && intro < open + 0.004;
-        n.style.visibility = intro > close && intro < open && !still.current ? "hidden" : "";
-        drop.current.style.clipPath = shut > 0.001 ? shapeClip(base.current / IW, inB ? dh : IH, shut) : "";
-        if (dripping) drip(hero, feat, clamp((intro - close) / (open - close)));
-      } else {
-        const m = ease(move);
-        n.style.transform = place({ x: lerp(feat.x, tabs.x, m), y: lerp(feat.y, tabs.y, m), w: lerp(feat.w, tabs.w, m) });
-        n.style.visibility = "";
-        drop.current.style.clipPath = "";
-      }
+      // Hero → features, then features → tabs: each time the notch closes, drips across and opens.
+      const [a, b, m, ha] = t < AT.move ? [hero, feat, intro, IH] : [feat, tabs, move, dh];
+      // With reduced motion there's no drop: it closes, and opens again in the next Mac.
+      const close = still.current ? 0.5 : CLOSE;
+      const open = still.current ? 0.5 : OPEN;
+      const inB = m >= (close + open) / 2;
+      n.style.transform = place(inB ? b : a);
+      const shut = inB ? 1 - clamp((m - open) / (1 - open)) : clamp(m / close);
+      const dripping = !still.current && m > close - 0.004 && m < open + 0.004;
+      n.style.visibility = m > close && m < open && !still.current ? "hidden" : "";
+      drop.current.style.clipPath = shut > 0.001 ? shapeClip(base.current / IW, inB ? dh : ha, shut) : "";
+      if (dripping) drip(a, b, clamp((m - close) / (open - close)));
       // The capture goes dark as the notch closes, so the pill it ends as is plain black.
       if (ink.current) ink.current.style.opacity = String(clamp(ease(shut) * 1.7));
       if (goo.current) goo.current.style.visibility = dripping ? "visible" : "hidden";
