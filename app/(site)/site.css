@@ -253,6 +253,11 @@ body { font-size: var(--text-md); }
 .story__drop { position: relative; aspect-ratio: 1280 / 483; animation: drop var(--dur-drop) var(--ease-out) both; }
 .story__img { position: absolute; inset: 0 auto auto 0; width: 100%; height: auto; opacity: 0; transition: opacity 300ms var(--ease-out); }
 .story__img[data-on="true"] { opacity: 1; }
+/* The notch's body at the height the scroll has reached (--dh, in capture px; --u is one capture px).
+   Under a capture shorter than that it shows as the rest of the notch; the rim draws the edge
+   along a taller capture cut short. Both match the capture exactly once a feature settles. */
+.story__fill { position: absolute; top: 0; left: calc(38 * var(--u, 0.5px)); right: calc(38 * var(--u, 0.5px)); height: calc((var(--dh, 468) - 8) * var(--u, 0.5px)); border-radius: 0 0 calc(60 * var(--u, 0.5px)) calc(60 * var(--u, 0.5px)); background: linear-gradient(to bottom, #000 30%, rgb(14 22 30)); opacity: 0; pointer-events: none; }
+.story__fill--rim { background: none; box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.16), inset 1px 0 0 rgb(255 255 255 / 0.08), inset -1px 0 0 rgb(255 255 255 / 0.08); }
 .story__tabsnotch { position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--ease-out); }
 .story__tabsnotch[data-on="true"] { opacity: 1; }
 .story__pill { position: absolute; left: 0; top: 0; border-radius: 999px; background: rgb(41 41 41); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1); will-change: transform; }

@@ -13,22 +13,44 @@ import { site } from "@/lib/site";
    Windows too short to pin show the three screens one after another. */
 
 const items = [
-  { id: "home", label: "Home", src: "open-home-calendar.png", hue: 18, body: "The song, the weather and your next meeting, with Join.", alt: "Home with the calendar card: a week strip, today's events and a Join button" },
-  { id: "shelf", label: "Shelf", src: "open-shelf.png", hue: 268, body: "Drop files on the notch to hold them for later, or AirDrop them from there.", alt: "The Shelf holding three files, with an AirDrop target on the left" },
-  { id: "clipboard", label: "Clipboard", src: "open-clipboard.png", hue: 160, body: "Text, links, colours and images you copied, one ⇧ ⌘ C away.", alt: "Clipboard history with filters and copied text, a pinned link, a colour, an image and a file" },
-  { id: "widgets", label: "Widgets", src: "widgets-day.png", hue: 225, body: "Clock, calendar, reminders, battery and weather, laid out your way.", alt: "A widget page: time and weather, today's calendar, reminders, battery, clock and weather" },
-  { id: "screenshot", label: "Screenshots", src: "open-screenshot.png", hue: 335, body: "Each one lands here first: copy it, mark it up, pull the text out or save it.", alt: "A fresh screenshot in the notch with Copy, Annotate, Text and Save" },
-  { id: "claude", label: "Claude Code", src: "open-claude-approval.png", hue: 40, body: "When a session wants to run a command, Allow and Deny appear up top.", alt: "Claude Code in eyebrow-website asks to run npm run build, with Deny and Allow buttons" },
-  { id: "meeting", label: "Meetings", src: "open-meeting-reminder.png", hue: 255, body: "A reminder drops down before the meeting starts, with the link to join.", alt: "A meeting reminder for Design Review with a Join button" },
-  { id: "call", label: "Calls", src: "open-call-tab.png", hue: 150, body: "Mute, camera and leave for the call you are on.", alt: "The call tab with Mute, Camera and Leave" },
-  { id: "notes", label: "Notes", src: "open-notes-composer.png", hue: 80, body: "The Notes widget: bold, lists, links and images, all kept on your Mac.", alt: "A note being edited in the notch, with a formatting toolbar and a bulleted list" },
-  { id: "colour", label: "Colour picker", src: "open-colour-picker.png", hue: 20, body: "The colour picker widget: pick off the screen, check contrast, copy.", alt: "The colour picker: a shade square, a hue slider, contrast grades on white and black, and HEX, RGB and HSL values" },
-  { id: "builds", label: "Builds", src: "open-builds.png", hue: 250, body: "The Builds widget: did the pipeline pass on GitHub or GitLab?", alt: "Builds: GitHub and GitLab runs, one running and one failed, with All, GitHub, GitLab and Local filters" },
-  { id: "weather", label: "Weather", src: "open-weather.png", hue: 205, body: "Now, and the next few hours.", alt: "The weather tab: temperature, conditions and an hourly forecast" },
-  { id: "audio", label: "Audio", src: "open-audio.png", hue: 300, body: "Volume, the output device and the microphone, in one place.", alt: "The audio tab: volume, output devices and input" },
+  { id: "home", h: 468, label: "Home", src: "open-home-calendar.png", hue: 18, body: "The song, the weather and your next meeting, with Join.", alt: "Home with the calendar card: a week strip, today's events and a Join button" },
+  { id: "shelf", h: 468, label: "Shelf", src: "open-shelf.png", hue: 268, body: "Drop files on the notch to hold them for later, or AirDrop them from there.", alt: "The Shelf holding three files, with an AirDrop target on the left" },
+  { id: "clipboard", h: 468, label: "Clipboard", src: "open-clipboard.png", hue: 160, body: "Text, links, colours and images you copied, one ⇧ ⌘ C away.", alt: "Clipboard history with filters and copied text, a pinned link, a colour, an image and a file" },
+  { id: "widgets", h: 468, label: "Widgets", src: "widgets-day.png", hue: 225, body: "Clock, calendar, reminders, battery and weather, laid out your way.", alt: "A widget page: time and weather, today's calendar, reminders, battery, clock and weather" },
+  { id: "screenshot", h: 468, label: "Screenshots", src: "open-screenshot.png", hue: 335, body: "Each one lands here first: copy it, mark it up, pull the text out or save it.", alt: "A fresh screenshot in the notch with Copy, Annotate, Text and Save" },
+  { id: "claude", h: 432, label: "Claude Code", src: "open-claude-approval.png", hue: 40, body: "When a session wants to run a command, Allow and Deny appear up top.", alt: "Claude Code in eyebrow-website asks to run npm run build, with Deny and Allow buttons" },
+  { id: "meeting", h: 374, label: "Meetings", src: "open-meeting-reminder.png", hue: 255, body: "A reminder drops down before the meeting starts, with the link to join.", alt: "A meeting reminder for Design Review with a Join button" },
+  { id: "call", h: 256, label: "Calls", src: "open-call-tab.png", hue: 150, body: "Mute, camera and leave for the call you are on.", alt: "The call tab with Mute, Camera and Leave" },
+  { id: "notes", h: 468, label: "Notes", src: "open-notes-composer.png", hue: 80, body: "The Notes widget: bold, lists, links and images, all kept on your Mac.", alt: "A note being edited in the notch, with a formatting toolbar and a bulleted list" },
+  { id: "colour", h: 478, label: "Colour picker", src: "open-colour-picker.png", hue: 20, body: "The colour picker widget: pick off the screen, check contrast, copy.", alt: "The colour picker: a shade square, a hue slider, contrast grades on white and black, and HEX, RGB and HSL values" },
+  { id: "builds", h: 468, label: "Builds", src: "open-builds.png", hue: 250, body: "The Builds widget: did the pipeline pass on GitHub or GitLab?", alt: "Builds: GitHub and GitLab runs, one running and one failed, with All, GitHub, GitLab and Local filters" },
+  { id: "weather", h: 468, label: "Weather", src: "open-weather.png", hue: 205, body: "Now, and the next few hours.", alt: "The weather tab: temperature, conditions and an hourly forecast" },
+  { id: "audio", h: 412, label: "Audio", src: "open-audio.png", hue: 300, body: "Volume, the output device and the microphone, in one place.", alt: "The audio tab: volume, output devices and input" },
 ] as const;
 
 const N = items.length;
+
+/* Each capture is as tall as its view needs (the call is short, Home is tall),
+   and the notch's body ends PAD px above the capture's bottom edge. Between two
+   features the notch takes a height in between, so it grows and shrinks with the
+   scroll. The body is inset SIDE px from the capture's edges, its corners R px. */
+const PAD = 8;
+const SIDE = 38;
+const R = 60;
+const heightAt = (p: number) => {
+  const i = clamp(Math.floor(p), 0, N - 1);
+  const j = Math.min(N - 1, i + 1);
+  return lerp(items[i].h, items[j].h, clamp(p - i));
+};
+/* A capture cut off at `cut` px (capture px), with the notch's rounded bottom corners. */
+const cutPath = (unit: number, cut: number) => {
+  const w = IW * unit;
+  const s = SIDE * unit;
+  const r = R * unit;
+  const y = (cut - PAD) * unit;
+  const f = (n: number) => n.toFixed(2);
+  return `path("M0 0 H${f(w)} V${f(y - r)} H${f(w - s)} A${f(r)} ${f(r)} 0 0 1 ${f(w - s - r)} ${f(y)} H${f(s + r)} A${f(r)} ${f(r)} 0 0 1 ${f(s)} ${f(y - r)} H0 Z")`;
+};
 
 /* The tabs, cut from the captures (1280 × 483 at 2×): centres across the top,
    then down the side once vertical tabs are on. The live-activity dot sits at
@@ -122,6 +144,10 @@ export default function NotchStory() {
   const icons = useRef<(HTMLImageElement | null)[]>([]);
   const live = useRef<HTMLImageElement>(null);
   const pill = useRef<HTMLSpanElement>(null);
+  const drop = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
+  const rim = useRef<HTMLDivElement>(null);
+  const shots = useRef<(HTMLImageElement | null)[]>([]);
   const slots = useRef<Record<string, Rect>>({});
   const base = useRef(640);
   const pinned = useRef(false);
@@ -139,6 +165,7 @@ export default function NotchStory() {
     if (c0 && c1) stride.current = c1.offsetLeft - c0.offsetLeft;
     if (notch.current) {
       notch.current.style.width = `${base.current}px`;
+      notch.current.style.setProperty("--u", `${base.current / IW}px`);
       notch.current.dataset.ready = "";
     }
   }, []);
@@ -170,6 +197,14 @@ export default function NotchStory() {
       notch.current.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${w / base.current})`;
     }
 
+    // The notch's height follows the scroll from one feature's height to the next.
+    const dh = heightAt(p);
+    const near = items[clamp(Math.round(p), 0, N - 1)].h;
+    drop.current?.style.setProperty("--dh", dh.toFixed(2));
+    shots.current.forEach((img, i) => {
+      if (img) img.style.clipPath = items[i].h > dh + 0.5 ? cutPath(base.current / IW, dh) : "";
+    });
+
     const vis = {
       hero: 1 - clamp(intro / 0.55),
       feat: clamp((intro - 0.45) / 0.55) * (1 - clamp(move / 0.55)),
@@ -183,6 +218,9 @@ export default function NotchStory() {
       el.style.visibility = v < 0.01 ? "hidden" : "visible";
       el.style.pointerEvents = v > 0.5 ? "auto" : "none";
     }
+    // The body under a shorter capture, and the rim along a cut-off taller one: only while resizing.
+    if (body.current) body.current.style.opacity = String(vis.feat);
+    if (rim.current) rim.current.style.opacity = String(vis.feat * clamp(Math.abs(dh - near) / 12));
     if (layers.current.hero) layers.current.hero.style.transform = `translate3d(0, ${(vis.hero - 1) * 48}px, 0)`;
     // The strip: a straight row of cards sliding sideways, the current one in the middle.
     if (track.current) track.current.style.transform = `translate3d(${(1 - vis.feat) * 48 - p * stride.current}px, 0, 0)`;
@@ -371,7 +409,7 @@ export default function NotchStory() {
                   <li key={v.id}>
                     <figure className="edge">
                       <Mac top notch={0.78}>
-                        <Shot src={v.src} w={640} width={1280} height={468} alt={v.alt} />
+                        <Shot src={v.src} w={640} width={1280} height={v.h} alt={v.alt} />
                       </Mac>
                       <figcaption>
                         <b>{v.label}</b>
@@ -455,11 +493,25 @@ export default function NotchStory() {
 
           {/* The one notch that travels through all three. */}
           <div ref={notch} className="story__notch" data-phase={view.phase} aria-hidden="true">
-            <div className="story__drop">
+            <div ref={drop} className="story__drop">
+              <div ref={body} className="story__fill" />
               <img className="story__img" data-on={view.phase === "hero"} src="/landing/open-home.png" alt="" width={1280} height={483} fetchPriority="high" />
               {items.map((v, i) => (
-                <img key={v.id} className="story__img" data-on={featOn === i} src={`/landing/${v.src}`} alt="" width={1280} height={468} loading={i < 2 ? "eager" : "lazy"} />
+                <img
+                  key={v.id}
+                  ref={(el) => {
+                    shots.current[i] = el;
+                  }}
+                  className="story__img"
+                  data-on={featOn === i}
+                  src={`/landing/${v.src}`}
+                  alt=""
+                  width={1280}
+                  height={v.h}
+                  loading={i < 2 ? "eager" : "lazy"}
+                />
               ))}
+              <div ref={rim} className="story__fill story__fill--rim" />
               <div className="story__tabsnotch" data-on={view.phase === "tabs"}>
                 {[...tabBases, "vertical"].map((b, i) => (
                   <img key={b} className="story__img" data-on={tabOn === i} src={`/landing/story/${b}.png`} alt="" width={1280} height={b === "home" || b === "vertical" ? 483 : 468} loading="lazy" />
