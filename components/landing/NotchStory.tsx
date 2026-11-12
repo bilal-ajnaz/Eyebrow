@@ -52,6 +52,24 @@ const cutPath = (unit: number, cut: number) => {
   return `path("M0 0 H${f(w)} V${f(y - r)} H${f(w - s)} A${f(r)} ${f(r)} 0 0 1 ${f(w - s - r)} ${f(y)} H${f(s + r)} A${f(r)} ${f(r)} 0 0 1 ${f(s)} ${f(y - r)} H0 Z")`;
 };
 
+/* Between the hero and the features the notch doesn't slide across the page over
+   both headlines. It closes into a pill at the top of the screen, a drop of it
+   drips off and falls into the Mac, and the notch opens again from a pill there.
+   PW × PH is the closed pill, in capture px; the stretches are shares of the intro. */
+const PW = 400;
+const PH = 64;
+const CLOSE = 0.3;
+const OPEN = 0.72;
+/* The notch's own outline at `shut` (0 open, 1 a pill), as a clip on the 1280 × 483 box. */
+const shapeClip = (unit: number, h: number, shut: number) => {
+  const m = ease(shut);
+  const side = lerp(SIDE, (IW - PW) / 2, m) * unit;
+  const bottom = lerp(IH - (h - PAD), IH - PH, m) * unit;
+  const r = lerp(R, PH / 2, m) * unit;
+  const f = (n: number) => n.toFixed(2);
+  return `inset(0px ${f(side)}px ${f(bottom)}px ${f(side)}px round 0px 0px ${f(r)}px ${f(r)}px)`;
+};
+
 /* The tabs, cut from the captures (1280 × 483 at 2×): centres across the top,
    then down the side once vertical tabs are on. The live-activity dot sits at
    the far right of the row and at the top of the column. */
@@ -151,6 +169,14 @@ export default function NotchStory() {
   const slots = useRef<Record<string, Rect>>({});
   const base = useRef(640);
   const pinned = useRef(false);
+  const still = useRef(false);
+  const ink = useRef<HTMLDivElement>(null);
+  const goo = useRef<SVGSVGElement>(null);
+  const gooTop = useRef<SVGRectElement>(null);
+  const gooBot = useRef<SVGRectElement>(null);
+  const gooDrop = useRef<SVGEllipseElement>(null);
+  const gooEdge = useRef<SVGPathElement>(null);
+  const gooTail = useRef<SVGCircleElement>(null);
   const [view, setView] = useState<View>({ phase: "hero", on: 0, turned: false });
   const viewRef = useRef(view);
 
@@ -170,6 +196,82 @@ export default function NotchStory() {
     }
   }, []);
 
+  /* The drop, g from 0 to 1: it swells out of the hero's pill and pinches off, falls in an
+     arc, stretched along the way it's going, and splashes into the pill in the Mac. The
+     goo filter melts the shapes together while they touch, which makes the neck. */
+  const drip = useCallback((a: Rect, b: Rect, g: number) => {
+    const top = gooTop.current;
+    const bot = gooBot.current;
+    const dot = gooDrop.current;
+    if (!top || !bot || !dot) return;
+    const A = { x: a.x + a.w / 2, y: a.y, w: (PW * a.w) / IW, h: (PH * a.w) / IW };
+    const B = { x: b.x + b.w / 2, y: b.y, w: (PW * b.w) / IW, h: (PH * b.w) / IW };
+    const swell = ease(clamp(g / 0.28));
+    const fall = clamp((g - 0.28) / 0.56);
+    const land = clamp((g - 0.74) / 0.26);
+    const pill = (el: SVGRectElement, P: typeof A, kw: number, kh: number) => {
+      const w = Math.max(0, P.w * kw);
+      const h = Math.max(0, P.h * kh);
+      // Square along the top edge: the rect starts above it by its own radius.
+      el.setAttribute("x", (P.x - w / 2).toFixed(2));
+      el.setAttribute("y", (P.y - h / 2).toFixed(2));
+      el.setAttribute("width", w.toFixed(2));
+      el.setAttribute("height", (h * 1.5).toFixed(2));
+      el.setAttribute("rx", (Math.min(w, h) / 2).toFixed(2));
+    };
+    // The hero's pill gives itself up to the drop, then is gone.
+    const drain = (1 - swell * 0.5) * (1 - ease(clamp(fall / 0.3)));
+    pill(top, A, lerp(0.55, 1, drain), drain);
+    // The Mac's pill fills as the drop lands, overshooting sideways like a splash.
+    const fill = ease(land);
+    const splash = Math.sin(land * Math.PI);
+    pill(bot, B, fill * (1 + 0.18 * splash), fill * (1 - 0.12 * splash));
+    const r0 = A.h * 0.75;
+    const r1 = B.h * 0.75;
+    const y0 = A.y + A.h * 0.9 + r0;
+    const y1 = B.y + B.h * 0.55;
+    let x = A.x;
+    let y = lerp(A.y + A.h * 0.35, y0, swell);
+    let r = lerp(r0 * 0.45, r0, swell);
+    let sx = 1;
+    let sy = 1 + 0.25 * swell * (1 - fall);
+    let ang = 0;
+    if (fall > 0) {
+      // It drops straight off, drifts across on the way down, and comes in from above.
+      const at = (f: number) => ({ x: lerp(A.x, B.x, ease(clamp(f))), y: lerp(y0, y1, clamp(f) ** 1.6) });
+      ({ x, y } = at(fall));
+      r = lerp(r0, r1, fall) * (1 - ease(land));
+      const ahead = at(fall + 0.02);
+      const behind = at(fall - 0.02);
+      const vx = ahead.x - behind.x;
+      const vy = ahead.y - behind.y + 0.01;
+      // Stretched along the way it's going, the faster the more.
+      sy = 1 + 0.3 * clamp(Math.hypot(vx, vy) / Math.max(1, (y1 - y0) * 0.08)) * (1 - land);
+      sx = 1 / Math.sqrt(sy);
+      ang = (Math.atan2(vy, vx) * 180) / Math.PI - 90;
+    }
+    // A smaller drop trails behind, and the goo pulls the two into a teardrop.
+    const tail = gooTail.current;
+    if (tail) {
+      const k = fall > 0 && land < 1 ? Math.sin(Math.min(1, fall * 1.4) * Math.PI) * (1 - ease(land)) : 0;
+      const q = fall > 0 ? { x: lerp(A.x, B.x, ease(clamp(fall - 0.035))), y: lerp(y0, y1, clamp(fall - 0.035) ** 1.6) } : { x, y };
+      tail.setAttribute("r", (r0 * 0.62 * k).toFixed(2));
+      tail.setAttribute("cx", q.x.toFixed(2));
+      tail.setAttribute("cy", q.y.toFixed(2));
+    }
+    // The bezel strip just above the Mac's screen stays clear, so the drop goes in behind the
+    // edge and the pill it fills hangs square from it, like the notch does.
+    const edge = gooEdge.current;
+    if (edge) {
+      const w = B.w * 1.6;
+      const h = B.h * 0.75;
+      edge.setAttribute("d", `M-1e5 -1e5H1e5V1e5H-1e5Z M${(B.x - w / 2).toFixed(2)} ${(B.y - h).toFixed(2)}h${w.toFixed(2)}v${h.toFixed(2)}h${(-w).toFixed(2)}Z`);
+    }
+    dot.setAttribute("rx", (r * sx).toFixed(2));
+    dot.setAttribute("ry", (r * sy).toFixed(2));
+    dot.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${ang.toFixed(2)})`);
+  }, []);
+
   const update = useCallback(() => {
     const s = story.current;
     const st = stage.current;
@@ -185,20 +287,37 @@ export default function NotchStory() {
     // Once the tabs are down the side, the next scroll turns the column like a wheel.
     const climb = ease(seg(t, "climb")) * (tabIcons.length - ROW_TABS);
 
-    // The notch: hero slot → feature slot → tabs slot.
-    const { hero, feat, tabs } = slots.current;
-    if (hero && feat && tabs && notch.current) {
-      const a = t < AT.move ? hero : feat;
-      const b = t < AT.move ? feat : tabs;
-      const m = ease(t < AT.move ? intro : move);
-      const x = lerp(a.x, b.x, m);
-      const y = lerp(a.y, b.y, m);
-      const w = lerp(a.w, b.w, m);
-      notch.current.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${w / base.current})`;
-    }
-
     // The notch's height follows the scroll from one feature's height to the next.
     const dh = heightAt(p);
+
+    // The notch: hero slot → (a drop) → feature slot → tabs slot.
+    const { hero, feat, tabs } = slots.current;
+    const n = notch.current;
+    if (hero && feat && tabs && n && drop.current) {
+      const place = (r: Rect) => `translate3d(${r.x}px, ${r.y}px, 0) scale(${r.w / base.current})`;
+      let shut = 0;
+      let dripping = false;
+      if (t < AT.move) {
+        // With reduced motion there's no drop: it closes, and opens again in the Mac.
+        const close = still.current ? 0.5 : CLOSE;
+        const open = still.current ? 0.5 : OPEN;
+        const inB = intro >= (close + open) / 2;
+        n.style.transform = place(inB ? feat : hero);
+        shut = inB ? 1 - clamp((intro - open) / (1 - open)) : clamp(intro / close);
+        dripping = !still.current && intro > close - 0.004 && intro < open + 0.004;
+        n.style.visibility = intro > close && intro < open && !still.current ? "hidden" : "";
+        drop.current.style.clipPath = shut > 0.001 ? shapeClip(base.current / IW, inB ? dh : IH, shut) : "";
+        if (dripping) drip(hero, feat, clamp((intro - close) / (open - close)));
+      } else {
+        const m = ease(move);
+        n.style.transform = place({ x: lerp(feat.x, tabs.x, m), y: lerp(feat.y, tabs.y, m), w: lerp(feat.w, tabs.w, m) });
+        n.style.visibility = "";
+        drop.current.style.clipPath = "";
+      }
+      // The capture goes dark as the notch closes, so the pill it ends as is plain black.
+      if (ink.current) ink.current.style.opacity = String(clamp(ease(shut) * 1.7));
+      if (goo.current) goo.current.style.visibility = dripping ? "visible" : "hidden";
+    }
     const near = items[clamp(Math.round(p), 0, N - 1)].h;
     drop.current?.style.setProperty("--dh", dh.toFixed(2));
     shots.current.forEach((img, i) => {
@@ -289,9 +408,15 @@ export default function NotchStory() {
       viewRef.current = next;
       setView(next);
     }
-  }, []);
+  }, [drip]);
 
   useEffect(() => {
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onMotion = () => {
+      still.current = motion.matches;
+    };
+    onMotion();
+    motion.addEventListener("change", onMotion);
     const media = window.matchMedia("(min-height: 30rem)");
     let frame = 0;
     const tick = () => {
@@ -317,6 +442,7 @@ export default function NotchStory() {
     stage.current?.querySelectorAll(".story__layer > *").forEach((el) => ro.observe(el));
     return () => {
       ro.disconnect();
+      motion.removeEventListener("change", onMotion);
       media.removeEventListener("change", onResize);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
@@ -491,6 +617,27 @@ export default function NotchStory() {
             </div>
           </div>
 
+          {/* The drop that carries the notch from the hero into the Mac. */}
+          <svg ref={goo} className="story__goo" aria-hidden="true" focusable="false">
+            <defs>
+              <filter id="story-goo" x="-50%" y="-50%" width="200%" height="200%" colorInterpolationFilters="sRGB">
+                <feGaussianBlur stdDeviation="7" />
+                <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10" />
+              </filter>
+              <clipPath id="story-goo-edge">
+                <path ref={gooEdge} clipRule="evenodd" d="M-1e5 -1e5H1e5V1e5H-1e5Z" />
+              </clipPath>
+            </defs>
+            <g clipPath="url(#story-goo-edge)">
+              <g filter="url(#story-goo)">
+                <rect ref={gooTop} />
+                <rect ref={gooBot} />
+                <ellipse ref={gooDrop} />
+                <circle ref={gooTail} />
+              </g>
+            </g>
+          </svg>
+
           {/* The one notch that travels through all three. */}
           <div ref={notch} className="story__notch" data-phase={view.phase} aria-hidden="true">
             <div ref={drop} className="story__drop">
@@ -532,6 +679,7 @@ export default function NotchStory() {
                 ))}
                 <img ref={live} className="story__icon story__icon--live" src="/landing/story/tab-live.png" alt="" width={56} height={56} />
               </div>
+              <div ref={ink} className="story__ink" />
             </div>
           </div>
         </div>

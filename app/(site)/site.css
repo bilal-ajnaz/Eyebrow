@@ -259,6 +259,10 @@ body { font-size: var(--text-md); }
 .story__fill { position: absolute; top: 0; left: calc(38 * var(--u, 0.5px)); right: calc(38 * var(--u, 0.5px)); height: calc((var(--dh, 468) - 8) * var(--u, 0.5px)); border-radius: 0 0 calc(60 * var(--u, 0.5px)) calc(60 * var(--u, 0.5px)); background: linear-gradient(to bottom, #000 30%, rgb(14 22 30)); opacity: 0; pointer-events: none; }
 .story__fill--rim { background: none; box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.16), inset 1px 0 0 rgb(255 255 255 / 0.08), inset -1px 0 0 rgb(255 255 255 / 0.08); }
 .story__tabsnotch { position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--ease-out); }
+/* Black over the capture while the notch closes to a pill, and the drop that carries it into the Mac. */
+.story__ink { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
+.story__goo { display: none; }
+.story__goo g { fill: #000; }
 .story__tabsnotch[data-on="true"] { opacity: 1; }
 .story__pill { position: absolute; left: 0; top: 0; border-radius: 999px; background: rgb(41 41 41); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1); will-change: transform; }
 .story__icon { position: absolute; left: 0; top: 0; width: calc(48 / 1280 * 100%); height: auto; max-width: none; will-change: transform, opacity; }
@@ -275,6 +279,7 @@ body { font-size: var(--text-md); }
   .story__slot > .shot { visibility: hidden; }
   .story__notch { display: block; position: absolute; z-index: 2; left: 50%; top: 0; width: min(640px, calc(100% - 2 * var(--gutter))); transform: translateX(-50%); transform-origin: 0 0; pointer-events: none; will-change: transform; }
   .story__notch[data-ready] { left: 0; }
+  .story__goo { display: block; position: absolute; z-index: 2; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; visibility: hidden; }
 }
 
 /* Too short to pin: three screens, one after another. */
