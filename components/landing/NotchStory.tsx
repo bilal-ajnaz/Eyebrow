@@ -25,7 +25,7 @@ const items = [
   { id: "colour", h: 478, label: "Colour picker", src: "open-colour-picker.png", hue: 20, body: "The colour picker widget: pick off the screen, check contrast, copy.", alt: "The colour picker: a shade square, a hue slider, contrast grades on white and black, and HEX, RGB and HSL values" },
   { id: "builds", h: 468, label: "Builds", src: "open-builds.png", hue: 250, body: "The Builds widget: did the pipeline pass on GitHub or GitLab?", alt: "Builds: GitHub and GitLab runs, one running and one failed, with All, GitHub, GitLab and Local filters" },
   { id: "weather", h: 468, label: "Weather", src: "open-weather.png", hue: 205, body: "Now, and the next few hours.", alt: "The weather tab: temperature, conditions and an hourly forecast" },
-  { id: "audio", h: 412, label: "Audio", src: "open-audio.png", hue: 300, body: "Volume, the output device and the microphone, in one place.", alt: "The audio tab: volume, output devices and input" },
+  { id: "audio", h: 408, label: "Audio", src: "open-audio.png", hue: 300, body: "Volume, the output device and the microphone, in one place.", alt: "The audio tab: volume, output devices and input" },
 ] as const;
 
 const N = items.length;
@@ -86,6 +86,13 @@ const ROW_TABS = 4;
 const COL_TOP = 178;
 const COL_BOTTOM = 468;
 const tabBases = ["home", "shelf", "clipboard", "widgets"] as const;
+/* Heights of the tab captures: the four bases, then the vertical one. */
+const TAB_H = [483, 468, 468, 468, 483] as const;
+const tabsHeight = (k: number, turn: number) => {
+  const i = Math.min(3, Math.floor(k));
+  const row = lerp(TAB_H[i], TAB_H[Math.min(3, i + 1)], clamp(k - i));
+  return lerp(row, TAB_H[4], turn);
+};
 
 /* Stretches of scroll, in window heights. */
 const SEG = { intro: 0.9, wheel: (N - 1) * 0.34, hold: 0.25, move: 0.6, tabs: 0.9, turn: 0.5, climb: 0.7, rest: 0.15 };
@@ -166,6 +173,7 @@ export default function NotchStory() {
   const body = useRef<HTMLDivElement>(null);
   const rim = useRef<HTMLDivElement>(null);
   const shots = useRef<(HTMLImageElement | null)[]>([]);
+  const tabShots = useRef<(HTMLImageElement | null)[]>([]);
   const slots = useRef<Record<string, Rect>>({});
   const base = useRef(640);
   const pinned = useRef(false);
@@ -287,8 +295,9 @@ export default function NotchStory() {
     // Once the tabs are down the side, the next scroll turns the column like a wheel.
     const climb = ease(seg(t, "climb")) * (tabIcons.length - ROW_TABS);
 
-    // The notch's height follows the scroll from one feature's height to the next.
-    const dh = heightAt(p);
+    // The notch's height follows the scroll from one feature's height to the next,
+    // then into the tabs' captures, and from tab to tab.
+    const dh = t < AT.move ? heightAt(p) : lerp(items[N - 1].h, tabsHeight(k, turn), ease(move));
 
     // The notch: hero slot → (a drop) → feature slot → tabs slot.
     const { hero, feat, tabs } = slots.current;
@@ -318,11 +327,15 @@ export default function NotchStory() {
       if (ink.current) ink.current.style.opacity = String(clamp(ease(shut) * 1.7));
       if (goo.current) goo.current.style.visibility = dripping ? "visible" : "hidden";
     }
-    const near = items[clamp(Math.round(p), 0, N - 1)].h;
+    // The height of the capture that's showing, which the notch settles on.
+    const near =
+      t < AT.move + SEG.move * 0.5 ? items[clamp(Math.round(p), 0, N - 1)].h : TAB_H[turn > 0.5 ? 4 : clamp(Math.round(k), 0, 3)];
     drop.current?.style.setProperty("--dh", dh.toFixed(2));
-    shots.current.forEach((img, i) => {
-      if (img) img.style.clipPath = items[i].h > dh + 0.5 ? cutPath(base.current / IW, dh) : "";
-    });
+    const cut = (img: HTMLImageElement | null, h: number) => {
+      if (img) img.style.clipPath = h > dh + 0.5 ? cutPath(base.current / IW, dh) : "";
+    };
+    shots.current.forEach((img, i) => cut(img, items[i].h));
+    tabShots.current.forEach((img, i) => cut(img, TAB_H[i]));
 
     const vis = {
       hero: 1 - clamp(intro / 0.55),
@@ -337,9 +350,11 @@ export default function NotchStory() {
       el.style.visibility = v < 0.01 ? "hidden" : "visible";
       el.style.pointerEvents = v > 0.5 ? "auto" : "none";
     }
-    // The body under a shorter capture, and the rim along a cut-off taller one: only while resizing.
-    if (body.current) body.current.style.opacity = String(vis.feat);
-    if (rim.current) rim.current.style.opacity = String(vis.feat * clamp(Math.abs(dh - near) / 12));
+    // The body under a shorter capture, and the rim along a cut-off taller one: from the features
+    // on (the hero's notch is the one capture), the rim only while resizing.
+    const filled = clamp((intro - 0.45) / 0.55);
+    if (body.current) body.current.style.opacity = String(filled);
+    if (rim.current) rim.current.style.opacity = String(filled * clamp(Math.abs(dh - near) / 12));
     if (layers.current.hero) layers.current.hero.style.transform = `translate3d(0, ${(vis.hero - 1) * 48}px, 0)`;
     // The strip: a straight row of cards sliding sideways, the current one in the middle.
     if (track.current) track.current.style.transform = `translate3d(${(1 - vis.feat) * 48 - p * stride.current}px, 0, 0)`;
@@ -658,10 +673,21 @@ export default function NotchStory() {
                   loading={i < 2 ? "eager" : "lazy"}
                 />
               ))}
-              <div ref={rim} className="story__fill story__fill--rim" />
               <div className="story__tabsnotch" data-on={view.phase === "tabs"}>
                 {[...tabBases, "vertical"].map((b, i) => (
-                  <img key={b} className="story__img" data-on={tabOn === i} src={`/landing/story/${b}.png`} alt="" width={1280} height={b === "home" || b === "vertical" ? 483 : 468} loading="lazy" />
+                  <img
+                    key={b}
+                    ref={(el) => {
+                      tabShots.current[i] = el;
+                    }}
+                    className="story__img"
+                    data-on={tabOn === i}
+                    src={`/landing/story/${b}.png`}
+                    alt=""
+                    width={1280}
+                    height={TAB_H[i]}
+                    loading="lazy"
+                  />
                 ))}
                 <span ref={pill} className="story__pill" />
                 {tabIcons.map((n, i) => (
@@ -679,6 +705,8 @@ export default function NotchStory() {
                 ))}
                 <img ref={live} className="story__icon story__icon--live" src="/landing/story/tab-live.png" alt="" width={56} height={56} />
               </div>
+              {/* Over the tab captures too, so a cut-off one still has its edge. */}
+              <div ref={rim} className="story__fill story__fill--rim" />
               <div ref={ink} className="story__ink" />
             </div>
           </div>
