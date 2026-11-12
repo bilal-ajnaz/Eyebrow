@@ -6,6 +6,8 @@
  * tell either way. Re-check before changing `checked`.
  */
 export const checked = "16 October 2026";
+/** The Widgets rows were added later and checked on their own date. */
+export const checkedWidgets = "13 November 2026";
 
 export type Mark = "yes" | "partial" | "no" | "unknown";
 
@@ -33,7 +35,7 @@ export type App = {
   cells: Record<string, Mark | Cell>;
 };
 
-export const groups = ["Price and platform", "Media", "Files", "Your day", "Work"] as const;
+export const groups = ["Price and platform", "Media", "Files", "Your day", "Work", "Widgets"] as const;
 
 export const rows: { id: string; label: string; group: (typeof groups)[number] }[] = [
   { id: "appStore", label: "On the Mac App Store", group: "Price and platform" },
@@ -63,6 +65,11 @@ export const rows: { id: string; label: string; group: (typeof groups)[number] }
   { id: "stt", label: "Speech-to-text", group: "Work" },
   { id: "tabs", label: "Browser tab switcher", group: "Work" },
   { id: "ai", label: "AI coding agents", group: "Work" },
+
+  { id: "notes", label: "Notes with formatting", group: "Widgets" },
+  { id: "colour", label: "Colour picker", group: "Widgets" },
+  { id: "sysmon", label: "System monitor", group: "Widgets" },
+  { id: "ci", label: "CI build status", group: "Widgets" },
 ];
 
 /** Eyebrow's own column, from lib/features.ts. */
@@ -94,11 +101,15 @@ export const eyebrow: App = {
     wx: "yes",
     batt: { mark: "yes", note: "Bluetooth devices too" },
     timer: { mark: "yes", note: "With Pomodoro mode" },
-    widgets: { mark: "yes", note: "18 widgets, three sizes" },
+    widgets: { mark: "yes", note: "23 widgets, three sizes" },
     calls: { mark: "yes", note: "Zoom, Meet, Teams" },
     stt: { mark: "yes", note: "On-device" },
     tabs: { mark: "yes", note: "Safari, Chrome, Brave" },
     ai: { mark: "yes", note: "Usage widget, and live Claude Code and Codex sessions" },
+    notes: { mark: "yes", note: "Bold, lists, links and images" },
+    colour: { mark: "yes", note: "Eyedropper and contrast grades" },
+    sysmon: { mark: "yes", note: "CPU, GPU, memory, disk, network, power" },
+    ci: { mark: "yes", note: "GitHub, GitLab and local dev servers" },
   },
 };
 
@@ -140,6 +151,10 @@ export const apps: App[] = [
       stt: "no",
       tabs: "no",
       ai: "no",
+      notes: { mark: "yes", note: "Notes editor with formatting" },
+      colour: "no",
+      sysmon: "no",
+      ci: "no",
     },
   },
   {
@@ -179,6 +194,10 @@ export const apps: App[] = [
       stt: "no",
       tabs: "no",
       ai: "no",
+      notes: "no",
+      colour: "no",
+      sysmon: "no",
+      ci: "no",
     },
   },
   {
@@ -217,6 +236,10 @@ export const apps: App[] = [
       stt: "no",
       tabs: "no",
       ai: "no",
+      notes: "no",
+      colour: "no",
+      sysmon: "no",
+      ci: "no",
     },
   },
   {
@@ -255,6 +278,10 @@ export const apps: App[] = [
       stt: "no",
       tabs: "no",
       ai: { mark: "partial", note: "Usage and quota monitor" },
+      notes: { mark: "partial", note: "Notes; formatting not described" },
+      colour: "yes",
+      sysmon: { mark: "yes", note: "CPU, GPU, memory, network, disk" },
+      ci: "no",
     },
   },
   {
@@ -294,6 +321,10 @@ export const apps: App[] = [
       stt: { mark: "partial", note: "Audio files only" },
       tabs: "no",
       ai: { mark: "partial", note: "Through a plugin" },
+      notes: "no",
+      colour: "no",
+      sysmon: "no",
+      ci: "no",
     },
   },
   {
@@ -333,6 +364,10 @@ export const apps: App[] = [
       stt: { mark: "yes", note: "On-device dictation" },
       tabs: "no",
       ai: { mark: "yes", note: "Claude Code, Codex, Cursor and more" },
+      notes: "no",
+      colour: "no",
+      sysmon: "no",
+      ci: "no",
     },
   },
   {
@@ -345,6 +380,7 @@ export const apps: App[] = [
     model: "One-time purchase. Direct download.",
     sources: [
       { label: "its website", url: "https://getdroppy.app" },
+      { label: "feature pages", url: "https://getdroppy.app/features" },
       { label: "privacy policy", url: "https://getdroppy.app/privacy-policy" },
     ],
     cells: {
@@ -371,6 +407,10 @@ export const apps: App[] = [
       stt: { mark: "yes", note: "On-device" },
       tabs: "no",
       ai: { mark: "yes", note: "Claude, Codex, Cursor and more" },
+      notes: { mark: "yes", note: "Markdown notes, as a Droplet" },
+      colour: "no",
+      sysmon: { mark: "yes", note: "As a Droplet" },
+      ci: { mark: "partial", note: "Local Xcode builds only" },
     },
   },
   {
@@ -409,6 +449,10 @@ export const apps: App[] = [
       stt: "no",
       tabs: "no",
       ai: "no",
+      notes: "no",
+      colour: "no",
+      sysmon: "no",
+      ci: "no",
     },
   },
   {
@@ -447,6 +491,10 @@ export const apps: App[] = [
       stt: "no",
       tabs: "no",
       ai: "no",
+      notes: { mark: "partial", note: "Quick Notes; formatting not stated" },
+      colour: "no",
+      sysmon: "no",
+      ci: "no",
     },
   },
   {
@@ -485,6 +533,10 @@ export const apps: App[] = [
       stt: "no",
       tabs: "no",
       ai: "no",
+      notes: "no",
+      colour: "no",
+      sysmon: "no",
+      ci: "no",
     },
   },
   {
@@ -523,6 +575,10 @@ export const apps: App[] = [
       stt: "no",
       tabs: "no",
       ai: "no",
+      notes: "no",
+      colour: "no",
+      sysmon: "no",
+      ci: "no",
     },
   },
 ];

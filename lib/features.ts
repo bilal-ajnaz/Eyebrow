@@ -45,10 +45,10 @@ export const features: Feature[] = [
     body: "Plug in and the notch drops into a battery card: the percentage, a level bar, the charger's wattage and the time to full. Prefer the slim one-line alert? Switch to Classic in Settings. The Batteries widget adds a ring for your Mac, keyboard, mouse and trackpad.",
   },
   {
-    group: "System",
+    group: "Widgets",
     icon: "cpu",
-    title: "System Monitor",
-    body: "Eight live readings in one panel: CPU with a graph, GPU, memory, swap, free storage, network and disk speeds, and power, with the battery, how hot the Mac is running and Low Power mode. It only measures while it's on screen, so it costs nothing in the background, and Activity Monitor is a click away.",
+    title: "System Monitor widget",
+    body: "A widget for CPU, memory, network and more. Click it and it fills the notch with eight live readings: CPU with a graph, GPU, memory, swap, free storage, network and disk speeds, and power, with the battery, how hot the Mac is running and Low Power mode. It only measures while it's on screen, so it costs nothing in the background.",
   },
   {
     group: "System",
@@ -119,16 +119,16 @@ export const features: Feature[] = [
     pro: true,
   },
   {
-    group: "Tools",
+    group: "Widgets",
     icon: "notes",
-    title: "Notes with formatting",
-    body: "Bold, italic, underline, strikethrough, bullet lists, links and images, with the shortcuts you already know. Pin the notes you need to the top, and click one to copy it with its formatting. Every note stays on your Mac.",
+    title: "Notes widget",
+    body: "Your notes on a widget; click it to write. Bold, italic, underline, strikethrough, bullet lists, links and images, with the shortcuts you already know. Pin the notes you need to the top, and click one to copy it with its formatting. Every note stays on your Mac.",
   },
   {
-    group: "Tools",
+    group: "Widgets",
     icon: "eyedropper",
-    title: "Colour picker",
-    body: "Pick any colour on screen, then tune it on a shade square and hue slider, or type a hex. Contrast grades show how it reads on white and on black, HEX, RGB and HSL copy in one click, and your last 12 colours are a click away.",
+    title: "Colour Picker widget",
+    body: "Pick any colour on screen from the widget's eyedropper. Click the widget to tune it on a shade square and hue slider, or type a hex. Contrast grades show how it reads on white and on black, HEX, RGB and HSL copy in one click, and your last 12 colours are a click away.",
   },
   {
     group: "Day",
@@ -155,16 +155,16 @@ export const features: Feature[] = [
     body: "Jump between open Safari, Chrome and Brave tabs from the notch, without hunting through windows.",
   },
   {
-    group: "Developer",
+    group: "AI",
     icon: "sparkle",
     title: "Claude Code and Codex in the notch",
     body: "Claude's mark turns beside the notch while a session works, and goes amber when it needs your permission. With Pro, each Claude Code session also gets a page in the Live tab, a box to message it, and Allow and Deny right in the notch. Turn on Codex in Settings and its sessions show beside the notch too, to watch rather than answer: Codex's questions are still answered in the terminal. With Pro, each Codex session gets a Live tab page showing its activity.",
   },
   {
-    group: "Developer",
+    group: "Widgets",
     icon: "hammer",
-    title: "Builds",
-    body: "Did the pipeline pass? Connect GitHub or GitLab, including your own GitLab server, and the latest run of each of your most active repositories shows in the notch: running, passed or failed. A notification tells you when one goes red. Dev servers running on your Mac (Vite, Next.js, Rails, Django and more) are found by themselves and open in your browser with a click. Your tokens stay in the Keychain.",
+    title: "Builds widget",
+    body: "Did the pipeline pass? Connect GitHub or GitLab, including your own GitLab server, and the widget shows the latest run of each of your most active repositories: running, passed or failed. A notification tells you when one goes red. Dev servers running on your Mac (Vite, Next.js, Rails, Django and more) are found by themselves and open in your browser with a click. Your tokens stay in the Keychain.",
   },
   {
     group: "System",

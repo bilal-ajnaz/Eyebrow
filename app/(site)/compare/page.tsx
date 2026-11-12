@@ -2,7 +2,7 @@ import "./compare.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Compare from "@/components/Compare";
-import { checked } from "@/lib/compare";
+import { checked, checkedWidgets } from "@/lib/compare";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -27,8 +27,8 @@ export default function ComparePage() {
         <Compare />
 
         <p className="cmp-footnote">
-          Checked {checked} against each app&apos;s own website, App Store
-          listing or GitHub page. Apps change; if something here is out of
+          Checked {checked} (the Widgets rows on {checkedWidgets}) against
+          each app&apos;s own website, App Store listing or GitHub page. Apps change; if something here is out of
           date, <Link className="textlink" href="/support">tell us</Link> and
           we&apos;ll fix it. Product names belong to their developers.
         </p>
