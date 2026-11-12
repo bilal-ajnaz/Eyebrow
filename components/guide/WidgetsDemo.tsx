@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type 
 import Icon from "@/components/Icon";
 import Notch from "./Notch";
 
-type WId = "timeWeather" | "reminders" | "calendar" | "battery" | "clock" | "weather" | "music" | "timer" | "notes" | "stayAwake";
+type WId = "timeWeather" | "reminders" | "calendar" | "battery" | "clock" | "weather" | "music" | "timer" | "notes" | "stayAwake" | "batteries";
 type Size = "s" | "m" | "l";
 type Item = { id: WId; size: Size };
 
@@ -37,14 +37,22 @@ const startPages: { id: string; label: string; items: Item[] }[] = [
       { id: "timer", size: "m" },
       { id: "notes", size: "l" },
       { id: "stayAwake", size: "s" },
+      { id: "batteries", size: "s" },
     ],
   },
 ];
 
 const names: Record<WId, string> = {
   timeWeather: "Time & Weather", reminders: "Reminders", calendar: "Calendar", battery: "Battery", clock: "Clock",
-  weather: "Weather", music: "Now Playing", timer: "Timer", notes: "Notes", stayAwake: "Stay Awake",
+  weather: "Weather", music: "Now Playing", timer: "Timer", notes: "Notes", stayAwake: "Stay Awake", batteries: "Batteries",
 };
+type Device = { name: string; icon: string; level: number; charging?: boolean } | null;
+const devices: Device[] = [
+  { name: "MacBook Pro", icon: "laptop", level: 98 },
+  { name: "Magic Keyboard", icon: "keyboard", level: 88 },
+  { name: "Magic Mouse", icon: "mouse", level: 62, charging: true },
+  null,
+];
 const sizeName: Record<Size, string> = { s: "small", m: "medium", l: "large" };
 
 type Placed = Item & { col: number; row: number };
@@ -338,6 +346,30 @@ export default function WidgetsDemo() {
             <label className="visually-hidden" htmlFor="wd-note">Note</label>
             <textarea id="wd-note" value={note} onChange={(e) => setNote(e.target.value)} disabled={editing} rows={4} />
             <p className="wd-sub wd-x-s">Saves to Notes</p>
+          </div>
+        );
+      case "batteries":
+        // The app's Batteries widget: a ring per device, the Mac first; spare slots are bare tracks.
+        return (
+          <div className="wd wd-batt">
+            <p className="wd-grad wd-title wd-batt__title">Batteries</p>
+            <ul className="wd-batt__list">
+              {devices.map((dev, i) => (
+                <li key={i} className="wd-batt__dev" data-empty={dev ? undefined : "true"}>
+                  <span className="wd-batt__ring" style={{ "--p": dev ? dev.level / 100 : 0 } as CSSProperties} data-charging={dev?.charging ? "true" : undefined} aria-hidden="true">
+                    {dev && <Icon name={dev.icon} size={14} />}
+                  </span>
+                  {dev ? (
+                    <>
+                      <span className="wd-batt__name">{dev.name}</span>
+                      <span className="wd-batt__pct num">{dev.level}%</span>
+                    </>
+                  ) : (
+                    <span className="visually-hidden">Empty slot</span>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
         );
       case "stayAwake":

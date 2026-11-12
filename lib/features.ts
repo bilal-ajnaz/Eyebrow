@@ -42,7 +42,7 @@ export const features: Feature[] = [
     group: "System",
     icon: "battery",
     title: "Battery and power",
-    body: "Charge state, percentage and power-source changes in the closed notch, plus the battery level of connected Bluetooth devices.",
+    body: "Plug in and the notch drops into a battery card: the percentage, a level bar, the charger's wattage and the time to full. Prefer the slim one-line alert? Switch to Classic in Settings. The Batteries widget adds a ring for your Mac, keyboard, mouse and trackpad.",
   },
   {
     group: "System",
@@ -166,11 +166,12 @@ export const features: Feature[] = [
 
 export type Widget = { name: string; body: string; icon: string; soon?: "new" | "update" };
 
-/** WidgetKind — all eighteen, sizes S / M / L. */
+/** WidgetKind — all nineteen, sizes S / M / L. */
 export const widgets: Widget[] = [
   { name: "Clock", body: "Current time and date", icon: "clock" },
   { name: "Weather", body: "Temperature and conditions", icon: "cloud" },
   { name: "Battery", body: "Battery level and status", icon: "battery" },
+  { name: "Batteries", body: "Your Mac, keyboard, mouse and more", icon: "battery" },
   { name: "Now Playing", body: "Now playing with controls", icon: "music" },
   { name: "Calendar", body: "Upcoming events, with one-click Join", icon: "calendar" },
   { name: "Reminders", body: "Pending reminders", icon: "check" },

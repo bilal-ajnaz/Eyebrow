@@ -35,6 +35,8 @@ const paths: Record<string, React.ReactNode> = {
   mail: <><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></>,
   gear: <><circle cx="12" cy="12" r="3" /><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4" /></>,
   keyboard: <><rect x="2" y="6" width="20" height="12" rx="2.5" /><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8" /></>,
+  laptop: <><rect x="4.5" y="5" width="15" height="10" rx="1.8" /><path d="M2 19h20" /></>,
+  mouse: <><rect x="6.5" y="3" width="11" height="18" rx="5.5" /><path d="M12 7v3" /></>,
   display: <><rect x="2.5" y="4" width="19" height="13" rx="2.5" /><path d="M9 21h6M12 17v4" /></>,
   home: <><path d="M4 11 12 4.5 20 11v8.5a1 1 0 0 1-1 1h-4.5V15h-5v5.5H5a1 1 0 0 1-1-1Z" /></>,
   widgets: <><rect x="3" y="4" width="8" height="7" rx="2" /><rect x="13" y="4" width="8" height="16" rx="2" /><rect x="3" y="13" width="8" height="7" rx="2" /></>,
