@@ -24,7 +24,7 @@ const items = [
   { id: "notes", h: 468, label: "Notes", src: "open-notes-composer.png", hue: 80, body: "The Notes widget: bold, lists, links and images, all kept on your Mac.", alt: "A note being edited in the notch, with a formatting toolbar and a bulleted list" },
   { id: "colour", h: 478, label: "Colour picker", src: "open-colour-picker.png", hue: 20, body: "The colour picker widget: pick off the screen, check contrast, copy.", alt: "The colour picker: a shade square, a hue slider, contrast grades on white and black, and HEX, RGB and HSL values" },
   { id: "builds", h: 468, label: "Builds", src: "open-builds.png", hue: 250, body: "The Builds widget: did the pipeline pass on GitHub or GitLab?", alt: "Builds: GitHub and GitLab runs, one running and one failed, with All, GitHub, GitLab and Local filters" },
-  { id: "weather", h: 370, label: "Weather", src: "open-weather.png", hue: 205, body: "Now, and the next few hours.", alt: "The weather tab: temperature, conditions and an hourly forecast" },
+  { id: "weather", h: 374, label: "Weather", src: "open-weather.png", hue: 205, body: "Now, and the next few hours.", alt: "The weather tab: temperature, conditions and an hourly forecast" },
   { id: "audio", h: 408, label: "Audio", src: "open-audio.png", hue: 300, body: "Volume, the output device and the microphone, in one place.", alt: "The audio tab: volume, output devices and input" },
 ] as const;
 
